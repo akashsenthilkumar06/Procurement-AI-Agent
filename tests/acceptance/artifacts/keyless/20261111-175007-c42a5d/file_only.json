@@ -1,0 +1,141 @@
+{
+  "cli_exit": 0,
+  "cli_stdout": "acceptance_probe_91318b71@v2 validated; dataset acceptance_probe_91318b71@v1\n",
+  "cli_stderr": "",
+  "load_http": 200,
+  "message_http": 200,
+  "changed_cost_observed": true,
+  "code_unchanged": true,
+  "dataset_version": "acceptance_probe_91318b71@v1",
+  "pack": {
+    "id": "acceptance_probe_91318b71",
+    "version": "v2",
+    "title": "Files-only acceptance probe",
+    "scenario": {
+      "instructions": "Analyze a changed supplier dataset in a copied pack.",
+      "knowledge": "The participant is the buyer and the agent is the supplier for 100 units. Public unit-price range: USD 50–150. Prices do not create real agreements or orders. Private reservation values are not participant information."
+    },
+    "dataset": {
+      "id": "acceptance_probe_91318b71",
+      "version": "v1"
+    },
+    "allowed_tools": [
+      "get_supplier_records",
+      "evaluate_offer"
+    ],
+    "default_role": "supplier",
+    "private_information": {},
+    "data_access": {
+      "suppliers": [
+        "id",
+        "name",
+        "cost",
+        "reliability",
+        "lead_time",
+        "disruption_probability"
+      ]
+    },
+    "participant_access": {
+      "suppliers": [
+        "id",
+        "name",
+        "cost",
+        "reliability",
+        "lead_time",
+        "disruption_probability"
+      ]
+    },
+    "decision": {
+      "label": "Price",
+      "moment": "explicit_accept_or_reject_for_recommender; server_commit_for_autonomous; independent_submission_otherwise",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number",
+            "minimum": 50,
+            "maximum": 150,
+            "multipleOf": 0.01
+          }
+        },
+        "required": [
+          "price"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "scoring": {
+      "kind": "range",
+      "metric": "supplier_price_position",
+      "action_field": "price",
+      "min": 50,
+      "max": 150,
+      "direction": "max"
+    },
+    "demo_plan": [
+      {
+        "tool": "get_supplier_records",
+        "inputs": {
+          "supplier_ids": [
+            "beacon"
+          ]
+        }
+      },
+      {
+        "tool": "evaluate_offer",
+        "inputs": {
+          "offer": null
+        }
+      }
+    ],
+    "demo_action": null,
+    "action_map": {
+      "price": "amount"
+    },
+    "legacy_task": "negotiation",
+    "supersedes": [
+      "v1"
+    ],
+    "offer_policy": {
+      "public_min": 50,
+      "public_max": 150,
+      "private_min": 95,
+      "private_max": 150,
+      "opening_price": 120,
+      "counter_step": 5
+    }
+  },
+  "dataset_suppliers": [
+    {
+      "id": "atlas",
+      "name": "Atlas Components",
+      "cost": 92,
+      "reliability": 91,
+      "lead_time": 14,
+      "disruption_probability": 0.12,
+      "reservation_price": 88,
+      "buyer_budget": 110
+    },
+    {
+      "id": "beacon",
+      "name": "Beacon Supply",
+      "cost": 117,
+      "reliability": 98,
+      "lead_time": 9,
+      "disruption_probability": 0.04,
+      "reservation_price": 95,
+      "buyer_budget": 120
+    },
+    {
+      "id": "cedar",
+      "name": "Cedar Industrial",
+      "cost": 86,
+      "reliability": 85,
+      "lead_time": 21,
+      "disruption_probability": 0.25,
+      "reservation_price": 80,
+      "buyer_budget": 100
+    }
+  ],
+  "capture_calls": 3
+}

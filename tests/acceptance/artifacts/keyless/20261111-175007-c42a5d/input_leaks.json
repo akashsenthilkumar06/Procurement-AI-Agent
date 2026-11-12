@@ -1,0 +1,4820 @@
+{
+  "runs": [
+    {
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9"
+    },
+    {
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047"
+    },
+    {
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27"
+    },
+    {
+      "case": "disruption_response",
+      "role": "buyer",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07"
+    },
+    {
+      "case": "disruption_response",
+      "role": "supplier",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74"
+    },
+    {
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5"
+    },
+    {
+      "case": "negotiation",
+      "role": "buyer",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab"
+    },
+    {
+      "case": "negotiation",
+      "role": "supplier",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8"
+    },
+    {
+      "case": "negotiation",
+      "role": "genai_tool",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f"
+    },
+    {
+      "case": "supplier_risk",
+      "role": "buyer",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975"
+    },
+    {
+      "case": "supplier_risk",
+      "role": "supplier",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b"
+    },
+    {
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31"
+    },
+    {
+      "case": "supplier_selection",
+      "role": "buyer",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "2cf84f29-e5bf-4546-8db0-df868e057286"
+    },
+    {
+      "case": "supplier_selection",
+      "role": "supplier",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "ca2ed4e5-4e03-4d83-aa59-29c4834aecc6"
+    },
+    {
+      "case": "supplier_selection",
+      "role": "genai_tool",
+      "http_statuses": [
+        200,
+        200
+      ],
+      "session_id": "2c76b5c4-504c-4542-9008-e65800a82c8e"
+    }
+  ],
+  "captured_calls": 90,
+  "occurrences": [
+    {
+      "call_index": 0,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 0,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 0,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 1,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 1,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 1,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 2,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 2,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 2,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 3,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 3,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 3,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 4,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 4,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 4,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 5,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 5,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 5,
+      "case": "demand_forecasting",
+      "role": "buyer",
+      "session_id": "473fc492-c6a7-4509-94d9-0e2b6945e4e9",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 6,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 6,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 6,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 7,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 7,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 7,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 8,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 8,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 8,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 9,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 9,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 9,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 10,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 10,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 10,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 11,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 11,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 11,
+      "case": "demand_forecasting",
+      "role": "supplier",
+      "session_id": "b37acfd3-6bfe-4bad-a811-b4dbaa429047",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 12,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 12,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 12,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 13,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 13,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 13,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 14,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 14,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 14,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 15,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 15,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 15,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 16,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 16,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 16,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 17,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 17,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 17,
+      "case": "demand_forecasting",
+      "role": "genai_tool",
+      "session_id": "a7ce8ba0-18fa-4052-b0f2-c19b2a8b4f27",
+      "path": "request.tools[1].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 18,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 18,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 18,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 19,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 19,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 19,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 20,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.input[5].output<json>.policies[2].shortage_units",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_only_tool_recomputation_coincidence"
+    },
+    {
+      "call_index": 20,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 20,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 20,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 21,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 21,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 21,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 22,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 22,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 22,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 23,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.input[7].output<json>.policies[2].shortage_units",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_only_tool_recomputation_coincidence"
+    },
+    {
+      "call_index": 23,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 23,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 23,
+      "case": "disruption_response",
+      "role": "buyer",
+      "session_id": "ad7d846c-d20b-471b-8c32-3efb2fa26c07",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 24,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 24,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 24,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 25,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 25,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 25,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 26,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.input[5].output<json>.policies[2].shortage_units",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_only_tool_recomputation_coincidence"
+    },
+    {
+      "call_index": 26,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 26,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 26,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 27,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 27,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 27,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 28,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 28,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 28,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 29,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.input[7].output<json>.policies[2].shortage_units",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_only_tool_recomputation_coincidence"
+    },
+    {
+      "call_index": 29,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 29,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 29,
+      "case": "disruption_response",
+      "role": "supplier",
+      "session_id": "ca4260af-4921-4c7d-931e-98750991ea74",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 30,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 30,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 30,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 31,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 31,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 31,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 32,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.input[5].output<json>.policies[2].shortage_units",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_only_tool_recomputation_coincidence"
+    },
+    {
+      "call_index": 32,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 32,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 32,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 33,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 33,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 33,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 34,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 34,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 34,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 35,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.input[7].output<json>.policies[2].shortage_units",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_only_tool_recomputation_coincidence"
+    },
+    {
+      "call_index": 35,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.sku.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 35,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[0].parameters.properties.limit.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 35,
+      "case": "disruption_response",
+      "role": "genai_tool",
+      "session_id": "cf29ceab-41a5-44bc-b51a-48e180f273f5",
+      "path": "request.tools[1].parameters.properties.disruption_days.maximum",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 36,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 36,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 36,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 37,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 37,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 37,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 38,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 38,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 38,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[5].output<json>.amount",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_policy_counter_coincidence"
+    },
+    {
+      "call_index": 38,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 39,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 39,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 39,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 40,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 40,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 40,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 41,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 41,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 41,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.input[7].output<json>.amount",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_policy_counter_coincidence"
+    },
+    {
+      "call_index": 41,
+      "case": "negotiation",
+      "role": "buyer",
+      "session_id": "866f9ee6-c36d-4ba9-9314-6165aac9d3ab",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 42,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 42,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 42,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 43,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 43,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 43,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 44,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 44,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 44,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[5].output<json>.amount",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_policy_counter_coincidence"
+    },
+    {
+      "call_index": 44,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 45,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 45,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 45,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 46,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 46,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 46,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 47,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 47,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 47,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.input[7].output<json>.amount",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_policy_counter_coincidence"
+    },
+    {
+      "call_index": 47,
+      "case": "negotiation",
+      "role": "supplier",
+      "session_id": "2d93f945-4fdc-45da-8f88-9c3ea258dbe8",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 48,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 48,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 48,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 49,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 49,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 49,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 50,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 50,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 50,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[5].output<json>.amount",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_policy_counter_coincidence"
+    },
+    {
+      "call_index": 50,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 51,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 51,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 51,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 52,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 52,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 52,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 53,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.objective",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 53,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[0].content<json>.scenario.instructions",
+      "offset": 29,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 53,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.input[7].output<json>.amount",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 120,
+        "record_id": "beacon",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_policy_counter_coincidence"
+    },
+    {
+      "call_index": 53,
+      "case": "negotiation",
+      "role": "genai_tool",
+      "session_id": "77be392a-a9cd-4d2e-abd0-63cbd369661f",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 54,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 54,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 54,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 55,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 55,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 55,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 56,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 56,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 56,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 57,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 57,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 57,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 58,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 58,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 58,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 59,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 59,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 59,
+      "case": "supplier_risk",
+      "role": "buyer",
+      "session_id": "24cc6701-457c-4a79-8a01-24867a6b4975",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 60,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 60,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 60,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 61,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 61,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 61,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 62,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 62,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 62,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 63,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 63,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 63,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 64,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 64,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 64,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 65,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 65,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 65,
+      "case": "supplier_risk",
+      "role": "supplier",
+      "session_id": "112ea497-8f96-46d9-a8a0-689e6591a69b",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 66,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 66,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 66,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 67,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 67,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 67,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 68,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 68,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 68,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 69,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 69,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 69,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 70,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 70,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 70,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 71,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.input[0].content<json>.scenario.knowledge",
+      "offset": 39,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_scenario_numeric_coincidence"
+    },
+    {
+      "call_index": 71,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 71,
+      "case": "supplier_risk",
+      "role": "genai_tool",
+      "session_id": "f944bffc-9aab-4853-9ab9-1505f948bc31",
+      "path": "request.tools[1].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 72,
+      "case": "supplier_selection",
+      "role": "buyer",
+      "session_id": "2cf84f29-e5bf-4546-8db0-df868e057286",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 73,
+      "case": "supplier_selection",
+      "role": "buyer",
+      "session_id": "2cf84f29-e5bf-4546-8db0-df868e057286",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 74,
+      "case": "supplier_selection",
+      "role": "buyer",
+      "session_id": "2cf84f29-e5bf-4546-8db0-df868e057286",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 75,
+      "case": "supplier_selection",
+      "role": "buyer",
+      "session_id": "2cf84f29-e5bf-4546-8db0-df868e057286",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 76,
+      "case": "supplier_selection",
+      "role": "buyer",
+      "session_id": "2cf84f29-e5bf-4546-8db0-df868e057286",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 77,
+      "case": "supplier_selection",
+      "role": "buyer",
+      "session_id": "2cf84f29-e5bf-4546-8db0-df868e057286",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 78,
+      "case": "supplier_selection",
+      "role": "supplier",
+      "session_id": "ca2ed4e5-4e03-4d83-aa59-29c4834aecc6",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 79,
+      "case": "supplier_selection",
+      "role": "supplier",
+      "session_id": "ca2ed4e5-4e03-4d83-aa59-29c4834aecc6",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 80,
+      "case": "supplier_selection",
+      "role": "supplier",
+      "session_id": "ca2ed4e5-4e03-4d83-aa59-29c4834aecc6",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 81,
+      "case": "supplier_selection",
+      "role": "supplier",
+      "session_id": "ca2ed4e5-4e03-4d83-aa59-29c4834aecc6",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 82,
+      "case": "supplier_selection",
+      "role": "supplier",
+      "session_id": "ca2ed4e5-4e03-4d83-aa59-29c4834aecc6",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 83,
+      "case": "supplier_selection",
+      "role": "supplier",
+      "session_id": "ca2ed4e5-4e03-4d83-aa59-29c4834aecc6",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 84,
+      "case": "supplier_selection",
+      "role": "genai_tool",
+      "session_id": "2c76b5c4-504c-4542-9008-e65800a82c8e",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 85,
+      "case": "supplier_selection",
+      "role": "genai_tool",
+      "session_id": "2c76b5c4-504c-4542-9008-e65800a82c8e",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 86,
+      "case": "supplier_selection",
+      "role": "genai_tool",
+      "session_id": "2c76b5c4-504c-4542-9008-e65800a82c8e",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 87,
+      "case": "supplier_selection",
+      "role": "genai_tool",
+      "session_id": "2c76b5c4-504c-4542-9008-e65800a82c8e",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 88,
+      "case": "supplier_selection",
+      "role": "genai_tool",
+      "session_id": "2c76b5c4-504c-4542-9008-e65800a82c8e",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    },
+    {
+      "call_index": 89,
+      "case": "supplier_selection",
+      "role": "genai_tool",
+      "session_id": "2c76b5c4-504c-4542-9008-e65800a82c8e",
+      "path": "request.tools[0].parameters.properties.supplier_ids.items.maxLength",
+      "offset": 0,
+      "secret": {
+        "field": "suppliers.buyer_budget",
+        "key": "buyer_budget",
+        "value": 100,
+        "record_id": "cedar",
+        "roles": [
+          "buyer"
+        ]
+      },
+      "explicitly_required": false,
+      "classification": "public_schema_numeric_coincidence"
+    }
+  ],
+  "forbidden": [],
+  "unrequired_literal_occurrences": 246,
+  "negotiation_policy_value_exposures": [],
+  "note": "All request-body strings/scalars are searched, including parsed system JSON, tool-result JSON, history and schemas. A matching public scalar is reported as a coincidence, not silently counted as a proven leak. Authorization expectations are separately declared in secret_requirements.json, not inferred only from the result."
+}

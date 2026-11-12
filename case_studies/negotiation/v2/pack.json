@@ -1,0 +1,98 @@
+{
+  "id": "negotiation",
+  "version": "v2",
+  "title": "Negotiate a supply agreement",
+  "scenario": {
+    "instructions": "Negotiate the unit price for 100 units. Only simulated study decisions are committed.",
+    "knowledge": "The participant is the buyer and the agent is the supplier for 100 units. Public unit-price range: USD 50\u2013150. Prices do not create real agreements or orders. Private reservation values are not participant information."
+  },
+  "dataset": {
+    "id": "synthetic_supply",
+    "version": "v1"
+  },
+  "allowed_tools": [
+    "get_supplier_records",
+    "evaluate_offer"
+  ],
+  "default_role": "supplier",
+  "private_information": {},
+  "data_access": {
+    "suppliers": [
+      "id",
+      "name",
+      "cost",
+      "reliability",
+      "lead_time",
+      "disruption_probability"
+    ]
+  },
+  "participant_access": {
+    "suppliers": [
+      "id",
+      "name",
+      "cost",
+      "reliability",
+      "lead_time",
+      "disruption_probability"
+    ]
+  },
+  "decision": {
+    "label": "Price",
+    "moment": "explicit_accept_or_reject_for_recommender; server_commit_for_autonomous; independent_submission_otherwise",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "number",
+          "minimum": 50,
+          "maximum": 150,
+          "multipleOf": 0.01
+        }
+      },
+      "required": [
+        "price"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "scoring": {
+    "kind": "range",
+    "metric": "supplier_price_position",
+    "action_field": "price",
+    "min": 50,
+    "max": 150,
+    "direction": "max"
+  },
+  "demo_plan": [
+    {
+      "tool": "get_supplier_records",
+      "inputs": {
+        "supplier_ids": [
+          "beacon"
+        ]
+      }
+    },
+    {
+      "tool": "evaluate_offer",
+      "inputs": {
+        "offer": null
+      }
+    }
+  ],
+  "demo_action": null,
+  "action_map": {
+    "price": "amount"
+  },
+  "legacy_task": "negotiation",
+  "supersedes": [
+    "v1"
+  ],
+  "offer_policy": {
+    "public_min": 50,
+    "public_max": 150,
+    "private_min": 95,
+    "private_max": 150,
+    "opening_price": 120,
+    "counter_step": 5
+  }
+}

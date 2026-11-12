@@ -1,0 +1,6 @@
+{
+  "id": "ozer_generated",
+  "version": "v1",
+  "description": "Independent integer draws generated server-side for each Ozer Game round. The pinned case-study pack defines the distributions.",
+  "tables": {}
+}

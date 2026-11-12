@@ -1,0 +1,109 @@
+{
+  "id": "disruption_response",
+  "version": "v1",
+  "title": "Respond to a supply disruption",
+  "scenario": {
+    "instructions": "Compare simulated disruption-response policies and select one. No real order is placed.",
+    "knowledge": "A disruption lasts 14 days. Compare wait, expedite and alternate supply at order_quantity=0. The simulation uses recent average demand divided by 30, on-hand inventory, holding costs, premiums and shortage penalties. Lower simulated cost is preferred; nothing is purchased."
+  },
+  "dataset": {
+    "id": "synthetic_supply",
+    "version": "v1"
+  },
+  "allowed_tools": [
+    "get_demand_history",
+    "simulate_scenario"
+  ],
+  "default_role": "buyer",
+  "private_information": {},
+  "data_access": {
+    "demand": [
+      "period",
+      "sku",
+      "units"
+    ],
+    "inventory": [
+      "on_hand",
+      "lead_days",
+      "unit_cost",
+      "holding_cost",
+      "shortage_penalty",
+      "expedite_fee",
+      "alternate_fee"
+    ]
+  },
+  "participant_access": {
+    "demand": [
+      "period",
+      "sku",
+      "units"
+    ],
+    "inventory": [
+      "on_hand",
+      "lead_days",
+      "unit_cost",
+      "holding_cost",
+      "shortage_penalty",
+      "expedite_fee",
+      "alternate_fee"
+    ]
+  },
+  "decision": {
+    "label": "Policy",
+    "moment": "explicit_accept_or_reject_for_recommender; server_commit_for_autonomous; independent_submission_otherwise",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "policy": {
+          "type": "string",
+          "enum": [
+            "wait",
+            "expedite",
+            "alternate"
+          ]
+        }
+      },
+      "required": [
+        "policy"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "scoring": {
+    "kind": "lookup",
+    "metric": "simulated_cost_usd",
+    "tool": "simulate_scenario",
+    "inputs": {
+      "scenario": "disruption",
+      "disruption_days": 14,
+      "order_quantity": 0
+    },
+    "rows": "policies",
+    "key": "policy",
+    "action_field": "policy",
+    "value": "cost",
+    "direction": "min"
+  },
+  "demo_plan": [
+    {
+      "tool": "get_demand_history",
+      "inputs": {
+        "sku": "component_a",
+        "limit": 3
+      }
+    },
+    {
+      "tool": "simulate_scenario",
+      "inputs": {
+        "scenario": "disruption",
+        "disruption_days": 14,
+        "order_quantity": 0
+      }
+    }
+  ],
+  "demo_action": null,
+  "action_map": {
+    "policy": "best_policy"
+  },
+  "legacy_task": "supplier_selection"
+}

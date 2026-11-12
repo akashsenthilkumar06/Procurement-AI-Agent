@@ -1,0 +1,96 @@
+{
+  "id": "supplier_selection",
+  "version": "v1",
+  "title": "Choose a supply partner",
+  "scenario": {
+    "instructions": "Compare supplier records and select a supply partner.",
+    "knowledge": "Select one supplier. The reference utility weights are cost 0.4, reliability 0.4, lead time 0.2; lower cost and lead time and higher reliability are preferred. Utility is a decision benchmark, not a probability."
+  },
+  "dataset": {
+    "id": "synthetic_supply",
+    "version": "v1"
+  },
+  "allowed_tools": [
+    "get_supplier_records",
+    "compare_suppliers"
+  ],
+  "default_role": "buyer",
+  "private_information": {},
+  "data_access": {
+    "suppliers": [
+      "id",
+      "name",
+      "cost",
+      "reliability",
+      "lead_time",
+      "disruption_probability"
+    ]
+  },
+  "participant_access": {
+    "suppliers": [
+      "id",
+      "name",
+      "cost",
+      "reliability",
+      "lead_time",
+      "disruption_probability"
+    ]
+  },
+  "decision": {
+    "label": "Supplier Id",
+    "moment": "explicit_accept_or_reject_for_recommender; server_commit_for_autonomous; independent_submission_otherwise",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "supplier_id": {
+          "type": "string",
+          "enum": [
+            "atlas",
+            "beacon",
+            "cedar"
+          ]
+        }
+      },
+      "required": [
+        "supplier_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "scoring": {
+    "kind": "lookup",
+    "metric": "weighted_utility",
+    "tool": "compare_suppliers",
+    "inputs": {
+      "cost_weight": 0.4,
+      "reliability_weight": 0.4,
+      "lead_time_weight": 0.2
+    },
+    "rows": "scores",
+    "key": "supplier_id",
+    "action_field": "supplier_id",
+    "value": "score",
+    "direction": "max"
+  },
+  "demo_plan": [
+    {
+      "tool": "get_supplier_records",
+      "inputs": {
+        "supplier_ids": []
+      }
+    },
+    {
+      "tool": "compare_suppliers",
+      "inputs": {
+        "cost_weight": 0.4,
+        "reliability_weight": 0.4,
+        "lead_time_weight": 0.2
+      }
+    }
+  ],
+  "demo_action": null,
+  "action_map": {
+    "supplier_id": "best_supplier"
+  },
+  "legacy_task": "supplier_selection"
+}

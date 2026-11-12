@@ -1,0 +1,11 @@
+[
+  {
+    "on_hand": 100,
+    "lead_days": 14,
+    "unit_cost": 92,
+    "holding_cost": 0.2,
+    "shortage_penalty": 30,
+    "expedite_fee": 500,
+    "alternate_fee": 250
+  }
+]

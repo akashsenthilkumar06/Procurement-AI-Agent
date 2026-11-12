@@ -1,0 +1,29 @@
+{
+  "event_count": 208,
+  "types": {
+    "budget_reserved": 51,
+    "tool_call": 130,
+    "output_replaced": 13,
+    "recommendation_visible": 2,
+    "decision_committed": 3,
+    "session_ended": 4,
+    "page_open": 1,
+    "page_exit": 1,
+    "visibility": 1,
+    "focus": 1,
+    "interaction_counts": 1
+  },
+  "required_fields": [
+    "model_snapshot",
+    "temperature",
+    "dataset_version",
+    "config_version",
+    "condition_id",
+    "round_id",
+    "session_id",
+    "participant_id"
+  ],
+  "missing": [],
+  "mismatches": [],
+  "family_alias_rejected": true
+}

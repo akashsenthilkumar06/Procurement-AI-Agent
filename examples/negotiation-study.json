@@ -1,0 +1,181 @@
+{
+  "name": "Negotiation pilot",
+  "description": "Study AI roles, authority and negotiated prices.",
+  "status": "draft",
+  "architecture": {
+    "provider": "demo",
+    "model": "deterministic-v1",
+    "api_version": "responses-v1",
+    "temperature": null,
+    "reasoning_effort": null,
+    "memory": "session",
+    "knowledge_version": "supplier-demo-v1",
+    "spend_cap_usd": 5.0,
+    "max_input_tokens": 32000,
+    "max_output_tokens": 1200,
+    "input_usd_per_million": 0.4,
+    "output_usd_per_million": 1.6
+  },
+  "scenario": {
+    "title": "Choose a supply partner",
+    "instructions": "You are sourcing a component for a new production run. Compare the three suppliers, consult the assistant, and submit your final selection. You may accept, reject, or override the assistant's choice.",
+    "consent_text": "This pilot records your conversation, choices, response timings, and interaction counts within this page, including typing, clicks, hover, and copy/paste counts. It does not record individual keys or clipboard contents. Use a study code rather than your name. Participation is voluntary; you may stop at any time.",
+    "knowledge": "Cost is per unit. Reliability is the percentage of on-time deliveries. Lead time is in days. Consider the trade-off between cost, delivery speed, and reliability.",
+    "criteria": [
+      {
+        "id": "cost",
+        "label": "Unit cost",
+        "unit": "USD",
+        "direction": "min",
+        "weight": 0.4
+      },
+      {
+        "id": "reliability",
+        "label": "Reliability",
+        "unit": "%",
+        "direction": "max",
+        "weight": 0.4
+      },
+      {
+        "id": "lead_time",
+        "label": "Lead time",
+        "unit": "days",
+        "direction": "min",
+        "weight": 0.2
+      }
+    ],
+    "options": [
+      {
+        "id": "atlas",
+        "label": "Atlas Components",
+        "values": {
+          "cost": 92,
+          "reliability": 91,
+          "lead_time": 14
+        }
+      },
+      {
+        "id": "beacon",
+        "label": "Beacon Supply",
+        "values": {
+          "cost": 104,
+          "reliability": 98,
+          "lead_time": 9
+        }
+      },
+      {
+        "id": "cedar",
+        "label": "Cedar Industrial",
+        "values": {
+          "cost": 86,
+          "reliability": 85,
+          "lead_time": 21
+        }
+      }
+    ]
+  },
+  "conditions": [
+    {
+      "id": "recommend",
+      "label": "Recommendation",
+      "role": "supplier",
+      "objective": "Negotiate a unit price for the fixed quantity using the configured offer policy.",
+      "authority": "recommendation",
+      "reasoning": "direct",
+      "output": "explanation",
+      "selection": "weighted",
+      "prompt": "Use neutral, concise language. Discuss the supplied scenario only.",
+      "examples": [],
+      "private_information": {},
+      "private_rules": {
+        "min": {
+          "price": 95
+        },
+        "max": {}
+      },
+      "agent_enabled": true,
+      "advice_quality": "standard"
+    },
+    {
+      "id": "delegate",
+      "label": "Agent decision with override",
+      "role": "supplier",
+      "objective": "Negotiate a unit price for the fixed quantity using the configured offer policy.",
+      "authority": "provisional_decision",
+      "reasoning": "direct",
+      "output": "explanation",
+      "selection": "weighted",
+      "prompt": "Use neutral, concise language. Discuss the supplied scenario only.",
+      "examples": [],
+      "private_information": {},
+      "private_rules": {
+        "min": {
+          "price": 95
+        },
+        "max": {}
+      },
+      "agent_enabled": true,
+      "advice_quality": "standard"
+    },
+    {
+      "id": "chatbot",
+      "label": "Chatbot only",
+      "role": "supplier",
+      "objective": "Negotiate a unit price for the fixed quantity using the configured offer policy.",
+      "authority": "chat",
+      "reasoning": "direct",
+      "output": "explanation",
+      "selection": "weighted",
+      "prompt": "Use neutral, concise language. Discuss the supplied scenario only.",
+      "examples": [],
+      "private_information": {},
+      "private_rules": {
+        "min": {
+          "price": 95
+        },
+        "max": {}
+      },
+      "agent_enabled": true,
+      "advice_quality": "standard"
+    },
+    {
+      "id": "human_only",
+      "label": "Human-only baseline",
+      "role": "supplier",
+      "objective": "Negotiate a unit price for the fixed quantity using the configured offer policy.",
+      "authority": "recommendation",
+      "reasoning": "direct",
+      "output": "explanation",
+      "selection": "weighted",
+      "prompt": "Use neutral, concise language. Discuss the supplied scenario only.",
+      "examples": [],
+      "private_information": {},
+      "private_rules": {
+        "min": {},
+        "max": {}
+      },
+      "agent_enabled": false,
+      "advice_quality": "standard"
+    }
+  ],
+  "telemetry": {
+    "enabled": true
+  },
+  "task": "negotiation",
+  "assignment": {
+    "method": "balanced"
+  },
+  "negotiation": {
+    "title": "Negotiate a supply agreement",
+    "item": "Production component",
+    "quantity": 100,
+    "currency": "USD",
+    "price_min": 50,
+    "price_max": 150,
+    "opening_price": 120,
+    "concession_step": 5,
+    "participant_role": "buyer",
+    "instructions": "Negotiate a unit price for the stated quantity. Send offers or discuss terms, then record a final price or finish without agreement. No real order is placed.",
+    "knowledge": "Prices are per unit. The stated quantity is fixed. Only unit price is negotiated in this pilot."
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "ozer_game",
+  "version": "v1",
+  "title": "Ozer Game · Forecast information sharing",
+  "scenario": {
+    "instructions": "Play 3 practice and 20 paid periods as a supplier or retailer matched with an AI counterpart.",
+    "knowledge": "The retailer receives a private demand signal, sends a forecast, and the supplier chooses production before final demand is revealed."
+  },
+  "dataset": {"id": "ozer_generated", "version": "v1"},
+  "allowed_tools": [],
+  "default_role": "retailer",
+  "private_information": {},
+  "data_access": {},
+  "participant_access": {},
+  "decision": {
+    "label": "Forecast report and production quantity",
+    "moment": "One locked decision per player in each round",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "forecast": {"type": "integer", "minimum": 0, "maximum": 475},
+        "production": {"type": "integer", "minimum": 0, "maximum": 475}
+      },
+      "required": ["forecast", "production"],
+      "additionalProperties": false
+    }
+  },
+  "scoring": {"kind": "ozer_payoffs", "action_field": "production"},
+  "demo_plan": [],
+  "game": {
+    "practice_rounds": 3,
+    "paid_rounds": 20,
+    "decision_seconds": 60,
+    "signal_min": 100,
+    "signal_max": 400,
+    "shock_min": -75,
+    "shock_max": 75,
+    "production_cost": 50,
+    "wholesale_price": 100,
+    "retail_price": 150,
+    "participation_usd": 5,
+    "experimental_dollars_per_usd": 50000
+  }
+}

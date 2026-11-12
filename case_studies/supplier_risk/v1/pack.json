@@ -1,0 +1,92 @@
+{
+  "id": "supplier_risk",
+  "version": "v1",
+  "title": "Assess supplier risk",
+  "scenario": {
+    "instructions": "Assess supplier risk and select the supplier with the lowest modeled risk.",
+    "knowledge": "Modeled risk is 0.7 \u00d7 (1 \u2212 reliability/100) + 0.3 \u00d7 disruption probability. Lower risk is preferred. The scores are synthetic study metrics, not validated real-world risk probabilities."
+  },
+  "dataset": {
+    "id": "synthetic_supply",
+    "version": "v1"
+  },
+  "allowed_tools": [
+    "get_supplier_records",
+    "assess_supplier_risk"
+  ],
+  "default_role": "buyer",
+  "private_information": {},
+  "data_access": {
+    "suppliers": [
+      "id",
+      "name",
+      "cost",
+      "reliability",
+      "lead_time",
+      "disruption_probability"
+    ]
+  },
+  "participant_access": {
+    "suppliers": [
+      "id",
+      "name",
+      "cost",
+      "reliability",
+      "lead_time",
+      "disruption_probability"
+    ]
+  },
+  "decision": {
+    "label": "Supplier Id",
+    "moment": "explicit_accept_or_reject_for_recommender; server_commit_for_autonomous; independent_submission_otherwise",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "supplier_id": {
+          "type": "string",
+          "enum": [
+            "atlas",
+            "beacon",
+            "cedar"
+          ]
+        }
+      },
+      "required": [
+        "supplier_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "scoring": {
+    "kind": "lookup",
+    "metric": "modeled_supplier_risk",
+    "tool": "assess_supplier_risk",
+    "inputs": {
+      "supplier_ids": []
+    },
+    "rows": "risks",
+    "key": "supplier_id",
+    "action_field": "supplier_id",
+    "value": "risk",
+    "direction": "min"
+  },
+  "demo_plan": [
+    {
+      "tool": "get_supplier_records",
+      "inputs": {
+        "supplier_ids": []
+      }
+    },
+    {
+      "tool": "assess_supplier_risk",
+      "inputs": {
+        "supplier_ids": []
+      }
+    }
+  ],
+  "demo_action": null,
+  "action_map": {
+    "supplier_id": "lowest_risk_supplier"
+  },
+  "legacy_task": "supplier_selection"
+}

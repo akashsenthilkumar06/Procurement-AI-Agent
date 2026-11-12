@@ -1,0 +1,247 @@
+{
+  "modes": [
+    {
+      "mode": "analytical",
+      "config_diff": [
+        {
+          "path": "/conditions/0/agent/mode",
+          "before": "recommender",
+          "after": "analytical"
+        }
+      ],
+      "http_status": 200,
+      "model_calls": 3,
+      "python_function_path": [
+        "run_agent",
+        "protected_context",
+        "authority_contract",
+        "authority_contract",
+        "invoke",
+        "authority_contract",
+        "invoke",
+        "authority_contract",
+        "check_agent_output",
+        "protected_context",
+        "authority_contract",
+        "check_agent_output",
+        "protected_context",
+        "authority_contract"
+      ],
+      "execution_path": [
+        "prepare_context",
+        "provider_step",
+        "tool_dispatch",
+        "provider_step",
+        "tool_dispatch",
+        "provider_step",
+        "apply_permissions",
+        "validate_reply"
+      ],
+      "output_type": "number",
+      "reply": "7",
+      "tool_names": [
+        "get_supplier_records",
+        "compare_suppliers"
+      ],
+      "permission_scopes": [
+        "analysis:run",
+        "data:read",
+        "simulation:run"
+      ],
+      "status_after_reply": "active",
+      "committed_decision": null
+    },
+    {
+      "mode": "chatbot",
+      "config_diff": [
+        {
+          "path": "/conditions/0/agent/mode",
+          "before": "recommender",
+          "after": "chatbot"
+        }
+      ],
+      "http_status": 200,
+      "model_calls": 3,
+      "python_function_path": [
+        "run_agent",
+        "protected_context",
+        "authority_contract",
+        "authority_contract",
+        "invoke",
+        "authority_contract",
+        "invoke",
+        "authority_contract",
+        "check_agent_output",
+        "protected_context",
+        "authority_contract",
+        "check_agent_output",
+        "protected_context",
+        "authority_contract"
+      ],
+      "execution_path": [
+        "prepare_context",
+        "provider_step",
+        "tool_dispatch",
+        "provider_step",
+        "tool_dispatch",
+        "provider_step",
+        "apply_permissions",
+        "validate_reply"
+      ],
+      "output_type": "recommendation",
+      "reply": "Public analysis is complete.",
+      "tool_names": [
+        "get_supplier_records",
+        "compare_suppliers"
+      ],
+      "permission_scopes": [
+        "analysis:run",
+        "data:read",
+        "simulation:run"
+      ],
+      "status_after_reply": "active",
+      "committed_decision": null
+    },
+    {
+      "mode": "recommender",
+      "config_diff": [],
+      "http_status": 200,
+      "model_calls": 3,
+      "python_function_path": [
+        "run_agent",
+        "protected_context",
+        "authority_contract",
+        "authority_contract",
+        "invoke",
+        "authority_contract",
+        "invoke",
+        "authority_contract",
+        "check_agent_output",
+        "protected_context",
+        "authority_contract",
+        "check_agent_output",
+        "protected_context",
+        "authority_contract"
+      ],
+      "execution_path": [
+        "prepare_context",
+        "provider_step",
+        "tool_dispatch",
+        "provider_step",
+        "tool_dispatch",
+        "provider_step",
+        "apply_permissions",
+        "validate_reply"
+      ],
+      "output_type": "recommendation",
+      "reply": "Public analysis is complete.",
+      "tool_names": [
+        "get_supplier_records",
+        "compare_suppliers"
+      ],
+      "permission_scopes": [
+        "analysis:run",
+        "data:read",
+        "decision:propose",
+        "simulation:run"
+      ],
+      "status_after_reply": "active",
+      "committed_decision": null
+    },
+    {
+      "mode": "autonomous",
+      "config_diff": [
+        {
+          "path": "/conditions/0/agent/mode",
+          "before": "recommender",
+          "after": "autonomous"
+        }
+      ],
+      "http_status": 200,
+      "model_calls": 3,
+      "python_function_path": [
+        "run_agent",
+        "protected_context",
+        "authority_contract",
+        "authority_contract",
+        "invoke",
+        "authority_contract",
+        "invoke",
+        "authority_contract",
+        "check_agent_output",
+        "protected_context",
+        "authority_contract",
+        "check_agent_output",
+        "protected_context",
+        "authority_contract"
+      ],
+      "execution_path": [
+        "prepare_context",
+        "provider_step",
+        "tool_dispatch",
+        "provider_step",
+        "tool_dispatch",
+        "provider_step",
+        "apply_permissions",
+        "validate_reply"
+      ],
+      "output_type": "recommendation",
+      "reply": "Public analysis is complete.",
+      "tool_names": [
+        "get_supplier_records",
+        "compare_suppliers"
+      ],
+      "permission_scopes": [
+        "analysis:run",
+        "data:read",
+        "decision:commit",
+        "simulation:run"
+      ],
+      "status_after_reply": "completed",
+      "committed_decision": {
+        "action": "autonomous",
+        "completion_code": "3f75add4-9b2f-4b6e-a1f2-14ddaaee0341",
+        "outcome_json": "{\"actor\":\"agent\",\"case_study\":\"supplier_selection\",\"dataset_version\":\"synthetic_supply@v1\",\"decision_action\":{\"supplier_id\":\"beacon\"},\"execution\":\"simulation\",\"metric\":{\"metric\":\"weighted_utility\",\"value\":0.6}}",
+        "status": "completed"
+      }
+    }
+  ],
+  "recommender_moments": [
+    {
+      "action": "accept",
+      "http_status": 200,
+      "exposure_received_at": 1794441015.191485,
+      "decision_created_at": 1794441015.193225,
+      "client_deliberation_ms": 300.0,
+      "outcome_json": {
+        "actor": "participant",
+        "case_study": "supplier_selection",
+        "dataset_version": "synthetic_supply@v1",
+        "decision_action": {
+          "supplier_id": "beacon"
+        },
+        "execution": "simulation",
+        "metric": {
+          "metric": "weighted_utility",
+          "value": 0.6
+        }
+      }
+    },
+    {
+      "action": "reject",
+      "http_status": 200,
+      "exposure_received_at": 1794441015.3541398,
+      "decision_created_at": 1794441015.356459,
+      "client_deliberation_ms": 300.0,
+      "outcome_json": {
+        "actor": "participant",
+        "case_study": "supplier_selection",
+        "dataset_version": "synthetic_supply@v1",
+        "decision_action": null,
+        "execution": "simulation",
+        "metric": {}
+      }
+    }
+  ],
+  "observation": "All four authority modes execute the same provider/tool loop. Actual Python function-entry traces and engine stages are compared; output format/action permissions and commitment are allowed to differ."
+}

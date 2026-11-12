@@ -1,0 +1,22 @@
+[
+  {
+    "case": "no_env",
+    "exit": 2,
+    "stderr": "usage: run.py [-h] [--max-spend [MAX_SPEND]] {keyless,live}\nrun.py: error: Live is disabled: set RESEARCH_AGENT_LIVE_TESTS=1\n"
+  },
+  {
+    "case": "no_flag",
+    "exit": 2,
+    "stderr": "usage: run.py [-h] [--max-spend [MAX_SPEND]] {keyless,live}\nrun.py: error: Live requires an explicit --max-spend flag with a positive finite USD cap (flag alone defaults to 2)\n"
+  },
+  {
+    "case": "no_key",
+    "exit": 2,
+    "stderr": "usage: run.py [-h] [--max-spend [MAX_SPEND]] {keyless,live}\nrun.py: error: OPENAI_API_KEY must be set on the server environment\n"
+  },
+  {
+    "case": "negative_cap",
+    "exit": 2,
+    "stderr": "usage: run.py [-h] [--max-spend [MAX_SPEND]] {keyless,live}\nrun.py: error: Live requires an explicit --max-spend flag with a positive finite USD cap (flag alone defaults to 2)\n"
+  }
+]

@@ -1,0 +1,564 @@
+{
+  "tools": [
+    {
+      "tool": "get_demand_history",
+      "inputs": {
+        "sku": "component_a",
+        "limit": 12
+      },
+      "runs": 10,
+      "output_hashes": [
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499",
+        "822851d9b36822f920276d06960338ace64e0d517a23528bc1c39e23a6313499"
+      ],
+      "identical": true,
+      "output": {
+        "history": [
+          {
+            "period": "2025-01",
+            "sku": "component_a",
+            "units": 900.0
+          },
+          {
+            "period": "2025-02",
+            "sku": "component_a",
+            "units": 930.0
+          },
+          {
+            "period": "2025-03",
+            "sku": "component_a",
+            "units": 960.0
+          },
+          {
+            "period": "2025-04",
+            "sku": "component_a",
+            "units": 990.0
+          },
+          {
+            "period": "2025-05",
+            "sku": "component_a",
+            "units": 1020.0
+          },
+          {
+            "period": "2025-06",
+            "sku": "component_a",
+            "units": 1050.0
+          },
+          {
+            "period": "2025-07",
+            "sku": "component_a",
+            "units": 1080.0
+          },
+          {
+            "period": "2025-08",
+            "sku": "component_a",
+            "units": 1110.0
+          },
+          {
+            "period": "2025-09",
+            "sku": "component_a",
+            "units": 1140.0
+          },
+          {
+            "period": "2025-10",
+            "sku": "component_a",
+            "units": 1170.0
+          },
+          {
+            "period": "2025-11",
+            "sku": "component_a",
+            "units": 1200.0
+          },
+          {
+            "period": "2025-12",
+            "sku": "component_a",
+            "units": 1230.0
+          }
+        ]
+      }
+    },
+    {
+      "tool": "run_forecast",
+      "inputs": {
+        "sku": "component_a",
+        "periods": 3,
+        "window": 3,
+        "method": "moving_average"
+      },
+      "runs": 10,
+      "output_hashes": [
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370"
+      ],
+      "identical": true,
+      "output": {
+        "method": "moving_average",
+        "history_count": 12,
+        "forecast": [
+          {
+            "step": 1,
+            "units": 1200.0
+          },
+          {
+            "step": 2,
+            "units": 1200.0
+          },
+          {
+            "step": 3,
+            "units": 1200.0
+          }
+        ]
+      }
+    },
+    {
+      "tool": "get_demand_history",
+      "inputs": {
+        "sku": "component_a",
+        "limit": 3
+      },
+      "runs": 10,
+      "output_hashes": [
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237",
+        "26378dc2cb927869ad5bb4bf2e5ee785cfc1f7b01abcd1d943688c55fae4a237"
+      ],
+      "identical": true,
+      "output": {
+        "history": [
+          {
+            "period": "2025-10",
+            "sku": "component_a",
+            "units": 1170.0
+          },
+          {
+            "period": "2025-11",
+            "sku": "component_a",
+            "units": 1200.0
+          },
+          {
+            "period": "2025-12",
+            "sku": "component_a",
+            "units": 1230.0
+          }
+        ]
+      }
+    },
+    {
+      "tool": "simulate_scenario",
+      "inputs": {
+        "scenario": "disruption",
+        "disruption_days": 14,
+        "order_quantity": 0
+      },
+      "runs": 10,
+      "output_hashes": [
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287",
+        "2dfdcd347df13a1f5d207123296960b988a4e6c67354ef3a61953a506df7d287"
+      ],
+      "identical": true,
+      "output": {
+        "policies": [
+          {
+            "policy": "wait",
+            "cost": 13800.0,
+            "shortage_units": 460.0
+          },
+          {
+            "policy": "expedite",
+            "cost": 504.0,
+            "shortage_units": 0
+          },
+          {
+            "policy": "alternate",
+            "cost": 3250.0,
+            "shortage_units": 100.0
+          }
+        ],
+        "best_policy": "expedite",
+        "daily_demand": 40.0
+      }
+    },
+    {
+      "tool": "get_supplier_records",
+      "inputs": {
+        "supplier_ids": [
+          "beacon"
+        ]
+      },
+      "runs": 10,
+      "output_hashes": [
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4",
+        "f327562718fb4b8e7669a4ee7da6c66630f14c6025ecd9a11c519ecbd1d38bd4"
+      ],
+      "identical": true,
+      "output": {
+        "records": [
+          {
+            "id": "beacon",
+            "name": "Beacon Supply",
+            "cost": 104,
+            "reliability": 98,
+            "lead_time": 9,
+            "disruption_probability": 0.04
+          }
+        ]
+      }
+    },
+    {
+      "tool": "evaluate_offer",
+      "inputs": {
+        "offer": null
+      },
+      "runs": 10,
+      "output_hashes": [
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0",
+        "46423d140284414dc70eeaa0f152db51c009c22b31d1101bd47ca3464611b7b0"
+      ],
+      "identical": true,
+      "output": {
+        "decision": "counter",
+        "amount": 120
+      }
+    },
+    {
+      "tool": "get_supplier_records",
+      "inputs": {
+        "supplier_ids": []
+      },
+      "runs": 10,
+      "output_hashes": [
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4",
+        "e5f129d995e1bd03177c854223ad68298a848e261f0af0f18c6a465e0d5c6df4"
+      ],
+      "identical": true,
+      "output": {
+        "records": [
+          {
+            "id": "atlas",
+            "name": "Atlas Components",
+            "cost": 92,
+            "reliability": 91,
+            "lead_time": 14,
+            "disruption_probability": 0.12
+          },
+          {
+            "id": "beacon",
+            "name": "Beacon Supply",
+            "cost": 104,
+            "reliability": 98,
+            "lead_time": 9,
+            "disruption_probability": 0.04
+          },
+          {
+            "id": "cedar",
+            "name": "Cedar Industrial",
+            "cost": 86,
+            "reliability": 85,
+            "lead_time": 21,
+            "disruption_probability": 0.25
+          }
+        ]
+      }
+    },
+    {
+      "tool": "assess_supplier_risk",
+      "inputs": {
+        "supplier_ids": []
+      },
+      "runs": 10,
+      "output_hashes": [
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8",
+        "3799f3299b4bcb63aa16fce48a3e524636c6cbcb4ee0a35410a9cb3d63b86ba8"
+      ],
+      "identical": true,
+      "output": {
+        "risks": [
+          {
+            "supplier_id": "atlas",
+            "risk": 0.099
+          },
+          {
+            "supplier_id": "beacon",
+            "risk": 0.026
+          },
+          {
+            "supplier_id": "cedar",
+            "risk": 0.18
+          }
+        ],
+        "lowest_risk_supplier": "beacon"
+      }
+    },
+    {
+      "tool": "compare_suppliers",
+      "inputs": {
+        "cost_weight": 0.4,
+        "reliability_weight": 0.4,
+        "lead_time_weight": 0.2
+      },
+      "runs": 10,
+      "output_hashes": [
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341",
+        "eb30089aac09f6a2e79a63792287625f77531e94d4c93777f3c349dd0409b341"
+      ],
+      "identical": true,
+      "output": {
+        "scores": [
+          {
+            "supplier_id": "atlas",
+            "score": 0.56794872
+          },
+          {
+            "supplier_id": "beacon",
+            "score": 0.6
+          },
+          {
+            "supplier_id": "cedar",
+            "score": 0.4
+          }
+        ],
+        "best_supplier": "beacon"
+      }
+    },
+    {
+      "tool": "run_forecast",
+      "inputs": {
+        "sku": "component_a",
+        "periods": 3,
+        "window": 3,
+        "method": "moving_average"
+      },
+      "runs": 10,
+      "output_hashes": [
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370",
+        "735b2d8820f3c646811414ae0c3b041ee38b41a45278d1257527d9903feec370"
+      ],
+      "identical": true,
+      "output": {
+        "method": "moving_average",
+        "history_count": 12,
+        "forecast": [
+          {
+            "step": 1,
+            "units": 1200.0
+          },
+          {
+            "step": 2,
+            "units": 1200.0
+          },
+          {
+            "step": 3,
+            "units": 1200.0
+          }
+        ]
+      }
+    },
+    {
+      "tool": "run_forecast",
+      "inputs": {
+        "sku": "component_a",
+        "periods": 3,
+        "window": 3,
+        "method": "linear_trend"
+      },
+      "runs": 10,
+      "output_hashes": [
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335",
+        "78b1f22abf2014e3a61cc5ac6dcb7fb075599bae3287c4d6e2f3b35eca108335"
+      ],
+      "identical": true,
+      "output": {
+        "method": "linear_trend",
+        "history_count": 12,
+        "forecast": [
+          {
+            "step": 1,
+            "units": 1260.0
+          },
+          {
+            "step": 2,
+            "units": 1290.0
+          },
+          {
+            "step": 3,
+            "units": 1320.0
+          }
+        ]
+      }
+    },
+    {
+      "tool": "simulate_scenario",
+      "inputs": {
+        "scenario": "order_policy",
+        "disruption_days": 0,
+        "order_quantity": 120
+      },
+      "runs": 10,
+      "output_hashes": [
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6",
+        "aec96a25a19f915a4bc3505745714729d9ad34ebfad72a2a2c1da5e717e1a6f6"
+      ],
+      "identical": true,
+      "output": {
+        "policies": [
+          {
+            "policy": "wait",
+            "cost": 21240.0,
+            "shortage_units": 340.0
+          },
+          {
+            "policy": "expedite",
+            "cost": 11568.0,
+            "shortage_units": 0
+          },
+          {
+            "policy": "alternate",
+            "cost": 11294.0,
+            "shortage_units": 0
+          }
+        ],
+        "best_policy": "alternate",
+        "daily_demand": 40.0
+      }
+    }
+  ],
+  "scripted_sequences": [
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ],
+    [
+      "get_supplier_records",
+      "compare_suppliers"
+    ]
+  ],
+  "scripted_choice_variance_vs_first": 0.0,
+  "live_tool_choice_variance": "NOT RUN"
+}

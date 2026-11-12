@@ -1,0 +1,22 @@
+{
+  "funded_session_states": [
+    "active",
+    "active"
+  ],
+  "blocked_new_state": "ended_system_limit",
+  "blocked_new_reason": "global_budget_admission",
+  "allocation_before_request": {
+    "committed_micros": 0,
+    "reserved_session_micros": 500000,
+    "allocated_micros": 500000,
+    "calls": 0,
+    "uncertain_calls": 0,
+    "cap_micros": 500000,
+    "warning_80_percent": true
+  },
+  "funded_session_continued_after_new_admission_block": true,
+  "model_calls": 3,
+  "warning_logged": true,
+  "reservation_count": 2,
+  "new_admitted_after_release": true
+}

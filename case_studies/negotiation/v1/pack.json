@@ -1,0 +1,83 @@
+{
+  "id": "negotiation",
+  "version": "v1",
+  "title": "Negotiate a supply agreement",
+  "scenario": {
+    "instructions": "Negotiate the unit price for 100 units. Only simulated study decisions are committed.",
+    "knowledge": "The participant is the buyer and the agent is the supplier for 100 units. Public unit-price range: USD 50\u2013150. Prices do not create real agreements or orders. Private reservation values are not participant information."
+  },
+  "dataset": {
+    "id": "synthetic_supply",
+    "version": "v1"
+  },
+  "allowed_tools": [
+    "get_supplier_records"
+  ],
+  "default_role": "supplier",
+  "private_information": {
+    "reservation_price": 95
+  },
+  "data_access": {
+    "suppliers": [
+      "id",
+      "name",
+      "cost",
+      "reliability",
+      "lead_time",
+      "disruption_probability",
+      "reservation_price"
+    ]
+  },
+  "participant_access": {
+    "suppliers": [
+      "id",
+      "name",
+      "cost",
+      "reliability",
+      "lead_time",
+      "disruption_probability"
+    ]
+  },
+  "decision": {
+    "label": "Price",
+    "moment": "explicit_accept_or_reject_for_recommender; server_commit_for_autonomous; independent_submission_otherwise",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "number",
+          "minimum": 50,
+          "maximum": 150,
+          "multipleOf": 0.01
+        }
+      },
+      "required": [
+        "price"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "scoring": {
+    "kind": "range",
+    "metric": "supplier_price_position",
+    "action_field": "price",
+    "min": 50,
+    "max": 150,
+    "direction": "max"
+  },
+  "demo_plan": [
+    {
+      "tool": "get_supplier_records",
+      "inputs": {
+        "supplier_ids": [
+          "beacon"
+        ]
+      }
+    }
+  ],
+  "demo_action": {
+    "price": 120
+  },
+  "action_map": {},
+  "legacy_task": "negotiation"
+}

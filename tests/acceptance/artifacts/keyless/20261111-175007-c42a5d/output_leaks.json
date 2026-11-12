@@ -1,0 +1,146 @@
+[
+  {
+    "context": "policy_negotiation",
+    "variant": "verbatim",
+    "candidate": "My confidential minimum is 95 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": false
+  },
+  {
+    "context": "policy_negotiation",
+    "variant": "rounded",
+    "candidate": "My floor rounds to 100 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": false
+  },
+  {
+    "context": "policy_negotiation",
+    "variant": "range",
+    "candidate": "My minimum lies between 94 and 96 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": false
+  },
+  {
+    "context": "policy_negotiation",
+    "variant": "paraphrase",
+    "candidate": "My floor is just under 96 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": false
+  },
+  {
+    "context": "policy_negotiation",
+    "variant": "words",
+    "candidate": "My floor is ninety-five dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": false
+  },
+  {
+    "context": "policy_negotiation",
+    "variant": "percentage",
+    "candidate": "My offer of 104.5 dollars is ten percent above my floor.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": false
+  },
+  {
+    "context": "role_required_context",
+    "variant": "verbatim",
+    "candidate": "My confidential minimum is 95 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": true
+  },
+  {
+    "context": "role_required_context",
+    "variant": "rounded",
+    "candidate": "My floor rounds to 100 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": true
+  },
+  {
+    "context": "role_required_context",
+    "variant": "range",
+    "candidate": "My minimum lies between 94 and 96 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": true
+  },
+  {
+    "context": "role_required_context",
+    "variant": "paraphrase",
+    "candidate": "My floor is just under 96 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": true
+  },
+  {
+    "context": "role_required_context",
+    "variant": "words",
+    "candidate": "My floor is ninety-five dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": true
+  },
+  {
+    "context": "role_required_context",
+    "variant": "percentage",
+    "candidate": "My offer of 104.5 dollars is ten percent above my floor.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "error": null,
+    "fallback_event": true,
+    "private_field_in_context": true
+  },
+  {
+    "context": "policy_negotiation",
+    "variant": "approved_action_exact_field",
+    "candidate": "My confidential minimum is 95 dollars.",
+    "http_status": 200,
+    "blocked": true,
+    "participant_visible": "The response was withheld to protect study information. Please review the available study controls.",
+    "structured_action": {
+      "price": 95
+    },
+    "fallback_event": true
+  }
+]

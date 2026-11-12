@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#fafafa"><title>Research Agent · Workspace</title><link rel="icon" href="/research-mark.svg" type="image/svg+xml"><script src="/theme.js"></script><link rel="stylesheet" href="/style.css"><script src="/admin.js" defer></script></head>
+<body class="research-workspace">
+<svg class="setup-icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <symbol id="setup-icon-study" viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8.5h7m-7 4h7m-7 4h4"/></symbol>
+  <symbol id="setup-icon-scenario" viewBox="0 0 24 24"><path d="M12 6a7 7 0 0 0-8-1v13a7 7 0 0 1 8 1 7 7 0 0 1 8-1V5a7 7 0 0 0-8 1Zm0 0v13"/></symbol>
+  <symbol id="setup-icon-groups" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-2a4 4 0 0 1 4-4h3a4 4 0 0 1 4 4v2m1-13a3 3 0 0 1 0 6m2 1.5a4 4 0 0 1 3 3.5v2"/></symbol>
+  <symbol id="setup-icon-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/></symbol>
+  <symbol id="setup-icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="setup-icon-tag" viewBox="0 0 24 24"><path d="M3.5 4.5H12l8.5 8.5-7.5 7.5L4 11.5Z"/><circle cx="8" cy="8.5" r="1"/></symbol>
+  <symbol id="setup-icon-text" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></symbol>
+  <symbol id="setup-icon-door" viewBox="0 0 24 24"><path d="M6 20V4h11v16M3 20h18M14 12h.01"/></symbol>
+  <symbol id="setup-icon-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 1 1 8 0v3m-4 4v2"/></symbol>
+  <symbol id="setup-icon-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4 3 7 7 9 4-2 7-5 7-9V6L12 3Z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="setup-icon-activity" viewBox="0 0 24 24"><path d="M3 12h4l3-6 4 12 3-6h4"/></symbol>
+  <symbol id="setup-icon-branch" viewBox="0 0 24 24"><path d="M5 12h4c3 0 4-6 7-6h3m-2-2 2 2-2 2M9 12c3 0 4 6 7 6h3m-2-2 2 2-2 2"/></symbol>
+  <symbol id="setup-icon-shuffle" viewBox="0 0 24 24"><path d="M4 6h2c4 0 8 12 12 12h2m-2-2 2 2-2 2M4 18h2c4 0 8-12 12-12h2m-2-2 2 2-2 2"/></symbol>
+  <symbol id="setup-icon-link" viewBox="0 0 24 24"><path d="m9 15 6-6m-2 7-2 2a4 4 0 0 1-6-6l3-3m3-1 2-2a4 4 0 0 1 6 6l-3 3"/></symbol>
+  <symbol id="setup-icon-box" viewBox="0 0 24 24"><path d="M4 7.5 12 4l8 3.5v9L12 20l-8-3.5Zm0 0 8 4 8-4m-8 4V20"/></symbol>
+  <symbol id="setup-icon-chat" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="M7 10h10m-10 3h7"/></symbol>
+  <symbol id="setup-icon-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1"/></symbol>
+  <symbol id="setup-icon-cart" viewBox="0 0 24 24"><path d="M3 5h2l2 10h11l2-7H6"/><circle cx="8.5" cy="19" r="1"/><circle cx="17" cy="19" r="1"/></symbol>
+  <symbol id="setup-icon-chart" viewBox="0 0 24 24"><path d="M4 5v15h16M8 16v-4m4 4V9m4 7V6"/></symbol>
+  <symbol id="setup-icon-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12h.01"/></symbol>
+  <symbol id="setup-icon-bolt" viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 9-12h-6l1-8Z"/></symbol>
+  <symbol id="setup-icon-chip" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M10 10h4v4h-4zM9 3v3m6-3v3M9 18v3m6-3v3M3 9h3m-3 6h3m12-6h3m-3 6h3"/></symbol>
+  <symbol id="setup-icon-memory" viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 3Zm4 4h8m-8 4h5"/></symbol>
+  <symbol id="setup-icon-sliders" viewBox="0 0 24 24"><path d="M4 7h4m4 0h8M4 17h10m4 0h2"/><circle cx="10" cy="7" r="2"/><circle cx="16" cy="17" r="2"/></symbol>
+  <symbol id="setup-icon-hash" viewBox="0 0 24 24"><path d="m10 4-2 16m8-16-2 16M5 9h15M4 15h15"/></symbol>
+  <symbol id="setup-icon-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v10m3-8h-4a1.5 1.5 0 1 0 0 3h2a1.5 1.5 0 0 1 0 3H9"/></symbol>
+  <symbol id="setup-icon-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 14"/></symbol>
+  <symbol id="setup-icon-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="setup-icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="setup-icon-edit" viewBox="0 0 24 24"><path d="m15.5 5.5 3 3M4 20l4.5-1 11-11-3.5-3.5-11 11Z"/></symbol>
+  <symbol id="setup-icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+<a href="#main-content" class="skip-link">Skip to content</a>
+<div id="login" class="login hidden">
+  <div class="login-card">
+    <div class="brand-symbol"><img src="/research-mark.svg#mark" alt="" width="28" height="22"></div>
+    <p class="eyebrow">Research Agent</p><h1>Research workspace</h1>
+    <p id="login-instructions">Sign in to your workspace.</p>
+    <form id="login-form">
+      <label id="login-username-field">Username<input id="login-username" autocomplete="username" maxlength="40"></label>
+      <label><span id="login-password-label">Password</span><input id="access-key" type="password" autocomplete="current-password" required maxlength="256"></label>
+      <p id="login-error" class="notice error hidden" role="alert"></p>
+      <button class="primary" type="submit">Sign in</button>
+    </form>
+  </div>
+</div>
+<div id="workspace" class="app-shell hidden">
+<aside id="workspace-sidebar" class="sidebar" aria-label="Workspace navigation" inert><a class="brand" href="/"><span class="brand-symbol"><img src="/research-mark.svg#mark" alt="" width="28" height="22"></span><span>Research Agent<small>Study workspace</small></span></a><nav aria-label="Workspace"><p class="nav-label">Workspace</p><button data-tab="overview" class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>Overview</span></button><button data-tab="conditions" class="nav-item "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h4m4 0h8M4 17h10m4 0h2"/><circle cx="10" cy="7" r="2"/><circle cx="16" cy="17" r="2"/></svg><span>Agent setup</span></button><button data-tab="sessions" class="nav-item "><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h10"/><circle cx="19" cy="19" r="2"/></svg><span>Sessions</span></button><button data-tab="session-chat" class="nav-item" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H4l1.4-3.4A7.5 7.5 0 1 1 20 11.5Z"/><path d="M9 10h7m-7 4h5"/></svg><span>Session chat</span></button></nav><div class="sidebar-tools"><p class="nav-label">Participant access</p><button data-tab="integration" class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 13 4-4M8 15l-2 2a3.5 3.5 0 0 1-5-5l5-5a3.5 3.5 0 0 1 5 0M16 9l2-2a3.5 3.5 0 0 0-5-5l-5 5" transform="translate(2 2)"/></svg><span>Share a session</span></button></div><section id="chat-history" class="chat-history hidden" aria-labelledby="chat-history-title">
+  <h2 id="chat-history-title" class="nav-label">Chats</h2>
+  <p id="chat-history-status" class="help" role="status"></p>
+  <nav id="chat-history-list" aria-label="Saved chats"></nav>
+</section>
+<section id="setup-chat-history" class="chat-history hidden" aria-labelledby="setup-chat-history-title">
+  <h2 id="setup-chat-history-title" class="nav-label">Setup conversations</h2>
+  <p id="setup-chat-history-status" class="help" role="status"></p>
+  <nav id="setup-chat-history-list" aria-label="Saved setup conversations"></nav>
+  <details id="earlier-setup-history" class="hidden"><summary>Earlier generations</summary><nav id="earlier-setup-list" aria-label="Earlier generations"></nav></details>
+</section>
+<div class="sidebar-footer">
+  <span class="workspace-account-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"><use href="#setup-icon-person"/></svg></span>
+  <strong id="workspace-account-label">Local workspace</strong>
+  <button data-tab="settings" class="nav-item account-settings-button" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="m9 3-.6 2.4-2 .9L4 5.6 2 9l1.8 1.8v2.4L2 15l2 3.4 2.4-.7 2 .9L9 21h4l.6-2.4 2-.9 2.4.7 2-3.4-1.8-1.8v-2.4L20 9l-2-3.4-2.4.7-2-.9L13 3Z" transform="translate(1)"/><circle cx="12" cy="12" r="3"/></svg></button>
+</div></aside>
+<button id="nav-scrim" class="nav-scrim" type="button" tabindex="-1" aria-label="Close navigation" hidden></button>
+<div class="main-shell"><header class="topbar"><div class="topbar-leading"><button id="toggle-sidebar" class="quiet-button shell-toggle" type="button" aria-label="Show navigation" title="Show navigation" aria-controls="workspace-sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M9 5v14"/></svg></button><span id="breadcrumb">Overview</span></div><div class="topbar-actions"><button id="open-command" class="command-trigger" aria-label="Search actions" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg> <span>Search actions</span> <kbd>⌘ K</kbd></button><button id="toggle-save-slots" class="quiet-button hidden" type="button" aria-controls="setup-library-drawer" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M15 5v14"/></svg>Saved setups</button><details id="session-chat-actions" class="chat-actions hidden">
+  <summary class="quiet-button" aria-label="Chat options" title="Chat options">•••</summary>
+  <div><button id="rename-chat" type="button">Rename chat</button><button id="delete-chat" class="danger" type="button">Delete chat</button></div>
+</details><button id="clear-session-chat" class="quiet-button hidden" type="button" aria-label="New chat" title="New chat" disabled><span aria-hidden="true" class="new-chat-icon">+</span><span class="new-chat-label">New chat</span></button><button id="new-setup-chat" class="quiet-button hidden" type="button" aria-label="New setup chat" title="New setup chat"><span class="new-chat-icon" aria-hidden="true">+</span><span class="new-chat-label">New chat</span></button></div></header><main id="main-content" tabindex="-1">
+<div id="notice" class="notice hidden" role="status" aria-live="polite"></div>
+<section id="tab-overview" class="tab-panel">
+  <header class="page-heading workspace-masthead">
+    <div><p class="eyebrow">Workspace</p><h1>Study overview</h1><p class="subtitle">Manage your study and see how sessions are progressing.</p></div>
+    <button class="secondary" data-go="conditions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h4m4 0h8M4 17h10m4 0h2"/><circle cx="10" cy="7" r="2"/><circle cx="16" cy="17" r="2"/></svg> Agent setup</button>
+  </header>
+  <article class="overview-current">
+    <div class="overview-current-copy">
+      <div class="overview-current-label"><span class="feature-icon tone-violet"><img src="/research-mark.svg#mark" alt="" width="25" height="19"></span><span class="eyebrow">Current study</span><span id="study-state" class="pill">Draft</span></div>
+      <h2 id="study-name"></h2>
+      <p id="study-description"></p>
+      <div class="overview-current-actions">
+        <button class="primary preview-button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg> Try the agent</button>
+        <button class="secondary" data-go="integration">Share a session <span aria-hidden="true">↗</span></button>
+      </div>
+    </div>
+    <img class="study-art" src="/research-mark.svg" alt="" width="244" height="174">
+  </article>
+  <section class="demo-agents" aria-labelledby="demo-agents-title">
+    <header><h2 id="demo-agents-title">Demo agents</h2><span id="demo-provider" class="pill" role="status"></span></header>
+    <div class="demo-agent-grid">
+      <article class="card demo-agent">
+        <span class="feature-icon tone-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" aria-hidden="true"><use href="#setup-icon-box"/></svg></span>
+        <div><h3>Supplier advisor</h3><p>Compare cost, delivery, and reliability to recommend a supplier.</p></div>
+        <button class="secondary" type="button" data-demo-agent="supplier_selection" aria-label="Try Supplier advisor">Try <span aria-hidden="true">→</span></button>
+      </article>
+      <article class="card demo-agent">
+        <span class="feature-icon tone-mint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" aria-hidden="true"><use href="#setup-icon-chart"/></svg></span>
+        <div><h3>Demand forecaster</h3><p>Use historical demand to calculate a forecast for the next period.</p></div>
+        <button class="secondary" type="button" data-demo-agent="demand_forecasting" aria-label="Try Demand forecaster">Try <span aria-hidden="true">→</span></button>
+      </article>
+    </div>
+  </section>
+  <section class="overview-metrics" aria-label="Study at a glance">
+    <article class="card overview-metric"><span class="feature-icon tone-violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h4m4 0h8M4 17h10m4 0h2"/><circle cx="10" cy="7" r="2"/><circle cx="16" cy="17" r="2"/></svg></span><div><h2>Conditions</h2><strong id="metric-conditions">0</strong><p>In the current study</p></div></article>
+    <article class="card overview-metric"><span class="feature-icon tone-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8m-8 4h4"/></svg></span><div><h2>Sessions</h2><strong id="metric-sessions">0</strong><p>Recorded across the workspace</p></div></article>
+    <article class="card overview-metric"><span class="feature-icon tone-mint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg></span><div><h2>Completed</h2><strong id="metric-completed">0</strong><p>Sessions with an outcome</p></div></article>
+  </section>
+  <article class="card recent-card">
+    <div class="card-title"><div class="heading-with-icon"><span class="feature-icon tone-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-6 4 12 3-6h4"/></svg></span><div><h2>Recent sessions</h2><p>Review decisions and participant activity.</p></div></div><a class="text-button" href="#sessions">View all sessions <span aria-hidden="true">→</span></a></div>
+    <div id="recent-sessions"></div>
+  </article>
+</section>
+<section id="tab-conditions" class="tab-panel hidden">
+<div id="setup-home" class="setup-home">
+  <header class="page-heading workspace-masthead">
+    <div><p class="eyebrow">Workspace</p><h1>Agent setup</h1><p class="subtitle">Create and manage the setups you use in your studies.</p></div>
+    <div class="setup-home-actions">
+      <button id="open-setup-assistant" class="secondary" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3 1.9 5.1L17 10l-5.1 1.9L10 17l-1.9-5.1L3 10l5.1-1.9L10 3Zm8 11v6m-3-3h6"/></svg>
+        Generate with AI
+      </button>
+      <button id="start-custom-setup" class="primary" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> New setup</button>
+    </div>
+  </header>
+  <div id="setup-library-home"><section id="setup-library" class="setup-catalog" aria-labelledby="slot-library-title">
+    <header class="setup-catalog-header">
+      <div class="setup-catalog-title"><h2 id="slot-library-title">Saved setups</h2><span id="setup-count" aria-live="polite"></span></div>
+      <label class="setup-search"><span class="visually-hidden">Find a setup</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg><input id="setup-search" type="search" placeholder="Find a setup…"></label>
+    </header>
+    <ul id="setup-slots" class="setup-catalog-list" role="list" aria-label="Saved setups"></ul>
+  </section></div>
+</div>
+  <div class="setup-workbench hidden">
+    <div class="setup-stage">
+      <div class="builder-backline"><button id="back-to-setup-home" class="text-button" type="button">← All setups</button></div>
+    <header class="setup-cover">
+      <div class="setup-cover-content">
+        <div class="setup-title-line"><h1 id="slot-heading" tabindex="-1"></h1><span id="slot-study-badge" class="slot-study-badge hidden"></span></div>
+        <p id="slot-description"></p>
+      </div>
+      <div class="setup-actions">
+        <details id="slot-menu" class="setup-menu"><summary aria-label="More slot actions">⋯</summary>
+          <div><button id="copy-slot" class="text-button">Save as copy</button><button id="open-setup-json" class="text-button" type="button" aria-haspopup="dialog">Configuration JSON</button><button id="revert-slot" class="text-button hidden">Discard edits</button></div>
+        </details>
+        <span id="save-state" class="save-state hidden" role="status"></span>
+        
+        <button id="use-slot" class="secondary">Use for study</button>
+        
+        <button id="save-draft" class="secondary hidden" type="button">Save draft</button>
+      </div>
+    </header>
+    <div class="setup-flow">
+      <nav class="designer-tabs" aria-label="Setup sections">
+<button type="button" data-settings="study" aria-controls="setup-panel-study" aria-current="page">Design</button>
+<button type="button" data-settings="engine" aria-controls="setup-panel-engine">Study controls</button>
+<button type="button" data-settings="advanced" aria-controls="setup-panel-advanced">Review</button>
+</nav>
+      <div class="setup-builder">
+        <div id="setup-editor">
+<section id="setup-panel-study" data-settings-panel="study" class="settings-panel">
+<article class="card editor-card"><div class="section-intro"><h2 tabindex="-1">What are you studying?</h2><p>Give this setup a name and describe the decision you want to study.</p></div>
+  <div class="form-grid setup-question-grid"><label>Study name<input id="config-name" maxlength="200" required></label><label class="span-two">Research objective <small>What decision or behavior will you compare?</small><textarea id="config-description" rows="2"></textarea></label><details class="disclosure internal-label"><summary>Saved setup label</summary><div class="setup-field"><div class="setup-field-title"><label for="slot-label">Setup name</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Setup name" aria-describedby="help-slot-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-slot-label" role="tooltip">This is the name you see in Saved setups. It can differ from the study title.</span></span></div><input id="slot-label" maxlength="80" required></div></details></div>
+  <p id="designer-example-note" class="help hidden">Starts with sample supplier data. Open Participant task below to replace the example with your study materials.</p></article></section>
+<details id="designer-task" class="designer-task disclosure"><summary><span>Participant task</span><span id="designer-task-summary" class="help"></span></summary><section id="setup-panel-task" data-settings-panel="task" class="settings-panel hidden">
+<article class="card editor-card"><div class="section-intro"><h2 tabindex="-1">Participant task</h2><p id="task-workflow-description">Define the instructions, available information, and decision participants will make.</p></div><p id="case-study-status" class="setup-case-status help hidden"></p><label>What will participants do?<select id="config-task"><option value="supplier_selection">Supplier selection</option><option value="negotiation">Buyer–supplier negotiation</option></select></label>
+<div id="selection-settings"><label>Scenario title<input id="scenario-title"></label><label>Participant instructions<textarea id="scenario-instructions" rows="3"></textarea></label><label>Public information<textarea id="scenario-knowledge" rows="3"></textarea></label><details class="disclosure"><summary><span class="setup-disclosure-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#setup-icon-chart"/></svg>Suppliers and scoring criteria</span></summary><div class="disclosure-content"><p class="help">Add suppliers and criteria to define how choices are scored.</p><div id="criteria-fields" class="criteria-editor"></div><button id="add-scenario-criterion" class="text-button" type="button">+ Add criterion</button><div id="supplier-fields" class="supplier-editor"></div><button id="add-scenario-supplier" class="text-button" type="button">+ Add supplier</button></div></details></div>
+<div id="negotiation-settings" class="hidden"><div class="form-grid"><label class="span-two">Scenario title<input id="neg-title"></label><label>Item<input id="neg-item"></label><label>Quantity<input id="neg-quantity" type="number" min="1" step="1"></label><label>Currency<input id="neg-currency" maxlength="3"></label><label>Baseline / tool participant role<select id="neg-participant_role"><option value="buyer">Buyer</option><option value="supplier">Supplier</option></select></label><label>Public minimum unit price<input id="neg-price_min" type="number" min="0" step=".01"></label><label>Public maximum unit price<input id="neg-price_max" type="number" min="0" step=".01"></label><label>Policy opening price<input id="neg-opening_price" type="number" min="0" step=".01"></label><label>Counteroffer step<input id="neg-concession_step" type="number" min=".01" step=".01"></label></div><label>Participant instructions<textarea id="neg-instructions" rows="3"></textarea></label><label>Public information<textarea id="neg-knowledge" rows="3"></textarea></label><p class="help">A supplier agent faces a buyer participant, and vice versa. GenAI-tool and human-only conditions use the participant role above. Only unit price is negotiated; quantity is fixed. Private price limits belong to each condition.</p></div>
+<details class="disclosure scenario-example"><summary><span class="setup-disclosure-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#setup-icon-eye"/></svg>Preview the participant brief</span></summary><div class="disclosure-content"><h3 id="scenario-example-title"></h3><p id="scenario-example-text"></p></div></details>
+<details id="case-template-details" class="disclosure"><summary><span class="setup-disclosure-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#setup-icon-study"/></svg>Replace with a case template</span></summary><div class="disclosure-content"><div class="pack-picker"><div class="setup-field"><div class="setup-field-title"><label for="case-study-select">Case study</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Case study" aria-describedby="help-case-study-select"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-case-study-select" role="tooltip">A case supplies the task, data, rules, and starting conditions. Loading a case replaces the scenario, consent text, and groups in this draft.</span></span></div><select id="case-study-select"><option value="">Choose a case…</option></select></div><button id="load-case-study" class="secondary" disabled>Load template</button></div></div></details>
+</article></section></details>
+<section id="setup-panel-conditions" data-settings-panel="conditions" class="settings-panel hidden">
+<div class="section-intro"><h2 tabindex="-1">Agent & comparison groups</h2><p>Configure the agent for each group. Add a no-agent group if your study needs a baseline.</p></div>
+
+<div class="condition-layout"><article class="card glass condition-list"><div id="condition-tabs" role="group" aria-label="Participant groups"></div><div class="group-actions"><div id="condition-reorder" class="condition-reorder"><button id="move-condition-up" class="text-button" type="button" aria-label="Move selected condition up" title="Move selected condition up">↑</button><button id="move-condition-down" class="text-button" type="button" aria-label="Move selected condition down" title="Move selected condition down">↓</button></div><p id="fixed-conditions-note" class="help hidden">This case defines the participant roles for you.</p><button id="add-condition" class="text-button add-condition-button" type="button" title="Create a copy of the selected condition"><span>Duplicate</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><button id="add-human-condition" class="text-button" type="button">+ No-agent group</button></div></article><article class="card glass condition-editor"><div class="card-title"><h3 id="condition-editor-title">Group settings</h3></div>
+<p id="condition-fixed-summary" class="help hidden"></p>
+<div class="condition-basics">
+<div class="form-grid"><label>Group name<input id="cond-label"></label><div class="setup-field"><div class="setup-field-title"><label for="cond-agent_enabled">Do participants get an agent?</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Do participants get an agent?" aria-describedby="help-cond-agent_enabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-cond-agent_enabled" role="tooltip">Human-only disables the agent. The participant can still complete the task, and outcomes are recorded.</span></span></div><select id="cond-agent_enabled"><option value="true">Yes, with an agent</option><option value="false">No, they work independently</option></select></div></div><div id="condition-agent-settings"><div class="form-grid"><div class="setup-field"><div class="setup-field-title"><label for="cond-role">Agent role</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Agent role" aria-describedby="help-cond-role"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-cond-role" role="tooltip">The agent’s part in the scenario: buyer, supplier, or an AI tool. Some cases define roles themselves.</span></span></div><select id="cond-role"><option value="buyer">Buyer</option><option value="supplier">Supplier</option><option value="genai_tool">AI assistant</option></select></div><div id="agent-layer-settings" class="hidden"><div class="setup-field"><div class="setup-field-title"><label for="cond-agent-mode">What can the agent do?</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with What can the agent do?" aria-describedby="help-cond-agent-mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-cond-agent-mode" role="tooltip">Analytical gives analysis. Chatbot discusses options. Recommender asks the participant to accept or reject a suggestion. Autonomous records a simulated choice without asking first.</span></span></div><select id="cond-agent-mode"><option value="analytical">Analyze data</option><option value="chatbot">Discuss options</option><option value="recommender">Recommend a choice</option><option value="autonomous">Make the simulated decision</option></select></div><details class="disclosure"><summary>Tools, data & loop limits</summary><div class="disclosure-content"><div id="agent-tool-fields"></div><div class="form-grid"><label>Tool calls per turn<input id="agent-max_tool_calls" type="number" min="1" max="12"></label><label>Tool timeout (seconds)<input id="agent-tool_timeout_seconds" type="number" min=".05" max="10" step=".05"></label><label>Turn timeout (seconds)<input id="agent-turn_timeout_seconds" type="number" min="1" max="90"></label></div><label>Condition data access (table → fields)<textarea id="agent-data-access" class="code-editor" rows="5"></textarea></label><p class="help">Role access rules also apply. Changes are identical for every participant assigned to this saved condition. Autonomous commits only within this simulation.</p></div></details></div><label>What can the agent do?<select id="cond-authority"><option value="recommendation">Recommend a choice</option><option value="provisional_decision">Choose, with participant override</option><option value="chat">Discuss options</option></select></label><p id="condition-mode-description" class="help span-two"></p></div></div>
+<p id="condition-independent-note" class="help hidden">Participants complete the same task on their own. Their outcomes are still recorded.</p>
+</div>
+<div id="designer-agent-instructions" class="designer-agent-instructions"><h3>Agent instructions</h3><p class="help">Describe the goal, the information it may use, and how it should respond.</p><label>Goal for this agent<textarea id="cond-objective" rows="3"></textarea></label><label>Instructions and boundaries<textarea id="cond-prompt" rows="4"></textarea></label></div><details class="disclosure behavior-example"><summary>How this interaction works · illustration</summary><aside class="module-example" aria-labelledby="module-example-heading">
+  <div class="module-example-heading"><span class="module-mark" aria-hidden="true">↳</span><div><p class="eyebrow">Interactive example</p><h4 id="module-example-heading"></h4></div></div>
+  <div id="module-example-content"></div>
+</aside></details>
+<details class="disclosure condition-advanced"><summary><span class="setup-disclosure-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#setup-icon-sliders"/></svg>Response details &amp; private data</span></summary><div class="disclosure-content">
+
+<label>Condition ID<input id="cond-id"><small>Use this ID when assigning this group from your survey.</small></label>
+<h4>Prompts and responses</h4><div class="form-grid"><div class="setup-field"><div class="setup-field-title"><label for="cond-reasoning">Prompting approach</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Prompting approach" aria-describedby="help-cond-reasoning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-cond-reasoning" role="tooltip">Choose how to guide the model. Few-shot uses the example conversations below. Public rationale asks for a short explanation the participant can see.</span></span></div><select id="cond-reasoning"><option value="direct">Direct</option><option value="role">Role prompting</option><option value="few_shot">Few-shot examples</option><option value="explanation">Brief public rationale</option></select></div><div class="setup-field"><div class="setup-field-title"><label for="cond-output">Response format</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Response format" aria-describedby="help-cond-output"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-cond-output" role="tooltip">Choose whether the response should be a recommendation, an explanation, or a number. Some case or authority settings impose their own format.</span></span></div><select id="cond-output"><option value="recommendation">Recommendation</option><option value="explanation">Explanation</option><option value="number">Number</option></select></div><label class="span-two">Choice policy<select id="cond-selection"><option value="weighted">Weighted scoring</option><option value="model">Let the model choose</option></select></label><div class="setup-field"><div class="setup-field-title"><label for="cond-advice_quality">Advice quality</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Advice quality" aria-describedby="help-cond-advice_quality"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-cond-advice_quality" role="tooltip">Use Standard for ordinary advice. Flawed is an experimental condition intended to make the advice worse.</span></span></div><select id="cond-advice_quality"><option value="standard">Standard</option><option value="flawed">Flawed</option></select></div></div><details class="disclosure"><summary>Example conversations</summary><div class="disclosure-content"><p class="help">A JSON array with “user” and “assistant” strings, used in few-shot mode.</p><textarea id="cond-examples" class="code-editor" rows="6" aria-label="Few-shot examples JSON"></textarea></div></details><h4>Private data</h4><p class="provider-help">Private data stays outside the conversational model. These conditions use controlled responses.</p><div id="private-price-settings" class="form-grid hidden"><label>Private minimum price<input id="cond-price-min" type="number" min="0" step=".01" placeholder="No private minimum"></label><label>Private maximum price<input id="cond-price-max" type="number" min="0" step=".01" placeholder="No private maximum"></label><p class="help span-two">Set the supplier’s minimum or buyer’s maximum acceptable price. These negotiation-only limits stay on the server and are enforced by the offer policy. Clear them before changing this condition to supplier selection. With no private bounds, any price inside the public range is eligible.</p></div><div class="setup-field"><div class="setup-field-title"><label for="cond-private">Private information (JSON)</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Private information (JSON)" aria-describedby="help-cond-private"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-cond-private" role="tooltip">Use this for private condition values, not participant-facing instructions. For negotiation price limits, use the price fields above when available.</span></span></div><textarea id="cond-private" class="code-editor" rows="5"></textarea></div><details class="disclosure"><summary>Eligibility rules</summary><div class="disclosure-content"><p class="help">Numeric min/max bounds affect the agent’s choice. Other private information is stored for the researcher only.</p><textarea id="cond-rules" class="code-editor" rows="6" aria-label="Private eligibility bounds JSON"></textarea></div></details><button id="inspect-condition" class="secondary" type="button">View sample response</button></div></details><footer class="condition-actions"><button id="remove-condition" class="text-button danger" type="button">Remove group</button></footer></article></div></section>
+<section id="setup-panel-engine" data-settings-panel="engine" class="settings-panel hidden">
+<article class="card editor-card"><div class="section-intro"><h2 tabindex="-1">Model & study controls</h2><p>Settings shared by every group: model, memory, enrollment, consent, and data collection.</p></div>
+  <div class="setup-question-grid"><div class="setup-field"><div class="setup-field-title"><label for="config-provider">Response provider</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Response provider" aria-describedby="help-config-provider"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-provider" role="tooltip">Demo uses built-in responses and needs no key. OpenAI uses the model and budget settings below.</span></span></div><select id="config-provider"><option value="demo">Demo · no key needed</option><option value="" disabled>Choose a provider</option><option value="openai">OpenAI</option></select></div><p id="provider-help" class="provider-help"></p>
+    <div id="model-snapshot-field" class="hidden"><div class="setup-field span-two"><div class="setup-field-title"><label for="config-model">Model snapshot ID</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Model snapshot ID" aria-describedby="help-config-model"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-model" role="tooltip">Use an exact dated model ID for API studies so a model alias cannot change the model during the study.</span></span></div><input id="config-model" placeholder="gpt-4.1-mini-2025-04-14"></div></div>
+    <div class="setup-field"><div class="setup-field-title"><label for="config-memory">Conversation memory</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Conversation memory" aria-describedby="help-config-memory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-memory" role="tooltip">Choose whether the model sees earlier messages from this participant’s session. Messages never carry over to another participant.</span></span></div><select id="config-memory"><option value="session">This participant’s session</option><option value="none">No previous messages</option></select><p id="model-memory-note" class="help hidden">Ozer uses only the current round’s information.</p></div>
+  </div>
+  <details id="api-settings" class="disclosure hidden"><summary><span class="setup-disclosure-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#setup-icon-sliders"/></svg>Model controls and spending limits</span></summary><div class="disclosure-content"><div class="form-grid"><div class="setup-field"><div class="setup-field-title"><label for="config-temperature">Temperature</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Temperature" aria-describedby="help-config-temperature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-temperature" role="tooltip">Controls how much responses can vary on models that support it. Lower values tend to make responses more consistent.</span></span></div><input id="config-temperature" type="number" min="0" max="2" step=".1"></div><div class="setup-field"><div class="setup-field-title"><label for="config-reasoning_effort">Reasoning effort</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Reasoning effort" aria-describedby="help-config-reasoning_effort"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-reasoning_effort" role="tooltip">Choose how much reasoning the model should use when the selected model supports this setting.</span></span></div><select id="config-reasoning_effort"><option value="">Model default</option><option>none</option><option>minimal</option><option>low</option><option>medium</option><option>high</option><option>xhigh</option></select><p id="model-reasoning-note" class="help hidden">This model doesn’t support a reasoning effort setting.</p></div><div class="setup-field"><div class="setup-field-title"><label for="config-spend_cap_usd">App spend cap (USD)</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with App spend cap (USD)" aria-describedby="help-config-spend_cap_usd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-spend_cap_usd" role="tooltip">The app stops admitting new API sessions when it cannot reserve their allowance within this cap.</span></span></div><input id="config-spend_cap_usd" type="number" min=".01" max="100000" step=".01"></div><div class="setup-field"><div class="setup-field-title"><label for="config-session_spend_usd">Budget per session (USD)</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Budget per session (USD)" aria-describedby="help-config-session_spend_usd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-session_spend_usd" role="tooltip">The app sets this amount aside when an API session starts so it can finish within its own budget.</span></span></div><input id="config-session_spend_usd" type="number" min=".000001" step="any"></div></div><p id="budget-status" class="help"></p><details class="disclosure"><summary>Token limits & cost accounting</summary><div class="disclosure-content form-grid"><label>Maximum input allowance<input id="config-max_input_tokens" type="number" min="1000" max="32000" step="1"></label><label>Maximum output tokens<input id="config-max_output_tokens" type="number" min="100" max="4000" step="1"></label><label>Input USD / million tokens<input id="config-input_usd_per_million" type="number" min=".001" step=".01"></label><label>Output USD / million tokens<input id="config-output_usd_per_million" type="number" min=".001" step=".01"></label><p class="help span-two">The application reserves a request’s maximum configured cost before calling the API. Unknown or failed usage retains that reservation. Prices are accounting inputs; verify them when changing models. This is separate from provider billing limits.</p></div></details></div></details>
+  <details class="disclosure setup-optional"><summary><span class="setup-disclosure-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#setup-icon-tag"/></svg>Knowledge version</span></summary><div class="disclosure-content"><div class="setup-field"><div class="setup-field-title"><label for="config-knowledge">Knowledge version</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Knowledge version" aria-describedby="help-config-knowledge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-knowledge" role="tooltip">A version label for the knowledge setup. It does not switch the case dataset.</span></span></div><input id="config-knowledge"></div></div></details>
+<div id="designer-access" class="designer-access"><div class="setup-section-divider"><h3>Participant access</h3><p>These settings apply when you use this saved setup for the study.</p></div><div class="setup-assignment"><div class="setup-field"><div class="setup-field-title"><label for="config-assignment">Default group assignment</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Default group assignment" aria-describedby="help-config-assignment"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-assignment" role="tooltip">Used as the default when creating participant links. You can choose a different method for an individual link.</span></span></div><select id="config-assignment"><option value="balanced">Balanced random</option><option value="random">Equal chance</option><option value="external">Assigned externally</option></select></div></div>
+  <div class="setup-question-grid"><div class="setup-field"><div class="setup-field-title"><label for="config-status">Participant enrollment</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with Participant enrollment" aria-describedby="help-config-status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-status" role="tooltip">Draft allows previews only. Active allows new participants to start. Closed stops new sessions. This takes effect when you use this saved setup for the study.</span></span></div><select id="config-status"><option value="draft">Draft · previews only</option><option value="active">Active · open to participants</option><option value="closed">Closed · no new sessions</option></select></div><details class="disclosure"><summary><span class="setup-disclosure-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#setup-icon-shield"/></svg>Consent text</span></summary><div class="disclosure-content"><label>What should participants read before joining?<textarea id="scenario-consent_text" rows="5" required></textarea></label></div></details></div>
+  <details class="disclosure setup-optional"><summary><span class="setup-disclosure-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#setup-icon-activity"/></svg>Interaction tracking</span></summary><div class="disclosure-content"><div class="setup-telemetry-row"><label class="checkbox-label setup-telemetry"><input id="config-telemetry" type="checkbox"> Record interaction counts</label><span class="help-hint"><button class="help-trigger" type="button" aria-label="Help with interaction counts" aria-describedby="help-config-telemetry"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2m0 3h.01"/></svg></button><span class="setup-tooltip" id="help-config-telemetry" role="tooltip">Records counts and timing, such as key presses and clicks. It does not record what participants type as keystrokes. Study outcomes are recorded separately.</span></span></div><div class="usage-evidence-options"><label class="checkbox-label"><input id="config-clipboard-text" type="checkbox"> Offer optional clipboard text recording</label><p class="help">Participants can opt in at consent. Records only copies and pastes inside task content and answer fields. Review your consent text before enrolling.</p><label class="checkbox-label"><input id="config-outside-ai-question" type="checkbox"> Ask about outside AI use after the task</label><p class="help">Adds an optional Yes / No / Prefer not to say question. A paste alone never indicates AI use.</p></div></div></details>
+</div></article></section>
+<section id="setup-panel-advanced" data-settings-panel="advanced" class="settings-panel hidden">
+<article class="card editor-card"><div class="section-intro"><h2 tabindex="-1">Review the study design</h2><p>Check the choices below, validate the draft, then test the participant experience.</p></div>
+  <div id="setup-review-summary" class="setup-review-grid"></div>
+  <p id="setup-review-save-note" class="setup-review-save-note"></p>
+<div id="designer-study-checks" class="designer-study-checks"></div></article></section>
+    
+        </div>
+      </div>
+    <aside class="designer-test" aria-labelledby="designer-test-title">
+<div class="designer-test-heading"><span class="feature-icon tone-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" aria-hidden="true"><use href="#setup-icon-eye"/></svg></span><div><h2 id="designer-test-title">Check &amp; test</h2><p>See what this setup will do.</p></div></div>
+<div id="designer-summary" class="designer-summary"></div>
+<p id="designer-check-status" class="help" role="status">Check the draft to validate every setting.</p>
+<button id="designer-check" class="secondary" type="button">Check draft</button>
+<div id="designer-errors" class="notice error hidden" role="alert"></div>
+<section id="designer-public" class="hidden" aria-label="Validated participant brief"><h3>Participant view</h3><strong id="designer-public-title"></strong><p id="designer-public-instructions"></p><p id="designer-public-mode" class="help"></p><details><summary>Public information</summary><p id="designer-public-knowledge"></p></details><button id="designer-edit-task" class="text-button" type="button">Edit participant task</button></section>
+<button id="preview-slot" class="primary" type="button">Save &amp; test</button>
+<p class="help designer-test-note">Choose a group and response mode before starting. Test sessions are marked as previews.</p>
+</aside></div>
+    </div>
+  </div>
+</section>
+<section id="tab-sessions" class="tab-panel hidden"><div class="page-heading workspace-masthead"><div><p class="eyebrow">People & decisions</p><h1>Sessions</h1><p class="subtitle">Participant activity and recorded decisions.</p></div><button class="secondary" data-open-dialog="export-dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></svg> Export data</button></div><article class="card session-browser"><div class="session-view-header"><div class="segmented" role="group" aria-label="Session views">
+  <button type="button" data-session-view="history" class="active" aria-pressed="true">Session history</button>
+  <button type="button" data-session-view="links" aria-pressed="false">Unused links <span id="unused-link-count"></span></button>
+</div><button class="secondary" data-go="integration">Create a link</button></div>
+<div id="session-history-view"><div class="session-toolbar"><label class="search-label"><span class="visually-hidden">Search sessions</span><input id="session-search" type="search" placeholder="Find a participant or group…"></label><label class="session-filter"><span class="visually-hidden">Filter sessions by status</span><select id="session-filter"><option value="all">All sessions</option><option value="ended_system_limit">System limit · flagged</option><option value="completed">Completed</option><option value="active">Unfinished</option><option value="withdrawn">Stopped by participant</option><option value="revoked">Access revoked</option><option value="preview">Previews</option><option value="study">Study participants</option></select></label><button id="refresh-data" class="icon-button" aria-label="Refresh sessions" title="Refresh sessions">↻</button></div><div id="all-sessions"></div><p class="table-caption"><span id="session-result-count"></span></p></div>
+<div id="session-links-view" class="hidden"><div id="unused-links"></div></div></article></section>
+<section id="tab-session-chat" class="tab-panel hidden" aria-labelledby="session-chat-title">
+  <h1 id="session-chat-title" class="visually-hidden">Session chat</h1>
+  <div id="session-chat-thread" role="region" aria-label="Conversation" tabindex="0">
+    <div class="session-chat-stream">
+      <div id="session-chat-empty">
+        <h2>What would you like to know?</h2>
+        <p>Ask about study progress, groups, or a participant.</p>
+      </div>
+      <div id="session-chat-log" role="log" aria-label="Session chat conversation"></div>
+      <p id="session-chat-status" class="help hidden" role="status">Looking up sessions…</p>
+    </div>
+  </div>
+  <div class="session-chat-dock">
+    <div id="session-chat-starters">
+      <div id="session-chat-suggestions" aria-label="Suggested queries" role="group">
+        <button type="button" class="secondary" data-chat-query="list" data-chat-status="not_completed">Who hasn’t completed?</button>
+        <button type="button" class="secondary" data-chat-query="by_status" data-chat-status="all">Completion breakdown</button>
+        <button type="button" class="secondary" data-chat-query="by_condition" data-chat-status="all">Compare study groups</button>
+      </div>
+    </div>
+    <p id="session-chat-error" class="notice error hidden" role="alert"></p>
+    <form id="session-chat-form">
+      <label for="session-chat-question" class="visually-hidden">Ask about your study sessions</label>
+      <textarea id="session-chat-question" rows="1" maxlength="1000" placeholder="Ask about your sessions" aria-describedby="session-chat-help"></textarea>
+      <div class="session-chat-tools">
+        <label for="session-chat-scope" class="visually-hidden">Search in</label>
+        <select id="session-chat-scope"><option value="study">Study sessions</option><option value="preview">Preview sessions</option><option value="all">All sessions</option></select>
+        <details id="session-chat-quick-menu" class="hidden"><summary>Suggestions</summary></details>
+        <button id="send-session-question" class="primary" type="submit" aria-label="Send" title="Send"><span aria-hidden="true">↑</span></button>
+      </div>
+    </form>
+    <p id="session-chat-help" class="help">OpenAI interprets typed questions. Session records are queried locally.</p>
+  </div>
+</section>
+<section id="tab-setup-chat" class="tab-panel hidden" aria-labelledby="setup-chat-title">
+  <h1 id="setup-chat-title" class="visually-hidden">Setup chat</h1>
+  <div id="setup-chat-thread" role="region" aria-label="Setup conversation" tabindex="0">
+    <div class="session-chat-stream">
+      <div id="setup-chat-empty">
+        <span class="setup-chat-spark" aria-hidden="true">✦</span>
+        <h2>What are you studying?</h2>
+        <p>Describe the participant task or attach your protocol. We’ll draft a setup together.</p>
+      </div>
+      <div id="setup-chat-log" role="log" aria-label="Setup chat messages"></div>
+      <p id="setup-ai-status" role="status" class="help hidden"></p>
+    </div>
+  </div>
+  <div class="session-chat-dock">
+    <p id="setup-ai-error" role="alert" class="notice error hidden"></p>
+    <form id="setup-assistant-form">
+      <label for="setup-brief" class="visually-hidden">Message the setup assistant</label>
+      <textarea id="setup-brief" rows="1" maxlength="16000" placeholder="Describe your study or ask for a change" aria-describedby="setup-ai-help"></textarea>
+      <input id="setup-document" type="file" accept=".pdf,.docx,.txt,.md" hidden aria-label="Attach a study document">
+      <div id="setup-attachment" class="setup-attachment hidden"><span id="setup-attachment-name"></span><button id="remove-setup-document" class="text-button" type="button">Remove</button></div>
+      <div class="session-chat-tools">
+        <button id="choose-setup-document" class="secondary" type="button">Attach a file</button>
+        <button id="generate-setup" class="primary" type="submit" aria-label="Send to setup assistant" title="Send"><span aria-hidden="true">↑</span></button>
+      </div>
+    </form>
+    <p id="setup-ai-help" class="help">OpenAI receives your brief and extracted document text.</p>
+  </div>
+</section>
+<section id="tab-session-detail" class="tab-panel hidden" aria-labelledby="session-detail-title">
+<div class="session-backline"><a href="#sessions" class="text-button">← All sessions</a><span id="detail-session-code"></span></div>
+<div class="page-heading workspace-masthead session-detail-heading"><div><p class="eyebrow">Session review</p><h1 id="session-detail-title" tabindex="-1">Loading session…</h1><p id="session-detail-subtitle" class="subtitle"></p></div><div class="button-row"><button id="refresh-session-detail" class="secondary">Refresh</button><div id="manage-session" class="hidden"></div><a id="download-session" class="primary hidden">Download session ↓</a></div></div>
+<div id="session-detail-loading" class="card detail-loading" role="status">Loading the recorded session…</div>
+<div id="session-detail-error" class="notice error hidden" role="alert"></div>
+<div id="session-detail-content" class="hidden"><div id="session-metrics" class="session-metrics"></div>
+<nav class="segmented detail-tabs" aria-label="Session review sections"><button class="active" data-detail-tab="overview" aria-pressed="true">Overview</button><button data-detail-tab="conversation" aria-pressed="false">Conversation <span id="detail-message-count"></span></button><button data-detail-tab="activity" aria-pressed="false">Activity</button><button data-detail-tab="setup" aria-pressed="false">Saved setup</button><button data-detail-tab="ai-use" aria-pressed="false">AI use</button></nav>
+<div id="detail-overview" data-detail-panel="overview"></div><div id="detail-conversation" data-detail-panel="conversation" class="hidden"></div><div id="detail-ai-use" data-detail-panel="ai-use" class="hidden"></div><div id="detail-activity" data-detail-panel="activity" class="hidden"></div><div id="detail-setup" data-detail-panel="setup" class="hidden"></div></div>
+</section>
+<section id="tab-integration" class="tab-panel hidden">
+  <header class="page-heading workspace-masthead"><div><p class="eyebrow">Research workspace</p><h1>Share a session</h1><p class="subtitle">Create a single-use participant link for your study.</p></div></header>
+  <div class="launch-layout">
+    <article class="card launch-card">
+      <h2><span class="feature-icon tone-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h4m4 0h8M4 17h10m4 0h2"/><circle cx="10" cy="7" r="2"/><circle cx="16" cy="17" r="2"/></svg></span> Set up the link</h2>
+      <form id="launch-form">
+        <label>Participant code<input id="launch-participant" required maxlength="100" placeholder="e.g. P-0001"></label>
+        <label>Assignment method<select id="launch-assignment"><option value="balanced">Balanced random</option><option value="random">Random</option><option value="external">Choose an assigned condition</option></select></label>
+        <label id="launch-condition-label">Assigned condition<select id="launch-condition"></select></label>
+        <label class="checkbox-label"><input type="checkbox" id="launch-preview" checked><span>Preview session<small>Use this to test the study before enrolling participants.</small></span></label>
+        <button class="primary" type="submit">Create session link <span aria-hidden="true">→</span></button>
+      </form>
+    </article>
+    <article class="card launch-card launch-output" aria-labelledby="launch-output-title">
+      <h2 id="launch-output-title"><span class="feature-icon tone-mint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 13 4-4m-6 6-1.2 1.2a3.7 3.7 0 0 1-5.2-5.2l4.7-4.7a3.7 3.7 0 0 1 5.2 0m.9 7.7a3.7 3.7 0 0 0 5.2 0l4.7-4.7a3.7 3.7 0 0 0-5.2-5.2L16 5.4" transform="translate(0 1)"/></svg></span> Participant link</h2>
+      <div id="launch-empty" class="launch-empty"><p>Your link will appear here.</p><p class="help">Each link is valid for 15 minutes and can be used once.</p></div>
+      <div id="launch-result" class="hidden" aria-live="polite">
+        <p id="launch-assigned"></p>
+        <label>Session URL<input id="launch-url" readonly></label>
+        <div class="launch-actions"><button id="copy-link" class="secondary" type="button">Copy link</button><a id="open-link" class="primary" target="_blank" rel="noopener">Open participant view <span aria-hidden="true">↗</span></a></div>
+        <p class="help">Valid for 15 minutes. Can be used once.</p>
+      </div>
+    </article>
+  </div>
+  <details class="disclosure editor-card integration-help"><summary>Connect Qualtrics or oTree</summary><div class="disclosure-content"><p>Assign conditions in your study platform, then issue a link from a trusted server using <code>POST /api/launch</code>. Keep integration keys on the server.</p><p>To embed the agent, allow your exact survey origin with <code>FRAME_ORIGINS</code>. Setup examples are in <code>docs/INTEGRATION.md</code>.</p></div></details>
+</section>
+<section id="tab-settings" class="tab-panel hidden" aria-labelledby="settings-title">
+  <header class="page-heading workspace-masthead"><div><h1 id="settings-title">Settings</h1></div></header>
+  <div class="settings-layout">
+    <nav class="settings-navigation" aria-label="Settings sections">
+      <button type="button" data-settings-jump="preferences-settings">Preferences</button>
+      <button type="button" data-settings-jump="chat-settings">Session Chat</button>
+      <button type="button" data-settings-jump="security-settings">Account and security</button>
+      <button type="button" data-settings-jump="workspace-settings">Workspace</button>
+      <button type="button" id="researcher-settings-link" data-settings-jump="researcher-management" class="hidden">Researchers</button>
+    </nav>
+    <div class="settings-grid">
+      <section id="preferences-settings" class="card settings-card" aria-labelledby="appearance-heading">
+        <h2 id="appearance-heading">Preferences</h2>
+        <div class="settings-row">
+          <label for="account-theme">Appearance<small>Choose a display mode for your account.</small></label>
+          <select id="account-theme" data-account-preference="theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
+        </div>
+        <div class="settings-row">
+          <label for="account-start-page">Start page<small>Opens when you visit the workspace without a direct link.</small></label>
+          <select id="account-start-page" data-account-preference="start_page"><option value="overview">Overview</option><option value="conditions">Agent setup</option><option value="sessions">Sessions</option><option value="session-chat">Session Chat</option></select>
+        </div>
+        <div class="settings-row">
+          <label for="account-sidebar">Desktop sidebar</label>
+          <select id="account-sidebar" data-account-preference="sidebar"><option value="open">Expanded</option><option value="closed">Collapsed</option></select>
+        </div>
+        <p id="appearance-status" class="help" role="status"></p>
+      </section>
+      <section id="chat-settings" class="card settings-card" aria-labelledby="chat-settings-heading">
+        <h2 id="chat-settings-heading">Session Chat</h2>
+        <div class="settings-row">
+          <label for="account-chat-scope">Default search scope<small>Applies when you start a new chat.</small></label>
+          <select id="account-chat-scope" data-account-preference="chat_scope"><option value="study">Study sessions</option><option value="preview">Preview sessions</option><option value="all">All sessions</option></select>
+        </div>
+        <div class="settings-row">
+          <div><strong>Chat history</strong><small id="settings-chat-count">Loading…</small></div>
+          <div class="settings-actions"><button class="secondary" data-go="session-chat" type="button">Open chats</button><a class="secondary" href="/api/admin/chats/export" download>Download history</a></div>
+        </div>
+        <p id="chat-preference-status" class="help" role="status"></p>
+      </section>
+      <section id="security-settings" class="card settings-card" aria-labelledby="account-heading">
+        <h2 id="account-heading">Account and security</h2>
+        <p id="account-summary"></p>
+        <form id="claim-account-form" class="hidden">
+          <label>Username<input name="username" autocomplete="username" minlength="3" maxlength="40" required></label>
+          <label>Password<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="256" required></label>
+          <p class="help">Use at least 12 characters. This account keeps your existing chats and settings.</p>
+          <button class="primary" type="submit">Create owner account</button>
+        </form>
+        <div id="account-controls" class="hidden">
+          <form id="profile-form" class="settings-row">
+            <label for="account-display-name">Display name<small>Your name in the workspace.</small></label>
+            <div class="settings-actions"><input id="account-display-name" name="display_name" autocomplete="name" maxlength="80"><button class="secondary" type="submit">Save name</button></div>
+          </form>
+          <details class="disclosure"><summary>Change password</summary>
+            <form id="change-password-form" class="disclosure-content">
+              <label>Current password<input name="current_password" type="password" autocomplete="current-password" maxlength="256" required></label>
+              <label>New password<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="256" required></label>
+              <button class="secondary" type="submit">Update password</button>
+            </form>
+          </details>
+          <div class="settings-row">
+            <div><strong>Browser sign-ins</strong><small id="settings-login-count">Loading…</small></div>
+            <div class="settings-actions"><button id="sign-out-others" class="secondary" type="button" disabled>Sign out other browsers</button><button id="researcher-sign-out" class="secondary" type="button">Sign out</button></div>
+          </div>
+        </div>
+        <p id="account-status" class="help" role="status"></p>
+      </section>
+      <section id="workspace-settings" class="card settings-card" aria-labelledby="workspace-settings-heading">
+        <h2 id="workspace-settings-heading">Workspace</h2>
+        <div class="settings-row"><div><strong>Current study</strong><small id="settings-study">Loading…</small></div><button class="secondary" type="button" data-go="conditions">Agent setup</button></div>
+        <div class="settings-row"><div><strong>AI provider</strong><small id="settings-provider">Loading…</small></div></div>
+        <div class="settings-row"><div><strong>API usage</strong><small id="settings-budget">Loading…</small></div></div>
+        <p id="settings-load-status" class="help" role="status"></p>
+      </section>
+      <section id="researcher-management" class="card settings-card hidden" aria-labelledby="researchers-heading">
+        <h2 id="researchers-heading">Researchers</h2>
+        <p>Researchers you add can access and manage this workspace’s studies and session records. Each researcher has their own chats and preferences.</p>
+        <ul id="researcher-list"></ul>
+        <details class="disclosure"><summary>Add a researcher</summary>
+          <form id="add-researcher-form" class="disclosure-content">
+            <label>Username<input name="username" autocomplete="off" minlength="3" maxlength="40" required></label>
+            <label>Initial password<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="256" required></label>
+            <button class="primary" type="submit">Add researcher</button>
+          </form>
+        </details>
+        <p id="researchers-status" class="help" role="status"></p>
+      </section>
+    </div>
+  </div>
+</section>
+</main><footer class="workspace-footer"><span>Research Agent</span><span>Research workspace</span></footer></div>
+<dialog id="manage-chat-dialog" class="glass-dialog" aria-labelledby="manage-chat-title">
+  <h2 id="manage-chat-title"></h2>
+  <p id="manage-chat-description"></p>
+  <form id="manage-chat-form">
+    <label id="chat-title-field">Title<input id="chat-title-input" maxlength="100"></label>
+    <p id="manage-chat-error" class="notice error hidden" role="alert"></p>
+    <div class="button-row"><button type="button" class="secondary" data-close-dialog="manage-chat-dialog">Cancel</button><button id="manage-chat-submit" type="submit" class="primary"></button></div>
+  </form>
+</dialog>
+<dialog id="setup-library-drawer" aria-labelledby="slot-library-title">
+  <button class="icon-button drawer-close" type="button" data-close-dialog="setup-library-drawer" aria-label="Close saved setups">×</button>
+</dialog>
+</div>
+<dialog id="session-action-dialog" class="glass-dialog" aria-labelledby="session-action-title">
+  <h2 id="session-action-title"></h2><p id="session-action-description"></p>
+  <p id="session-action-error" class="notice error hidden" role="alert"></p>
+  <form id="session-action-form" class="button-row"><button type="button" class="secondary" data-close-dialog="session-action-dialog" autofocus>Cancel</button><button id="confirm-session-action" class="secondary danger" type="submit"></button></form>
+</dialog>
+<dialog id="edit-session-dialog" class="glass-dialog" aria-labelledby="edit-session-title">
+  <h2 id="edit-session-title">Edit session details</h2>
+  <p>Labels and notes help your team review this session. Each change is saved to the edit history.</p>
+  <form id="edit-session-form">
+    <label>Display label<input id="session-edit-label" maxlength="100" placeholder="Use the original participant code"></label>
+    <label>Researcher note<textarea id="session-edit-note" rows="4" maxlength="2000"></textarea></label>
+    <p id="edit-session-error" class="notice error hidden" role="alert"></p>
+    <div class="button-row"><button type="button" class="secondary" data-close-dialog="edit-session-dialog">Cancel</button><button type="submit" class="primary">Save details</button></div>
+  </form>
+</dialog>
+<dialog id="delete-setup-dialog" class="glass-dialog delete-setup-dialog" aria-labelledby="delete-setup-title" aria-describedby="delete-setup-description">
+  <h2 id="delete-setup-title">Delete saved setup?</h2>
+  <p id="delete-setup-description"></p>
+  <p id="delete-setup-error" class="notice error hidden" role="alert"></p>
+  <form id="delete-setup-form" class="button-row">
+    <button class="secondary" type="button" data-close-dialog="delete-setup-dialog" autofocus>Cancel</button>
+    <button class="primary delete-setup-confirm" type="submit">Delete setup</button>
+  </form>
+</dialog>
+
+<dialog id="setup-json-dialog" class="glass-dialog setup-json-dialog" aria-labelledby="setup-json-title">
+  <div class="dialog-heading"><span class="feature-icon tone-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><use href="#setup-icon-code"/></svg></span><button class="icon-button" type="button" data-close-dialog="setup-json-dialog" aria-label="Close configuration JSON">×</button></div>
+  <h2 id="setup-json-title">Configuration JSON</h2>
+  <p class="help">Apply JSON to check it and update the form. Use Save changes to keep it in this slot.</p><textarea id="raw-config" class="code-editor" rows="22" aria-label="Full study configuration JSON"></textarea><div class="button-row setup-json-actions"><button id="refresh-json" class="text-button">Reload from form</button><button id="apply-json" class="secondary">Apply JSON</button></div>
+  <p id="setup-json-error" class="notice error hidden" role="alert"></p>
+</dialog>
+
+<dialog id="leave-draft-dialog" class="glass-dialog" aria-labelledby="leave-draft-title" aria-describedby="leave-draft-description">
+  <h2 id="leave-draft-title">Save your draft?</h2>
+  <p id="leave-draft-description"></p>
+  <p id="leave-draft-error" class="notice error hidden" role="alert"></p>
+  <form method="dialog" class="button-row">
+    <button class="secondary" value="keep" autofocus>Keep editing</button>
+    <button id="leave-draft-discard" class="secondary danger" value="discard">Delete draft</button>
+    <button id="leave-draft-save" class="primary" value="save">Save draft</button>
+  </form>
+</dialog>
+<dialog id="new-slot-dialog" class="glass-dialog" aria-labelledby="new-slot-title">
+  <div class="dialog-heading"><span class="eyebrow">Save slots</span><button class="icon-button" data-close-dialog="new-slot-dialog" aria-label="Close save dialog">×</button></div>
+  <h2 id="new-slot-title">New save slot</h2>
+  <form id="new-slot-form">
+    <label>Save name<input id="new-slot-name" maxlength="80" required placeholder="e.g. Ozer pilot · GPT-4.1 mini"></label>
+    <label id="new-slot-source-field">Start from<select id="new-slot-source"></select></label>
+    <p id="new-slot-copy-note" class="help hidden">This saves the settings currently in the editor as a separate slot.</p>
+    <p id="new-slot-error" class="notice error hidden" role="alert"></p>
+    <div class="button-row"><button type="submit" class="primary">Create slot</button><button type="button" class="secondary" data-close-dialog="new-slot-dialog">Cancel</button></div>
+  </form>
+</dialog>
+<dialog id="use-slot-dialog" class="glass-dialog" aria-labelledby="use-slot-title">
+  <div class="dialog-heading"><span class="eyebrow">Study setup</span><button class="icon-button" data-close-dialog="use-slot-dialog" aria-label="Close study setup dialog">×</button></div>
+  <h2 id="use-slot-title">Use this slot for the study?</h2><p id="use-slot-description"></p>
+  <p class="help">Existing participant links and sessions keep their original settings. If you choose a slot with enrollment closed or in draft, participant starts pause.</p>
+  <p id="use-slot-error" class="notice error hidden" role="alert"></p>
+  <form id="use-slot-form"><div class="button-row"><button type="submit" class="primary">Use this slot</button><button type="button" class="secondary" data-close-dialog="use-slot-dialog">Cancel</button></div></form>
+</dialog>
+<dialog id="preview-dialog" class="glass-dialog" aria-labelledby="preview-title"><div class="dialog-heading"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg></span><button class="icon-button" data-close-dialog="preview-dialog" aria-label="Close preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div><p class="eyebrow">Participant preview</p><h2 id="preview-title">Preview session</h2><p id="preview-setup-description">Open a new session with the saved configuration.</p><form id="preview-form"><fieldset class="condition-picker"><legend>Choose a condition</legend><div id="preview-conditions"></div></fieldset><label id="preview-live-setting" class="checkbox-label hidden"><input id="preview-live" type="checkbox"> Use live OpenAI for this preview</label><div class="preview-provider"><span class="connection-dot"></span><span id="preview-provider" role="status"></span></div><p id="preview-error" class="notice error hidden" role="alert"></p><button id="start-preview" class="primary" type="submit">Open preview <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button><p class="help">Preview sessions are labeled separately in your study data.</p></form></dialog>
+<dialog id="export-dialog" class="glass-dialog export-dialog" aria-labelledby="export-title"><div class="dialog-heading"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></svg></span><button class="icon-button" data-close-dialog="export-dialog" aria-label="Close exports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div><h2 id="export-title">Export study data</h2><p>Choose a dataset and format.</p><div id="exports" class="export-grid"></div><details class="disclosure"><summary>About these exports</summary><div class="disclosure-content"><p class="help">CSV opens in Excel, R or Python. JSON preserves the original text. Previews are labeled in every dataset. Configuration exports contain private researcher information.</p></div></details></dialog>
+<dialog id="command-dialog" class="glass-dialog command-dialog" aria-labelledby="command-title"><div class="command-search"><span aria-hidden="true">⌕</span><label class="visually-hidden" id="command-title" for="command-search">Find a page or action</label><input id="command-search" type="search" placeholder="Where would you like to go?" autocomplete="off"><button class="icon-button" data-close-dialog="command-dialog" aria-label="Close navigation">×</button></div><div id="command-results" class="command-results"></div><div class="command-footer">↑ ↓ to move <span>Enter to open · Esc to close</span></div></dialog><dialog id="condition-inspector" class="glass-dialog condition-inspector" aria-labelledby="inspector-title"><div class="dialog-heading"><span class="eyebrow">Form preview · no API charge</span><button class="icon-button" data-close-dialog="condition-inspector" aria-label="Close condition preview">×</button></div><h2 id="inspector-title">Condition preview</h2><div id="inspector-content"></div><p class="help">This example uses the deterministic test adapter, not a live model. Save a configuration version before launching an interactive participant preview.</p></dialog></body></html>

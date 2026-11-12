@@ -1,0 +1,32 @@
+[
+  {
+    "id": "atlas",
+    "name": "Atlas Components",
+    "cost": 92,
+    "reliability": 91,
+    "lead_time": 14,
+    "disruption_probability": 0.12,
+    "reservation_price": 88,
+    "buyer_budget": 110
+  },
+  {
+    "id": "beacon",
+    "name": "Beacon Supply",
+    "cost": 104,
+    "reliability": 98,
+    "lead_time": 9,
+    "disruption_probability": 0.04,
+    "reservation_price": 95,
+    "buyer_budget": 120
+  },
+  {
+    "id": "cedar",
+    "name": "Cedar Industrial",
+    "cost": 86,
+    "reliability": 85,
+    "lead_time": 21,
+    "disruption_probability": 0.25,
+    "reservation_price": 80,
+    "buyer_budget": 100
+  }
+]

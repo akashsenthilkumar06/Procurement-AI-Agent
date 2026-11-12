@@ -1,0 +1,87 @@
+{
+  "id": "demand_forecasting",
+  "version": "v1",
+  "title": "Forecast component demand",
+  "scenario": {
+    "instructions": "Analyze the history and record a next-month demand forecast in units.",
+    "knowledge": "SKU component_a has 12 synthetic monthly observations. Record next-month demand in units. The scoring reference is a 3-period moving-average forecast; this is not accuracy against future actual demand."
+  },
+  "dataset": {
+    "id": "synthetic_supply",
+    "version": "v1"
+  },
+  "allowed_tools": [
+    "get_demand_history",
+    "run_forecast"
+  ],
+  "default_role": "genai_tool",
+  "private_information": {},
+  "data_access": {
+    "demand": [
+      "period",
+      "sku",
+      "units"
+    ]
+  },
+  "participant_access": {
+    "demand": [
+      "period",
+      "sku",
+      "units"
+    ]
+  },
+  "decision": {
+    "label": "Units",
+    "moment": "explicit_accept_or_reject_for_recommender; server_commit_for_autonomous; independent_submission_otherwise",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "units": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100000
+        }
+      },
+      "required": [
+        "units"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "scoring": {
+    "kind": "target",
+    "metric": "error_against_reference_forecast_not_future_actuals",
+    "tool": "run_forecast",
+    "inputs": {
+      "sku": "component_a",
+      "periods": 3,
+      "window": 3,
+      "method": "moving_average"
+    },
+    "target": "forecast.0.units",
+    "action_field": "units"
+  },
+  "demo_plan": [
+    {
+      "tool": "get_demand_history",
+      "inputs": {
+        "sku": "component_a",
+        "limit": 12
+      }
+    },
+    {
+      "tool": "run_forecast",
+      "inputs": {
+        "sku": "component_a",
+        "periods": 3,
+        "window": 3,
+        "method": "moving_average"
+      }
+    }
+  ],
+  "demo_action": null,
+  "action_map": {
+    "units": "forecast.0.units"
+  },
+  "legacy_task": "supplier_selection"
+}

@@ -1,0 +1,9 @@
+[project]
+name = "research-agent"
+version = "0.3.0"
+description = "Configurable human–agent experiment pilot"
+requires-python = ">=3.11"
+dependencies = ["pypdf>=5,<7"]
+
+[project.scripts]
+research-agent = "research_agent.server:main"

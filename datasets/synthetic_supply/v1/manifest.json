@@ -1,0 +1,143 @@
+{
+  "id": "synthetic_supply",
+  "version": "v1",
+  "synthetic": true,
+  "tables": {
+    "suppliers": {
+      "file": "suppliers.json",
+      "fields": {
+        "id": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "name": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "cost": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "reliability": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "lead_time": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "disruption_probability": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "reservation_price": [
+          "supplier"
+        ],
+        "buyer_budget": [
+          "buyer"
+        ]
+      }
+    },
+    "demand": {
+      "file": "demand.csv",
+      "types": {
+        "units": "number"
+      },
+      "fields": {
+        "period": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "sku": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "units": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ]
+      }
+    },
+    "inventory": {
+      "file": "inventory.json",
+      "fields": {
+        "on_hand": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "lead_days": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "unit_cost": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "holding_cost": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "shortage_penalty": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "expedite_fee": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ],
+        "alternate_fee": [
+          "public",
+          "participant",
+          "buyer",
+          "supplier",
+          "genai_tool"
+        ]
+      }
+    }
+  }
+}
