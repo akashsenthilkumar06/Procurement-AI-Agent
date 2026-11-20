@@ -1,5 +1,8 @@
 data
 .env
+.env.*
+.venv
+.vscode
 .git
 __pycache__
 **/__pycache__

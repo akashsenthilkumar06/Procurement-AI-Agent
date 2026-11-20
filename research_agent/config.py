@@ -250,7 +250,22 @@ def live_supplier_preview(config, condition_id):
     return validate(config)
 
 
-def public_config(config, condition):
+def public_negotiation(config, condition):
+    negotiation = config["negotiation"]
+    participant_role = negotiation["participant_role"]
+    if condition.get("agent_enabled", True) and condition["role"] in ("buyer", "supplier"):
+        participant_role = "buyer" if condition["role"] == "supplier" else "supplier"
+    terms = {key: negotiation[key] for key in ("title", "item", "quantity", "currency", "price_min", "price_max", "knowledge")}
+    terms["participant_role"] = participant_role
+    if (config.get("case_study") or {}).get("id") == "negotiation":
+        from .packs import resolve
+        pack, _ = resolve(config["case_study"])
+        if pack.get("offer_policy"):
+            terms.update(price_min=pack["offer_policy"]["public_min"], price_max=pack["offer_policy"]["public_max"])
+    return terms
+
+
+def public_config(config, condition, *, preview=False):
     # Explicit allowlists. Negotiation policy limits and raw private fields never cross this boundary.
     config = normalize(config)
     negotiation = config["negotiation"]
@@ -258,12 +273,13 @@ def public_config(config, condition):
         "title": negotiation["title"], "instructions": negotiation["instructions"],
         "knowledge": negotiation["knowledge"], "consent_text": config["scenario"]["consent_text"],
         "criteria": [], "options": []}
-    participant_role = (negotiation["participant_role"] if not condition.get("agent_enabled",True) or condition["role"] == "genai_tool" else "buyer" if condition["role"] == "supplier" else "supplier" if condition["role"] == "buyer" else negotiation["participant_role"])
     result = {"scenario": scenario, "task": config["task"], "authority": condition["authority"],
             "agent_enabled": condition.get("agent_enabled", True), "agent_role": condition["role"],
             "output": condition["output"], "telemetry_enabled": config["telemetry"]["enabled"],
             "provider_mode": config["architecture"]["provider"],
-            "negotiation": {**{k: negotiation[k] for k in ("item", "quantity", "currency", "price_min", "price_max")}, "participant_role": participant_role}}
+            "negotiation": public_negotiation(config, condition)}
+    if preview:
+        result["test_group"] = condition["label"]
     if config['case_study']:
         from .packs import public_pack
         result['case_study']=public_pack(config,condition)

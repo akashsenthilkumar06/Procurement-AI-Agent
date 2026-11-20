@@ -1,4 +1,6 @@
 {
-    "python.terminal.useEnvFile": true,
-    "python.defaultInterpreterPath": "${workspaceFolder}/.venv"
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
+    "python-envs.terminal.autoActivationType": "command",
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.useEnvFile": true
 }

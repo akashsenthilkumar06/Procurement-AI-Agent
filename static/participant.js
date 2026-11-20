@@ -5,9 +5,12 @@ let token, session, launchToken, selected = null, latest = null, busy = false, f
 let pendingEvents = [], flushing = null, exposed = new Set();
 let clipboardActionsQueued = 0;
 let relayRequest = null, relayPolling = false, toastTimer;
-const builderPreview = new URLSearchParams(location.search).get("builder-preview") === "1";
+const sessionParams = new URLSearchParams(location.search);
+const builderPreview = sessionParams.get("builder-preview") === "1";
 const compactScreen = matchMedia("(max-width:780px)");
-let finalPrice = null;
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+let replyReveal = null;
+let finalPrice = null, participantOffer = null;
 const actionLabel=action=>Object.entries(action||{}).map(([key,value])=>key.replaceAll('_',' ').replace(/^./,c=>c.toUpperCase())+': '+(typeof value==='number'?value.toLocaleString():value)).join(' · ');
 const pageId = crypto.randomUUID();
 let counts = emptyCounts(), lastKey = null, hoverStart = null;
@@ -51,18 +54,63 @@ function trackStart() {
   tracking = true;
   event("page_open"); event("visibility", {state:document.visibilityState}); event("focus", {state:document.hasFocus() ? "focused" : "blurred"});
 }
-function renderMessage(message) {
+function renderMessage(message, {animate = false} = {}) {
   $("chat-empty")?.remove();
   const messages = $("messages"), nearBottom = messages.scrollHeight - messages.scrollTop - messages.clientHeight < 80;
   const bubble = document.createElement("div"); bubble.className = "message " + message.role;
-  const label = document.createElement("span"); label.className = "message-label"; label.textContent = message.role === "assistant" ? "STUDY ASSISTANT" : "YOU";
-  bubble.append(label, document.createTextNode(message.content));
-  if(message.safe_fallback){const note=document.createElement("small");note.textContent="Response withheld to protect study information.";bubble.append(note);}
+  const label = document.createElement("span"); label.className = "message-label"; label.textContent = message.role === "assistant" ? $("chat-title").textContent.toUpperCase() : "YOU";
+  const content = document.createElement("span"); content.className = "message-content"; content.textContent = message.content;
+  bubble.append(label, content);
+  if (animate && !reducedMotion.matches) {
+    bubble.classList.add("message-entering");
+    bubble.addEventListener("animationend", () => bubble.classList.remove("message-entering"), {once:true});
+  }
   if (message.id) bubble.dataset.message = message.id;
   messages.append(bubble);
   if (message.role === "user" || nearBottom) messages.scrollTop = messages.scrollHeight;
   else $("jump-latest").classList.remove("hidden");
   return bubble;
+}
+function thinkingIndicator() {
+  const waiting = document.createElement("div");
+  waiting.className = "typing";
+  waiting.setAttribute("role", "status");
+  const dots = document.createElement("span"); dots.className = "thinking-dots"; dots.setAttribute("aria-hidden", "true");
+  for (let index = 0; index < 3; index++) dots.append(document.createElement("i"));
+  const label = document.createElement("span"); label.textContent = "Thinking…";
+  waiting.append(dots, label);
+  return waiting;
+}
+function revealReply(bubble, text) {
+  if (reducedMotion.matches || document.hidden || !text) return Promise.resolve();
+  const content = bubble.querySelector(".message-content"), messages = $("messages");
+  const ends = [...text.matchAll(/\S+\s*/g)].map(match => match.index + match[0].length);
+  if (!ends.length) return Promise.resolve();
+  content.textContent = "";
+  const duration = Math.min(1200, Math.max(240, text.length * 5));
+  let start, frame, count = 0;
+  let follow = messages.scrollHeight - messages.scrollTop - messages.clientHeight < 80;
+  return new Promise(resolve => {
+    const finish = () => {
+      cancelAnimationFrame(frame); content.textContent = text;
+      if (replyReveal?.cancel === finish) replyReveal = null;
+      resolve();
+    };
+    replyReveal = {cancel:finish};
+    const tick = timestamp => {
+      if (document.hidden || reducedMotion.matches || !bubble.isConnected || session.status !== "active") { finish(); return; }
+      start ??= timestamp;
+      const next = Math.min(ends.length, Math.max(1, Math.ceil((timestamp - start) / duration * ends.length)));
+      if (next !== count) {
+        follow = follow && messages.scrollHeight - messages.scrollTop - messages.clientHeight < 80;
+        content.textContent = text.slice(0, ends[next - 1]); count = next;
+        if (follow) messages.scrollTop = messages.scrollHeight;
+      }
+      if (count === ends.length) finish();
+      else frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+  });
 }
 function expose() {
   if (!latest || exposed.has(latest.id) || document.visibilityState !== "visible" || document.querySelector("dialog[open]")) return;
@@ -110,7 +158,6 @@ function updateNegotiation(){
   const raw=$('final-price').value;
   finalPrice=raw.trim()&&Number.isFinite(Number(raw)) ? Number(raw) : null;
   const valid=finalPrice!=null&&finalPrice>=n.price_min&&finalPrice<=n.price_max&&Math.abs(finalPrice*100-Math.round(finalPrice*100))<1e-6;
-  $('send-offer').disabled=busy||finishing||!session.public.agent_enabled;
   $('submit-decision').disabled=!valid||busy||finishing;$('reject-decision').disabled=busy||finishing;
   $('reject-decision').classList.remove('hidden');$('reject-decision').textContent='Finish without agreement';
   $('recommendation').classList.toggle('hidden',proposed==null);
@@ -124,26 +171,55 @@ function updateNegotiation(){
   $('submit-decision').textContent=!valid ? 'Enter a price to continue' : accepts ? (session.public.agent_role==='genai_tool' ? 'Accept advice & record price →' : 'Accept & record agreement →') : 'Record your own price →';
   const guidance=!session.public.agent_enabled ? 'Record your preferred price. No negotiated agreement is inferred in this baseline.' : session.public.agent_role==='genai_tool' ? 'The tool gives advice; recording a price does not confirm a counterparty’s agreement.' : proposed==null ? 'Record your own price, or exchange offers before deciding.' : accepts ? 'This records a simulated agreement at the current agent offer.' : 'A different recorded price is an override, not an agreement by the other party.';
   $('negotiation-guidance').textContent=guidance;
+  $("negotiation-order-total").classList.toggle("hidden", !valid);
+  $("negotiation-order-total").textContent = valid ? `Order total · ${negotiationMoney(finalPrice * n.quantity)} for ${n.quantity} units` : "";
   document.querySelector('.decision-area').classList.toggle('has-selection',valid);saveDraft();
 }
 function renderNegotiation(){
   const n=session.public.negotiation;
+  document.body.classList.add("negotiation-mode");
   $('negotiation-card').classList.remove('hidden');$('options').classList.add('hidden');
-  $('comparison-title').textContent='Negotiation terms';$('supplier-count').textContent=n.currency+' / unit';
-  $('decision-title').textContent='Your outcome';$('task-mode-label').textContent='Buyer–supplier negotiation · round '+session.round_id;
-  $('negotiation-role').textContent='You are the '+n.participant_role;
+  $("case-data").classList.add("hidden");
+  $('comparison-title').textContent='Order details';$('supplier-count').textContent=n.currency+' / unit';
+  $('decision-title').textContent='Your outcome';$('task-mode-label').textContent='Price negotiation';
+  $('negotiation-role').textContent='Your role · '+n.participant_role;
   $('negotiation-item').textContent=n.item;
-  $('negotiation-facts').innerHTML=`<div><span>Quantity</span><strong>${esc(n.quantity)} units</strong></div><div><span>Public price range</span><strong>${esc(n.currency)} ${esc(n.price_min)}–${esc(n.price_max)}</strong></div>`;
-  for(const id of ['offer-price','final-price']){$(id).min=n.price_min;$(id).max=n.price_max;$(id).placeholder=n.currency+' per unit';}
-  $('offer-form').classList.toggle('hidden',!session.public.agent_enabled);
-  document.querySelector('.comparison-scroll').after($('offer-form'));
+  const counterpart = ["buyer", "supplier"].includes(session.public.agent_role) ?
+    "AI " + session.public.agent_role : "Study assistant";
+  $("chat-title").textContent = counterpart;
+  $("negotiation-task").textContent = session.public.agent_enabled ?
+    `Negotiate the unit price with the ${counterpart} for this fixed order.` :
+    `Review this order and record your preferred unit price for all ${n.quantity} units.`;
+  const paragraphs = (n.knowledge || "").split(/\n\s*\n/);
+  $("negotiation-company-overview").textContent = paragraphs[0] || "";
+  $("negotiation-company-overview").classList.toggle("hidden", !paragraphs[0]);
+  $("negotiation-context-text").textContent = paragraphs.slice(1).join("\n\n");
+  $("negotiation-business-context").classList.toggle("hidden", !n.knowledge);
+  $('negotiation-facts').innerHTML=`<div><span>Quantity</span><strong>${esc(n.quantity)} units</strong></div><div><span>Allowed unit price</span><strong>${esc(negotiationMoney(n.price_min))}–${esc(negotiationMoney(n.price_max))}</strong></div>`;
+  $("final-price").min = n.price_min;
+  $("final-price").max = n.price_max;
+  $("final-price").placeholder = n.currency + " per unit";
+  participantOffer = session.messages.filter(message => message.role === "user" && message.offer_price != null).at(-1)?.offer_price ?? null;
+  updateParticipantOffer();
   document.querySelector('[data-study-pane="comparison"]>span').textContent='Terms';
   document.querySelector('.criteria-note summary').textContent='Public task notes';
-  $('final-price-field').classList.remove('hidden');$('negotiation-guidance').classList.remove('hidden');
-  $('message-input').placeholder='Discuss price, terms, or a counteroffer…';
+  if (!session.public.case_study) {
+    $('final-price-field').classList.remove('hidden');$('negotiation-guidance').classList.remove('hidden');
+  }
+  $('message-input').placeholder='Message the supplier…';
+  $("message-input").setAttribute("aria-label", "Your message to the " + counterpart);
   document.querySelector('#chat-empty h3').textContent=session.public.agent_role==='genai_tool' ? 'Explore your negotiating options.' : 'Start the negotiation.';
-  document.querySelector('#chat-empty p').textContent='Send a price offer or ask about the terms.';
+  document.querySelector('#chat-empty p').textContent='Discuss your business needs, challenge the price, or make an offer in the chat.';
   $('initial-recommendation').textContent='Request an opening offer →';
+}
+function negotiationMoney(value) {
+  return new Intl.NumberFormat("en-US", {style: "currency", currency: session.public.negotiation.currency}).format(value);
+}
+function updateParticipantOffer() {
+  if (session?.public.task !== "negotiation") return;
+  $("negotiation-last-offer").classList.toggle("hidden", participantOffer == null);
+  $("negotiation-last-offer").textContent = participantOffer == null ? "" :
+    `Your latest offer · ${negotiationMoney(participantOffer)} per unit`;
 }
 function showRelayWaiting() {
   busy = true;
@@ -155,9 +231,15 @@ function showRelayWaiting() {
   $("messages").scrollTop = $("messages").scrollHeight;
   updateDecision();
 }
-function receiveResponse(response) {
+async function receiveResponse(response) {
   $("relay-waiting")?.remove(); relayRequest = null;
-  renderMessage(response); latest = response;
+  const bubble = renderMessage(response, {animate:true});
+  if (!response.committed_decision) {
+    $("conversation-status").textContent = "Replying…";
+    await revealReply(bubble, response.content);
+    if (session.status !== "active") return;
+  }
+  latest = response;
   if(response.committed_decision){collectCounts();flush().catch(showError);session.messages.push(response);complete(response.committed_decision);return;}
   if (session.public.authority === "provisional_decision") {if(session.public.task==='negotiation'&&latest.offer_price!=null)$("final-price").value=latest.offer_price;else if(latest.option_id){selected=latest.option_id;selectRadio();}}
   busy = false; $("send-message").disabled = false;
@@ -171,7 +253,7 @@ async function pollRelay() {
   try {
     const result = await api("request?request_id=" + encodeURIComponent(relayRequest));
     if (!tracking) return;
-    if (result.status === "completed") receiveResponse(result.message);
+    if (result.status === "completed") await receiveResponse(result.message);
     else if (result.status === "failed") {
       relayRequest = null; busy = false; $("relay-waiting")?.remove(); $("send-message").disabled = false; updateDecision();
       $("conversation-status").textContent="Ready";
@@ -180,8 +262,32 @@ async function pollRelay() {
   } catch (error) { showError(error); }
   finally { relayPolling = false; }
 }
+function renderSessionChrome(preview, publicView) {
+  const isTest = preview && !builderPreview;
+  document.body.classList.toggle("is-test-session", isTest);
+  $("participant-badge").textContent = builderPreview ? "Read-only" : isTest ? "Test session" : "Participant session";
+  const group = $("participant-test-group");
+  group.textContent = isTest ? (publicView?.test_group || "") : "";
+  group.classList.toggle("hidden", !group.textContent);
+  const back = $("return-workspace");
+  back.classList.toggle("hidden", !isTest);
+  if (!isTest) {
+    window.clearTestTheme();
+    return;
+  }
+  const from = sessionParams.get("from");
+  back.href = "/";
+  if (!from) return;
+  try {
+    const target = new URL(from.startsWith("/") ? from : "/#" + from, location.origin);
+    if (target.origin === location.origin && target.pathname === "/") {
+      back.href = target.pathname + target.search + target.hash;
+    }
+  } catch { /* The workspace home remains available if the return URL is invalid. */ }
+}
 function renderSession() {
   $("loading").classList.add("hidden"); $("consent").classList.add("hidden");
+  renderSessionChrome(session.preview, session.public);
   if (session.ozer && (session.status === "active" ||
       (session.status === "completed" && session.ozer.stage === "feedback"))) {
     renderOzer();
@@ -193,8 +299,6 @@ function renderSession() {
   $("scenario-title").textContent = scenario.title; $("scenario-instructions").textContent = scenario.instructions;
   $("public-knowledge").textContent = scenario.knowledge;
   $("session-label").textContent = "Session " + session.session_id.slice(0, 8)+" · Round "+session.round_id;
-  $("participant-badge").textContent = session.preview ? "Preview session" : "Participant session";
-  $("return-workspace").classList.toggle("hidden",!session.preview);
   $("demo-warning").classList.toggle("hidden", session.public.provider_mode !== "demo" || !session.public.agent_enabled);
   $("relay-warning").classList.toggle("hidden", session.public.provider_mode !== "relay" || !session.public.agent_enabled);
   if(session.public.case_study){renderCaseSession();return;}
@@ -213,23 +317,30 @@ function renderSession() {
   if (session.pending_request) { relayRequest = session.pending_request.request_id; showRelayWaiting(); pollRelay(); }
 }
 function selectRadio() { document.querySelectorAll('input[name="option"]').forEach(input => { input.checked = input.value === selected; }); }
-async function send(text, offeredPrice = null) {
+async function send(text) {
   if (!session.public.agent_enabled) return;
   if (busy || finishing || !text.trim()) return;
   busy = true; $("send-message").disabled = true; $("initial-recommendation")?.setAttribute("disabled", ""); updateDecision();
-  $("conversation-status").textContent="Preparing response";
+  $("conversation-status").textContent="Thinking…";
   $("participant-notice").classList.add("hidden");
-  renderMessage({role:"user",content:text}); $("message-input").value = ""; $("draft-status").textContent="⌘ / Ctrl + Enter to send"; resizeComposer(); saveDraft();
-  const waiting = document.createElement("div"); waiting.className = "typing"; waiting.textContent = "Preparing a response…"; $("messages").append(waiting);
+  renderMessage({role:"user",content:text}, {animate:true}); $("message-input").value = ""; $("draft-status").textContent="Enter to send · Shift+Enter for a new line"; resizeComposer(); saveDraft();
+  const waiting = thinkingIndicator(); $("messages").append(waiting);
+  $("messages").scrollTop = $("messages").scrollHeight;
   try {
-    const response = await api("message", {content:text,offer_price:offeredPrice,round_id:session.round_id,request_id:crypto.randomUUID()});
+    expose(); await flush();
+    const response = await api("message", {content:text,round_id:session.round_id,request_id:crypto.randomUUID(),
+      message_id:latest?.id || null,client_ms:performance.now(),page_id:pageId});
     waiting.remove();
     if (session.status === "revoked") return;
+    if (Number.isFinite(response.participant_offer_price)) {
+      participantOffer = response.participant_offer_price;
+      updateParticipantOffer();
+    }
     if (response.status === "pending") { relayRequest = response.request_id; showRelayWaiting(); }
-    else if (response.status === "ended_system_limit" || response.status === "revoked") complete(response);
-    else if (session.status === "active") receiveResponse(response);
+    else if (["completed", "ended_system_limit", "revoked"].includes(response.status)) complete(response);
+    else if (session.status === "active") await receiveResponse(response);
   } catch (error) { if (!$("message-input").value) $("message-input").value = text; resizeComposer(); saveDraft(); showError(error); }
-  finally { waiting.remove(); if (!relayRequest) { busy = false; $("send-message").disabled = false; if($("conversation-status").textContent==="Preparing response")$("conversation-status").textContent="Ready"; } updateDecision(); }
+  finally { waiting.remove(); if (!relayRequest) { busy = false; $("send-message").disabled = false; if(["Thinking…", "Replying…"].includes($("conversation-status").textContent))$("conversation-status").textContent="Ready"; } updateDecision(); }
 }
 async function decide(reject = false) {
   if(session.public.case_study){await decideCase(reject);return;}
@@ -247,6 +358,7 @@ async function decide(reject = false) {
   finally { finishing = false; $("send-message").disabled = false; updateDecision(); }
 }
 function complete(result) {
+  replyReveal?.cancel();
   if (session.status === "revoked" && !$("complete").classList.contains("hidden")) return;
   session.status = result.status || "completed";
   tracking = false;
@@ -274,6 +386,14 @@ function complete(result) {
     $('completion-title').textContent=result.action==='autonomous' ? 'The agent committed its study decision.' : 'Your outcome is recorded.';
     $('completion-choice').textContent=outcome.decision_action ? 'Simulated study outcome: '+actionLabel(outcome.decision_action) : 'The recommendation was rejected.';
     $('completion-analysis').classList.remove('hidden');$('completion-analysis-text').textContent=(latest?.content || session.messages.filter(m=>m.role==='assistant').at(-1)?.content || 'Human-only outcome. No agent was called.');
+    if (session.public.case_study.id === "negotiation") {
+      const price = outcome.decision_action?.price;
+      const n = session.public.negotiation;
+      $("completion-title").textContent = outcome.agreement || (result.action === "accept" && ["buyer", "supplier"].includes(session.public.agent_role)) ?
+        "Your agreed price is recorded." : "Your negotiation outcome is recorded.";
+      $("completion-choice").textContent = price == null ? "You finished without an agreement." :
+        `${negotiationMoney(price)} per unit · ${n.quantity} units of ${n.item} · Total ${negotiationMoney(price * n.quantity)}`;
+    }
   }
   if(result.status==='ended_system_limit'||result.status==='revoked'){
     $('completion-title').textContent='This study session has ended.';
@@ -292,7 +412,9 @@ function complete(result) {
   }
 }
 function renderConsent(publicView) {
+  $("consent-study").textContent = publicView.scenario.title || "Decision study";
   $("consent-text").textContent = publicView.scenario.consent_text;
+  $("consent-check").checked = false;
   const {clipboard_notice, outside_ai_notice} = publicView.usage_evidence || {};
   $("clipboard-consent-text").textContent = clipboard_notice || "";
   $("clipboard-consent-label").classList.toggle("hidden", !clipboard_notice);
@@ -377,7 +499,7 @@ async function init() {
   launchToken = hash.get("launch");
   if (launchToken) {
     // Keep the launch capability out of referrers, history, and screenshots after opening.
-    history.replaceState(null, "", location.pathname);
+    history.replaceState(null, "", location.pathname + location.search);
     sessionStorage.setItem("research_pending_launch", launchToken);
   } else launchToken = sessionStorage.getItem("research_pending_launch");
   token = sessionStorage.getItem("research_session");
@@ -385,9 +507,9 @@ async function init() {
     token = null;
     const preview = await api("preview", {launch_token:launchToken});
     renderConsent(preview.public);
-    $("participant-badge").textContent = preview.preview ? "Preview session" : "Participant session";
-    $("return-workspace").classList.toggle("hidden",!preview.preview);
+    renderSessionChrome(preview.preview, preview.public);
     $("consent").classList.remove("hidden"); $("loading").classList.add("hidden");
+    $("consent-title").focus();
   } else if (token) { session = await api("session"); renderSession(); }
   else throw new Error("Open the participant launch link provided by your study. A condition cannot be selected from this page.");
 }
@@ -401,8 +523,7 @@ $("consent-form").onsubmit = async e => {
   } catch (error) { showError(error); } finally { button.disabled = false; }
 };
 $("chat-form").onsubmit = e => { e.preventDefault(); send($("message-input").value); };
-$("initial-recommendation").onclick = () => send(session.public.case_study ? 'Analyze this case using the available data.' : session.public.task==='negotiation' ? "Provide your opening unit-price offer for this negotiation." : "Compare the suppliers and provide your initial recommendation.");
-$("offer-form").onsubmit=e=>{e.preventDefault();const price=Number($("offer-price").value);if($("offer-price").checkValidity())send("My unit-price offer is "+session.public.negotiation.currency+" "+price.toFixed(2)+".",price);};
+$("initial-recommendation").onclick = () => send(session.public.task==='negotiation' ? "Provide your opening unit-price offer for this order." : session.public.case_study ? 'Analyze this case using the available data.' : "Compare the suppliers and provide your initial recommendation.");
 $("final-price").addEventListener("input",updateDecision);
 $("use-agent-price").onclick=()=>{if(latest?.offer_price!=null){$("final-price").value=latest.offer_price;updateDecision();reviewChoice();}};
 $("submit-decision").onclick = () => decide(); $("reject-decision").onclick = () => decide(true);
@@ -415,7 +536,7 @@ $("withdraw").onclick = async () => {
   } catch (error) { showError(error); }
 };
 $("copy-code").onclick = () => navigator.clipboard.writeText($("completion-code").textContent).catch(showError);
-document.addEventListener("visibilitychange", () => { event("visibility", {state:document.visibilityState}); lastKey = null; if (document.visibilityState === "visible") expose(); else endHover(); flush(true).catch(() => {}); });
+document.addEventListener("visibilitychange", () => { event("visibility", {state:document.visibilityState}); lastKey = null; if (document.visibilityState === "visible") expose(); else { replyReveal?.cancel(); endHover(); } flush(true).catch(() => {}); });
 window.addEventListener("focus", () => event("focus", {state:"focused"}));
 window.addEventListener("blur", () => { event("focus", {state:"blurred"}); lastKey = null; endHover(); });
 window.addEventListener("pagehide", () => { event("page_exit"); flush(true).catch(() => {}); });
@@ -431,7 +552,7 @@ function clipboardField(target) {
   if (!target.matches?.('textarea, input[type="text"], input[type="number"]') || target.disabled || target.readOnly) return null;
   if (target.id === "message-input") return "prompt";
   if (target.id === "decision-reason") return "reason";
-  if (target.matches('#offer-price, #final-price, input[data-case-field], #ozer-form input[name="value"]')) return "task_answer";
+  if (target.matches('#final-price, input[data-case-field], #ozer-form input[name="value"]')) return "task_answer";
   return null;
 }
 function copiedStudyText(target) {
@@ -492,6 +613,7 @@ function restoreDraft() {
   selectRadio(); setSplit(Number.isFinite(saved.split) ? saved.split : 51);
   setView(["split","comparison","conversation"].includes(saved.view) ? saved.view : compactScreen.matches ? "comparison" : "split");
   resizeComposer();
+  updateParticipantOffer();
   if (saved.message) $("draft-status").textContent = "Draft restored in this tab";
 }
 function setView(view, focus = false) {
@@ -502,10 +624,13 @@ function setView(view, focus = false) {
   document.querySelectorAll("[data-study-pane]").forEach(b=>{const active=b.dataset.studyPane===view;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
   if (view !== "comparison") $("mobile-reply-dot").classList.add("hidden");
   if (focus) {
-    const target = view === "conversation" ? $("message-input") : session.public.task==='negotiation' ? $('final-price') : (document.querySelector('input[name="option"]:checked') || document.querySelector('input[name="option"]'));
+    const target = view === "conversation" ? $("message-input") : session.public.task==='negotiation' ?
+      (session.public.case_study ? document.querySelector(".decision-area") : $("final-price")) :
+      (document.querySelector('input[name="option"]:checked') || document.querySelector('input[name="option"]'));
     target?.focus({preventScroll:true});
   }
   saveDraft(); requestAnimationFrame(expose);
+  requestAnimationFrame(resizeComposer);
 }
 function reviewChoice() {
   if ($("workbench").dataset.view === "conversation") setView(compactScreen.matches ? "comparison" : "split");
@@ -513,8 +638,13 @@ function reviewChoice() {
   area.focus({preventScroll:true}); area.scrollIntoView({block:"nearest",behavior:"instant"});
 }
 function resizeComposer() {
-  const input = $("message-input"); input.style.height = "auto"; input.style.height = Math.min(144,Math.max(64,input.scrollHeight))+"px";
+  const input = $("message-input");
+  input.style.height = "auto";
+  const limit = Math.min(176, Math.max(96, window.innerHeight * .28));
+  input.style.height = Math.min(limit, Math.max(32, input.scrollHeight))+"px";
+  input.style.overflowY = input.scrollHeight > limit ? "auto" : "hidden";
 }
+window.addEventListener("resize", resizeComposer);
 function toast(message) { clearTimeout(toastTimer); $("workspace-toast").textContent=message; $("workspace-toast").classList.remove("hidden"); toastTimer=setTimeout(()=>$("workspace-toast").classList.add("hidden"),2500); }
 document.querySelectorAll("[data-study-pane]").forEach(button=>button.addEventListener("click",()=>setView(button.dataset.studyPane,true)));
 compactScreen.addEventListener("change",()=>setView(compactScreen.matches ? "comparison" : "split"));
@@ -525,7 +655,7 @@ document.querySelectorAll("[data-close-dialog]").forEach(button=>button.onclick=
 document.querySelectorAll("dialog").forEach(dialog=>dialog.addEventListener("click",e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}}));
 $("message-input").addEventListener("input",()=>{resizeComposer();saveDraft();$("draft-status").textContent="Draft kept in this tab";});
 $("decision-reason").addEventListener("input",saveDraft);
-$("message-input").addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key==="Enter"&&!e.isComposing){e.preventDefault();send(e.currentTarget.value);}});
+$("message-input").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();if(!e.repeat)send(e.currentTarget.value);}});
 document.addEventListener("keydown",e=>{
   if (!tracking || document.querySelector("dialog[open]")) return;
   if ((e.metaKey||e.ctrlKey)&&e.altKey) {
@@ -543,6 +673,7 @@ function setSplit(value) {
   const split=Math.max(36,Math.min(65,value));
   $("workbench").style.setProperty("--comparison-width",split+"%");
   $("panel-divider").setAttribute("aria-valuenow",String(Math.round(split)));
+  resizeComposer();
   saveDraft();
 }
 $("panel-divider").addEventListener("pointerdown",e=>{resizing=true;e.currentTarget.setPointerCapture(e.pointerId);document.body.classList.add("resizing");});
@@ -564,7 +695,11 @@ async function checkSessionAccess() {
 setInterval(checkSessionAccess, 10000);
 window.addEventListener("focus", checkSessionAccess);
 setInterval(pollRelay,1500);
-init().catch(error => { $("loading").classList.add("hidden"); showError(error); });
+init().catch(error => {
+  $("loading").classList.add("hidden");
+  if (!builderPreview && document.documentElement.dataset.testTheme) renderSessionChrome(true);
+  showError(error);
+});
 
 function renderCaseSession(){
   const pack=session.public.case_study;
@@ -579,17 +714,19 @@ function renderCaseSession(){
   $('decision-title').textContent=pack.mode==='autonomous'&&session.public.agent_enabled ? 'Automatic study decision' : 'Record an outcome';
   $('case-decision-fields').innerHTML=Object.entries(pack.decision.schema.properties).map(([key,schema])=>`<label>${esc(key.replaceAll('_',' '))}${schema.enum ? `<select data-case-field="${esc(key)}"><option value="">Choose…</option>${schema.enum.map(value=>`<option value="${esc(value)}">${esc(value)}</option>`).join('')}</select>` : `<input data-case-field="${esc(key)}" type="${['number','integer'].includes(schema.type)?'number':'text'}" ${schema.minimum!=null?`min="${schema.minimum}"`:''} ${schema.maximum!=null?`max="${schema.maximum}"`:''} step="${schema.type==='integer'?'1':schema.multipleOf || 'any'}">`}</label>`).join('');
   for(const input of document.querySelectorAll('[data-case-field]'))input.addEventListener('input',updateCaseDecision);
-  if(pack.id==='negotiation'){
-    $('offer-form').classList.toggle('hidden',!session.public.agent_enabled);document.querySelector('.comparison-scroll').after($('offer-form'));
-    $('offer-price').min=session.public.negotiation.price_min;$('offer-price').max=session.public.negotiation.price_max;
-    $('offer-price').placeholder='USD per unit';
-  }
   $('message-input').placeholder='Ask about the case, assumptions, or evidence…';
   document.querySelector('#chat-empty h3').textContent=pack.mode==='autonomous' ? 'Ready to analyze and commit.' : 'Explore the case.';
   document.querySelector('#chat-empty p').textContent=pack.mode==='autonomous' ? 'The agent records its decision automatically after checking its response. No approval is requested.' : 'Analysis uses the tools and dataset assigned to this condition.';
   $('initial-recommendation').textContent=pack.mode==='autonomous' ? 'Run agent & commit study decision →' : 'Analyze the case →';
   if(!session.public.agent_enabled){$('chat-title').textContent='Independent condition';$('conversation-status').textContent='Agent off';document.querySelector('#chat-empty h3').textContent='Make your own decision.';document.querySelector('#chat-empty p').textContent='Review the case data and record your outcome. No agent is available.';}
   document.querySelector('.decision-note').textContent=pack.mode==='autonomous'&&session.public.agent_enabled ? 'Decisions are committed only inside this simulation.' : pack.mode==='recommender'&&session.public.agent_enabled ? 'Accept or reject explicitly. This is the recorded decision moment.' : 'Record your independent result after reviewing the data.';
+  if (pack.id === "negotiation") {
+    document.querySelector(".decision-area").classList.toggle("negotiation-offer-panel", pack.mode === "recommender" && session.public.agent_enabled);
+    renderNegotiation();
+    if (pack.mode === "recommender" && session.public.agent_enabled) {
+      document.querySelector(".decision-note").textContent = "Accept to finish, or send another offer to continue negotiating.";
+    }
+  }
   for(const message of session.messages){renderMessage(message);if(message.role==='assistant')latest=message;}
   restoreDraft();trackStart();updateCaseDecision();requestAnimationFrame(expose);
 }
@@ -606,7 +743,6 @@ function caseAction(){
 function updateCaseDecision(){
   const pack=session.public.case_study,active=session.public.agent_enabled,proposal=latest?.decision_action;
   const recommends=active&&pack.mode==='recommender',automatic=active&&pack.mode==='autonomous';
-  if(pack.id==='negotiation')$('send-offer').disabled=busy||finishing;
   $('case-decision-fields').classList.toggle('hidden',recommends||automatic);document.querySelector('.decision-reason').classList.toggle('hidden',automatic);
   $('recommendation').classList.toggle('hidden',!proposal);
   if(proposal){$('recommended-name').textContent=actionLabel(proposal);$('recommendation-label').textContent=automatic?'Committed result':'Agent proposal';}
@@ -615,6 +751,26 @@ function updateCaseDecision(){
   $('submit-decision').disabled=busy||finishing||(recommends?!proposal:!caseAction());$('reject-decision').disabled=busy||finishing||!proposal;
   $('submit-decision').textContent=recommends?'Accept proposal & record →':'Record your outcome →';$('reject-decision').textContent='Reject proposal';
   $('choice-shortcut-label').textContent=automatic?'Automatic decision':'Your outcome';saveDraft();
+  if (pack.id === "negotiation") {
+    const price = proposal?.price;
+    const n = session.public.negotiation;
+    $("recommendation-label").textContent = automatic ? "Recorded unit price" : $("chat-title").textContent + "’s current offer";
+    if (price != null) $("recommended-name").textContent = negotiationMoney(price) + " per unit";
+    $("negotiation-order-total").classList.toggle("hidden", price == null);
+    $("negotiation-order-total").textContent = price == null ? "" :
+      `Order total · ${negotiationMoney(price * n.quantity)} for ${n.quantity} units`;
+    if (recommends) {
+      document.querySelector(".decision-actions").classList.toggle("hidden", !proposal);
+      document.querySelector(".decision-reason").classList.toggle("hidden", !proposal);
+      const accepted = participantOffer != null && price === participantOffer;
+      $("decision-title").textContent = "Current offer";
+      $("selection-status").textContent = price == null ? "Awaiting an opening price" :
+        accepted ? "Your offer was accepted" : "Ready to accept or counter";
+      $("submit-decision").textContent = accepted ? "Confirm & finish" : "Accept & finish";
+      $("reject-decision").textContent = "Finish without agreement";
+    }
+    $("choice-shortcut-label").textContent = "Current offer";
+  }
 }
 async function decideCase(reject){
   if(finishing||busy)return;finishing=true;updateCaseDecision();

@@ -41,6 +41,7 @@ def _context(rows):
             "latest_draft": None if config is None else {
                 "case": config["case_study"], "name": config["name"], "description": config["description"],
                 "assignment": config["assignment"]["method"], "memory": config["architecture"]["memory"],
+                "provider":config["architecture"]["provider"], "model":config["architecture"]["model"],
                 "detailed_interactions": config["telemetry"]["enabled"],
                 "conditions": [{key: c[key] for key in ("id", "label", "objective", "prompt")}
                                for c in config["conditions"]]}}

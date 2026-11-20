@@ -235,7 +235,8 @@ class Store:
         return row
 
     def issue_launch(self, participant_id, condition_id=None, preview=False, assignment_method=None, *,
-                     slot_id=None, expected_slot_revision=None, allow_relay=True, demo_agent=None, live_preview=False):
+                     slot_id=None, expected_slot_revision=None, allow_relay=True, demo_agent=None, live_preview=False,
+                     expected_study_revision=None):
         if not isinstance(participant_id, str) or not 1 <= len(participant_id) <= 100 or any(ord(c)<32 for c in participant_id):
             raise ValueError("A pseudonymous participant ID of 1–100 printable characters is required")
         if type(live_preview) is not bool:
@@ -271,6 +272,8 @@ class Store:
                     raise Conflict("This save changed in another tab. Reload before previewing.")
             else:
                 row = self._study_revision(db)
+                if expected_study_revision is not None and row["id"] != expected_study_revision:
+                    raise Conflict("The study setup changed in another tab. Reload before starting the test.")
             config = normalize(json.loads(row["config_json"]))
             ozer = (config.get("case_study") or {}).get("id") == "ozer_game"
             if live_preview:
@@ -355,7 +358,7 @@ class Store:
             if not row["preview"] and self.current()["config"]["status"] != "active":
                 raise ValueError("This study is not accepting new sessions")
             condition = next(c for c in config["conditions"] if c["id"] == row["condition_id"])
-            public = public_config(config, condition)
+            public = public_config(config, condition, preview=bool(row["preview"]))
             if row["preview"] and row["revision_kind"] != "preview" and (config.get("case_study") or {}).get("id") == "ozer_game":
                 public["provider_mode"] = "demo"
             return {"round_id": row["round_id"], "public": public, "preview": bool(row["preview"])}
@@ -436,7 +439,7 @@ class Store:
             evidence_state = usage_evidence.participant_state(db, session["id"])
         return {"session_id": session["id"], "status": status, "preview": bool(session["preview"]),
                 'end_reason':state['end_reason'],'system_message':state['system_message'],'next_action':'return_to_survey' if status in ('ended_system_limit', 'revoked') else None,
-                "round_id": session["round_id"], "public": public_config(config, condition), "decision": dict(decision) if decision else None,
+                "round_id": session["round_id"], "public": public_config(config, condition, preview=bool(session["preview"])), "decision": dict(decision) if decision else None,
                 "usage_evidence": evidence_state,
                 "pending_request": dict(pending) if pending and config["architecture"]["provider"] == "relay" else None,
                 "messages": [{**{k: m[k] for k in ("id", "role", "content", "created_at", "option_id", "offer_price")},'decision_action':json.loads(m['decision_action_json']) if m['decision_action_json'] else None,'safe_fallback':bool(json.loads(m['metadata_json']).get('safe_fallback'))} for m in (self.transcript(session["id"]) if status != "revoked" else [])]}
@@ -465,7 +468,7 @@ class Store:
             if not cond["agent_enabled"]:
                 raise ValueError("The agent is off in this human-only condition")
             if offer_price is not None:
-                n = cfg["negotiation"]
+                n = public_config(cfg, cond)["negotiation"]
                 if cfg["task"] != "negotiation" or not number(offer_price) or not n["price_min"] <= offer_price <= n["price_max"] or abs(offer_price*100-round(offer_price*100))>1e-6:
                     raise ValueError("Offer must be a price inside the public range with at most two decimals")
             ctx = (row["participant_id"],row["condition_id"],row["config_version"],row["round_id"],row["model_snapshot"])
@@ -495,6 +498,11 @@ class Store:
         result={"id":mid,"role":"assistant","content":response["content"],"option_id":response["option_id"],"offer_price":response.get("offer_price"),"created_at":ts,'decision_action':response.get('decision_action'),'safe_fallback':bool(response['metadata'].get('safe_fallback'))}
         if response['metadata'].get('safe_fallback'):
             self.server_event(dict(row),'output_replaced',{'message_id':mid,'request_id':request_id,'flags':response['metadata'].get('output_flags',[]),'safe_fallback':True},db)
+        if response['metadata'].get('response_repaired'):
+            self.server_event(dict(row), 'output_repaired', {
+                'message_id':mid, 'request_id':request_id,
+                'flags':response['metadata'].get('repaired_output_flags', []),
+            }, db)
         if cfg['case_study'] and cond['agent']['mode']=='autonomous' and response.get('decision_action') is not None:
             result['committed_decision']=self._pack_outcome(db,dict(row),cfg,cond,'autonomous',response['decision_action'],mid,None,None,'',ts)
         return result
@@ -566,6 +574,13 @@ class Store:
             finally:self.server_event(session,'tool_call',{'tool_name':name,'inputs':inputs,'outputs':output,'latency_ms':round((time.perf_counter()-begin)*1000,3),'status':'failed' if error else 'completed','error':error,'scope':REGISTRY[name].scope,'purpose':'outcome_scoring'},db)
         if decision is not None:score,metric=score_action(config,condition,decision,execute)
         outcome={'decision_action':decision,'metric':metric,'case_study':config['case_study']['id'],'dataset_version':session['dataset_version'],'execution':'simulation','actor':'agent' if action=='autonomous' else 'participant'}
+        if config['case_study']['id'] == 'negotiation':
+            terms = public_config(config, condition)['negotiation']
+            price = decision.get('price') if decision else None
+            outcome.update(item=terms['item'], quantity=terms['quantity'], currency=terms['currency'],
+                           participant_role=terms['participant_role'], unit_price=price,
+                           order_total=round(price * terms['quantity'], 2) if price is not None else None,
+                           agreement=action == 'accept' and condition['role'] in ('buyer', 'supplier'))
         db.execute('INSERT INTO decisions (id,session_id,message_id,action,created_at,client_deliberation_ms,server_since_seen_ms,outcome_score,score_regret,reason,participant_id,condition_id,config_version,round_id,model_snapshot,dataset_version,task,outcome_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             (uid(),session['id'],mid,action,ts,elapsed,since_seen,score,1-score if score is not None else None,reason,session['participant_id'],session['condition_id'],session['config_version'],session['round_id'],session['model_snapshot'],session['dataset_version'],config['case_study']['id'],canonical(outcome)))
         db.execute('UPDATE decisions SET temperature=? WHERE session_id=? AND round_id=?',(session.get('temperature'),session['id'],session['round_id']))
@@ -574,20 +589,42 @@ class Store:
         self.server_event(session,'decision_committed',{'action':action,'outcome':outcome,'message_id':mid},db)
         return {'status':'completed','action':action,'outcome_json':canonical(outcome),'completion_code':session['id']}
 
-    def decide_pack(self,session,config,data):
+    def decide_pack(self,session,config,data,*,chat_acceptance=None):
         condition=next(c for c in config['conditions'] if c['id']==session['condition_id'])
         action=data.get('action');mid=data.get('message_id');decision=data.get('decision_action')
+        if chat_acceptance is not None:
+            if config['case_study']['id']!='negotiation' or not condition['agent_enabled'] or condition['agent']['mode']!='recommender':
+                raise ValueError('Chat acceptance is unavailable in this condition')
+            content=data.get('content');rid=data.get('request_id')
+            if not isinstance(content,str) or not content.strip() or len(content)>12000:raise ValueError('Invalid acceptance message')
+            if not isinstance(rid,str) or not 1<=len(rid)<=100:raise ValueError('A request ID is required')
+            action='accept'
         if data.get('round_id',1)!=session['round_id']:raise ValueError('Round does not match')
         if not number(data.get('client_ms')) or data['client_ms']<0:raise ValueError('Invalid decision clock')
         reason=data.get('reason','')
         if not isinstance(reason,str) or len(reason)>4000:raise ValueError('Invalid reason')
         with self.db() as db:
             db.execute('BEGIN IMMEDIATE')
+            if chat_acceptance is not None:
+                old=db.execute("SELECT content,metadata_json FROM messages WHERE session_id=? AND request_id=? AND role='user'",(session['id'],rid)).fetchone()
+                if old:
+                    metadata=json.loads(old['metadata_json'])
+                    if old['content']!=content or metadata.get('accepted_message_id')!=mid:
+                        raise Conflict('Request ID was already used for another message')
+                    saved=db.execute('SELECT action,outcome_json FROM decisions WHERE session_id=? AND round_id=? AND message_id=?',(session['id'],session['round_id'],mid)).fetchone()
+                    if saved:
+                        return {'status':'completed','action':saved['action'],'outcome_json':saved['outcome_json'],'completion_code':session['id']}
             if db.execute('SELECT status FROM sessions WHERE id=?',(session['id'],)).fetchone()[0]!='active':raise Conflict('Session is already finished')
             if db.execute("SELECT 1 FROM requests WHERE session_id=? AND status='pending'",(session['id'],)).fetchone():raise Conflict('Wait for the pending response')
             latest=db.execute("SELECT * FROM messages WHERE session_id=? AND round_id=? AND role='assistant' ORDER BY created_at DESC,rowid DESC LIMIT 1",(session['id'],session['round_id'])).fetchone()
             if (latest['id'] if latest else None)!=mid:raise Conflict('Submit against the latest response')
             proposed=json.loads(latest['decision_action_json']) if latest and latest['decision_action_json'] else None
+            if chat_acceptance is not None:
+                if proposed is None:raise ValueError('Request an offer before accepting')
+                accepted_price=chat_acceptance['price']
+                if accepted_price is not None and accepted_price!=proposed.get('price'):
+                    raise ValueError('That price differs from the current offer. Propose it as a counteroffer, or accept the displayed price.')
+                decision=proposed
             mode=condition['agent']['mode']
             if condition['agent_enabled'] and mode=='autonomous':raise ValueError('Autonomous decisions do not accept participant approval')
             if condition['agent_enabled'] and mode=='recommender':
@@ -599,6 +636,14 @@ class Store:
             elapsed=data['client_ms']-latest['seen_client_ms'] if latest and latest['page_id']==data.get('page_id') and latest['seen_client_ms'] is not None else None
             if elapsed is not None and elapsed<0:raise ValueError('Decision precedes exposure')
             if action!='reject' and decision is None:raise ValueError('A decision is required')
+            if chat_acceptance is not None:
+                ctx=(session['participant_id'],session['condition_id'],session['config_version'],session['round_id'],session['model_snapshot'])
+                db.execute("INSERT INTO requests (session_id,request_id,status,participant_id,condition_id,config_version,round_id,model_snapshot) VALUES(?,?,'completed',?,?,?,?,?)",(session['id'],rid,*ctx))
+                db.execute("INSERT INTO messages (id,session_id,role,content,created_at,metadata_json,request_id,participant_id,condition_id,config_version,round_id,model_snapshot) VALUES(?,?,'user',?,?,?,?,?,?,?,?,?)",
+                    (uid(),session['id'],content,now(),canonical({'accepted_message_id':mid}),rid,*ctx))
+                for table in ('messages','requests'):
+                    db.execute(f'UPDATE {table} SET dataset_version=?,temperature=? WHERE session_id=? AND request_id=?',(session['dataset_version'],session['temperature'],session['id'],rid))
+                self.server_event(session,'chat_acceptance',{'request_id':rid,'message_id':mid},db)
             return self._pack_outcome(db,session,config,condition,action,decision,mid,elapsed,(now()-latest['seen_at'])*1000 if latest and latest['seen_at'] else None,reason,now())
 
     def provider_call(self, session, request_id, config, condition, items, invoke=None):

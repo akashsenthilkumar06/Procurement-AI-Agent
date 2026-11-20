@@ -1,3 +1,4 @@
+import hashlib
 import json
 import re
 import time
@@ -25,12 +26,14 @@ def _owned_chat(db, account_id, chat_id):
 
 
 def _result(store, row, offset=0):
-    return answer_session_question(store, {"query": json.loads(row["query_json"]), "offset": offset})
+    if row["kind"] != "lookup":
+        return json.loads(row["result_json"])
+    return {"kind":"lookup", **answer_session_question(store, {"query": json.loads(row["query_json"]), "offset": offset})}
 
 
 def _turn(store, row):
     return {"request_id": row["request_id"], "question": row["question"], "scope": row["scope"],
-            "result": _result(store, row)}
+            "attachment_name":row["attachment_name"], "result": _result(store, row)}
 
 
 def list_chats(store, account_id):
@@ -45,11 +48,13 @@ def export_chats(store, account_id):
         chats = {row["id"]: {**dict(row), "turns": []} for row in db.execute("""
             SELECT id,title,created_at,updated_at FROM researcher_chats WHERE researcher_id=?
             ORDER BY updated_at DESC,id""", (account_id,))}
-        for row in db.execute("""SELECT t.chat_id,t.question,t.scope,t.query_json FROM researcher_chat_turns t
+        for row in db.execute("""SELECT t.chat_id,t.question,t.scope,t.query_json,t.kind,t.result_json,t.attachment_name FROM researcher_chat_turns t
                                  JOIN researcher_chats c ON c.id=t.chat_id WHERE c.researcher_id=? ORDER BY t.id""",
                               (account_id,)):
             chats[row["chat_id"]]["turns"].append({"question": row["question"], "scope": row["scope"],
-                                                  "query": json.loads(row["query_json"])})
+                                                  "query": json.loads(row["query_json"]), "kind":row["kind"],
+                                                  "attachment_name":row["attachment_name"],
+                                                  **({"result":json.loads(row["result_json"])} if row["result_json"] else {})})
     return list(chats.values())
 
 
@@ -76,37 +81,47 @@ def _ask(store, account_id, data):
     if chat_id is not None:
         _identifier(chat_id)
     request_id = _identifier(data.get("request_id"))
-    question = data.get("question")
+    question = data.get("question", "")
     scope = data.get("scope", "study")
-    if not isinstance(question, str) or not 1 <= len(question.strip()) <= 1000 or scope not in SCOPES:
-        raise ValueError("Enter a question of up to 1,000 characters and choose a session scope.")
+    document, query = data.get("document"), data.get("query")
+    if not isinstance(question, str) or scope not in SCOPES or len(question.encode("utf-8")) > 16000:
+        raise ValueError("Enter a message of up to 16 KB and choose a session scope.")
     question = question.strip()
+    if not question:
+        if document is None:
+            raise ValueError("Enter a message or choose a document.")
+        question = "Create an agent setup from this document."
+    if query is not None and (document is not None or not isinstance(query, dict) or query.get("scope") != scope):
+        raise ValueError("The suggested query must use the selected session scope and no document.")
+    signature = hashlib.sha256(canonical([question, scope, document, query]).encode()).hexdigest()
     with store.db() as db:
         db.execute("BEGIN")
         if chat_id is not None:
             _owned_chat(db, account_id, chat_id)
-        prior = db.execute("""SELECT t.* FROM researcher_chat_turns t JOIN researcher_chats c ON c.id=t.chat_id
-                             WHERE t.request_id=? AND c.researcher_id=?""", (request_id, account_id)).fetchone()
+        prior = db.execute("""SELECT t.*,c.researcher_id FROM researcher_chat_turns t JOIN researcher_chats c ON c.id=t.chat_id
+                             WHERE t.request_id=?""", (request_id,)).fetchone()
         if prior is not None:
-            if prior["chat_id"] != (chat_id or request_id) or prior["question"] != question or prior["scope"] != scope:
+            if (prior["researcher_id"] != account_id or prior["chat_id"] != (chat_id or request_id)
+                    or prior["question"] != question or prior["scope"] != scope
+                    or (prior["input_hash"] and prior["input_hash"] != signature)
+                    or (not prior["input_hash"] and document is not None)):
                 raise Conflict("This request was already used for another question.")
             return {"chat": _owned_chat(db, account_id, prior["chat_id"]), "turn": _turn(store, prior)}
-        latest = db.execute("""SELECT id,scope,query_json FROM researcher_chat_turns
-                              WHERE chat_id=? ORDER BY id DESC LIMIT 1""", (chat_id,)).fetchone()
-        previous = None
-        if latest and latest["scope"] == scope:
-            for row in db.execute("SELECT scope,query_json FROM researcher_chat_turns WHERE chat_id=? ORDER BY id DESC", (chat_id,)):
-                if row["scope"] != scope:
-                    break
-                candidate = json.loads(row["query_json"])
-                if candidate["view"] != "unsupported":
-                    previous = candidate
-                    break
-
-    query = data.get("query")
-    if query is not None and (not isinstance(query, dict) or query.get("scope") != scope):
-        raise ValueError("The suggested query must use the selected session scope.")
-    result = answer_session_question(store, {"question": question, "scope": scope, "previous": previous, "query": query})
+        recent = [dict(row) for row in db.execute("SELECT * FROM researcher_chat_turns WHERE chat_id=? ORDER BY id DESC LIMIT 8", (chat_id,))]
+        latest = recent[0] if recent else None
+        history = []
+        for row in recent:
+            if row["scope"] != scope:
+                break
+            history.append(row)
+        history.reverse()
+    if query is not None:
+        result = {"kind":"lookup", **answer_session_question(store, {"query":query})}
+    else:
+        from .workspace_assistant import answer_workspace_question
+        result = answer_workspace_question(store, question, scope, history, document)
+    kind = result.get("kind", "lookup")
+    attachment_name = document["name"][:160] if document else ""
     timestamp = time.time()
     with store.db() as db:
         db.execute("BEGIN IMMEDIATE")
@@ -120,7 +135,7 @@ def _ask(store, account_id, data):
         existing = db.execute("SELECT * FROM researcher_chat_turns WHERE chat_id=? AND request_id=?",
                               (chat_id, request_id)).fetchone()
         if existing:
-            if existing["question"] != question or existing["scope"] != scope:
+            if existing["question"] != question or existing["scope"] != scope or existing["input_hash"] != signature:
                 raise Conflict("This request was already used for another question.")
             return {"chat": chat, "turn": _turn(store, existing)}
         last_id = db.execute("SELECT MAX(id) FROM researcher_chat_turns WHERE chat_id=?", (chat_id,)).fetchone()[0]
@@ -128,11 +143,14 @@ def _ask(store, account_id, data):
             raise Conflict("This chat received another message. Reopen it before continuing.")
         if db.execute("SELECT 1 FROM researcher_chat_turns WHERE request_id=?", (request_id,)).fetchone():
             raise Conflict("This request was already used for another question.")
-        db.execute("""INSERT INTO researcher_chat_turns(chat_id,request_id,question,scope,query_json) VALUES(?,?,?,?,?)""",
-                   (chat_id, request_id, question, scope, canonical(result["query"])))
+        db.execute("""INSERT INTO researcher_chat_turns(chat_id,request_id,question,scope,query_json,kind,result_json,attachment_name,input_hash)
+                      VALUES(?,?,?,?,?,?,?,?,?)""",
+                   (chat_id, request_id, question, scope, canonical(result["query"]), kind,
+                    canonical(result) if kind != "lookup" else None, attachment_name, signature))
         db.execute("UPDATE researcher_chats SET updated_at=? WHERE id=?", (timestamp, chat_id))
         chat["updated_at"] = timestamp
-    return {"chat": chat, "turn": {"request_id": request_id, "question": question, "scope": scope, "result": result}}
+    return {"chat": chat, "turn": {"request_id": request_id, "question": question, "scope": scope,
+                                    "attachment_name":attachment_name, "result": result}}
 
 
 def page(store, account_id, chat_id, request_id, offset):
@@ -145,6 +163,8 @@ def page(store, account_id, chat_id, request_id, offset):
                           (chat_id, request_id)).fetchone()
     if turn is None:
         raise ChatNotFound("Message not found.")
+    if turn["kind"] != "lookup":
+        raise ValueError("Only session result lists have additional pages.")
     return _result(store, turn, offset)
 
 

@@ -1,6 +1,8 @@
 "use strict";
 
 let ozerTimer, ozerWorking = false, ozerWithdrawing = false, ozerViewVersion = 0;
+let ozerAnswers = {};
+const ozerSteps = [["general", "Overview"], ["instructions", "Task rules"], ["role", "Your role"], ["quiz", "Understanding check"]];
 const ozerNumber = value => Number(value).toLocaleString();
 const ozerMoney = value => Number(value).toLocaleString("en-US", {
   style: "currency", currency: "USD", maximumFractionDigits: 5
@@ -11,27 +13,56 @@ function ozerFacts(entries) {
     `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join("")}</dl>`;
 }
 
-function ozerQuiz(state) {
-  const item = (name, question, options) => `<label>${question}
-    <select name="${name}" required><option value="">Select an answer</option>
-      ${options.map(([value, text]) => `<option value="${value}">${text}</option>`).join("")}
-    </select></label>`;
-  return `${state.quiz_retry ? '<p role="alert">Some answers were incorrect. Review the rules and try again.</p>' : ""}
-    <form id="ozer-form" class="ozer-form">
-      ${item("signal", "Who sees the exact private signal before decisions?", [["supplier", "Supplier"], ["retailer", "Retailer"], ["both", "Both players"]])}
-      ${item("paid", "Which periods count toward payment?", [["all", "All 23 periods"], ["paid_only", "The 20 paid periods"], ["practice", "Only the practice periods"]])}
-      ${item("decision", "Which role makes the decision you will enter?", [["supplier", "Supplier chooses production"], ["retailer", "Retailer submits a forecast"]])}
-      <button class="primary" type="submit">Check answers</button>
+function ozerQuiz(state, game, canSkip) {
+  const item = (number, name, question, options) => `<fieldset class="ozer-question">
+    <legend><span>${number}.</span> ${question}</legend>
+    <div class="ozer-answers">${options.map(([value, label]) => `
+      <label class="ozer-answer">
+        <input type="radio" name="${name}" value="${value}" required ${ozerAnswers[name] === value ? "checked" : ""}>
+        <span>${label}</span>
+      </label>`).join("")}</div>
+    </fieldset>`;
+  const instructions = canSkip ? "Choose one answer per question to test the check." :
+    "Answer all three questions before starting your practice rounds.";
+  return `<p class="study-intro">${instructions} There’s no timer on this screen.</p>
+    ${state.quiz_retry ? '<p id="ozer-quiz-retry" class="study-retry" tabindex="-1">Some answers were incorrect. Your choices are saved here so you can review the rules and try again.</p>' : ""}
+    <details class="ozer-rules">
+      <summary>Review the task rules and your role</summary>
+      <div class="ozer-rules-body">
+        <p>Only the ${game.paid_rounds} paid periods count toward your performance payment. The ${game.practice_rounds} practice periods are for learning the task.</p>
+        <p>${ozerRoleDescription(state.participant_role === "retailer")}</p>
+        ${ozerRules(game)}
+      </div>
+    </details>
+    <form id="ozer-form" class="ozer-form ozer-quiz-form">
+      ${item(1, "signal", "Who sees the private demand signal before making a decision?", [["supplier", "Supplier"], ["retailer", "Retailer"], ["both", "Both players"]])}
+      ${item(2, "paid", "Which periods count toward the performance payment?", [["all", `All ${game.practice_rounds + game.paid_rounds} periods`], ["paid_only", `The ${game.paid_rounds} paid periods`], ["practice", "Only the practice periods"]])}
+      ${item(3, "decision", "What will you submit each round?", [["supplier", "A production quantity as the supplier"], ["retailer", "A forecast report as the retailer"]])}
+      <div class="study-onboarding-actions">
+        ${canSkip ? '<button id="ozer-skip-quiz" class="secondary" type="button">Skip to practice</button>' : ""}
+        <button class="primary" type="submit">Check answers</button>
+      </div>
     </form>`;
 }
 
 function ozerRules(game) {
-  return `<p>Each period starts with a new private signal, X, drawn from ${game.signal_min} to ${game.signal_max}.
-      The retailer sees X and sends a forecast report, F. The supplier sees F and chooses a production quantity, Q.</p>
-    <p>Once both decisions are locked, a shock from ${game.shock_min} to ${game.shock_max} is added to X.
-      This is final demand. Sales are the smaller of production and final demand. Unused units do not carry over.</p>
-    ${ozerFacts([["Production cost", game.production_cost], ["Wholesale price", game.wholesale_price], ["Retail price", game.retail_price]])}
-    <p class="help">Prices are in experimental dollars per unit. Supplier profit is wholesale revenue minus the cost of all units produced. Retailer profit is the retail margin on units sold.</p>`;
+  return `<ol class="ozer-sequence">
+    <li><strong>The retailer sends a forecast</strong><p>Each period starts with a new private demand signal (X) from ${game.signal_min} to ${game.signal_max}. The retailer sees the signal and sends a forecast report (F).</p></li>
+    <li><strong>The supplier chooses production</strong><p>The supplier sees the retailer’s report, then chooses how many units to produce (Q).</p></li>
+    <li><strong>The game calculates sales</strong><p>Once both decisions are locked, the game adds a shock from ${game.shock_min} to ${game.shock_max} to the private signal. Sales equal the smaller of production and final demand. Unused units do not carry over.</p></li>
+    </ol>
+    <section class="ozer-payoff">
+      <h2>How profit is calculated</h2>
+      <p class="help">Prices are in experimental dollars per unit.</p>
+      ${ozerFacts([["Production cost", game.production_cost], ["Wholesale price", game.wholesale_price], ["Retail price", game.retail_price]])}
+      <p><strong>Supplier:</strong> Wholesale revenue minus the cost of all units produced.</p>
+      <p><strong>Retailer:</strong> The retail margin on units sold.</p>
+    </section>`;
+}
+
+function ozerRoleDescription(retailer) {
+  return retailer ? "You see the private demand signal and send a forecast to the supplier. Your AI counterpart decides how much to produce." :
+    "You see the retailer’s forecast report and decide how much to produce. Your AI counterpart sends the report.";
 }
 
 function ozerDecision(state, pack) {
@@ -67,6 +98,9 @@ function renderOzer() {
   const pack = session.public.case_study;
   const game = pack.game;
   const stage = state.stage;
+  const stepIndex = ozerSteps.findIndex(([key]) => key === stage);
+  const onboarding = stepIndex >= 0;
+  if (stage !== "quiz") ozerAnswers = {};
   const round = session.round_id;
   const timedRound = ["decision", "counterpart", "feedback"].includes(stage);
   const period = round <= game.practice_rounds ? `Practice ${round} of ${game.practice_rounds}` :
@@ -74,26 +108,32 @@ function renderOzer() {
   const retailer = state.participant_role === "retailer";
   let title, content, next;
   if (stage === "general") {
-    title = "Before the game";
-    content = `<p>You will play ${game.practice_rounds} practice periods and ${game.paid_rounds} paid periods with the same AI counterpart. Practice profits are excluded from the payment calculation.</p>
+    title = "What to expect";
+    content = `<p class="study-intro">You’ll make a series of supply chain decisions with the same AI counterpart. You’ll learn the rules and practice before the paid periods start.</p>
+      ${ozerFacts([["Practice periods", game.practice_rounds], ["Paid periods", game.paid_rounds], ["Time per decision", `${game.decision_seconds} seconds`]])}
+      <section class="ozer-payoff"><h2>${session.preview ? "About this test" : "Payment"}</h2>
+      <p>Practice profits do not count toward payment.</p>
       <p>${session.preview ? (session.public.provider_mode === "openai" ?
         "This preview uses the saved OpenAI model and role instructions. No participant payment is due." :
-        "This is a keyless preview. Results illustrate the study’s payment calculation.") :
-        `The participation payment is ${ozerMoney(game.participation_usd)}. Positive total paid-period profits are converted at ${ozerNumber(game.experimental_dollars_per_usd)} experimental dollars per USD.`}</p>`;
+        "This test uses built-in responses and illustrates how payment is calculated.") :
+        `The participation payment is ${ozerMoney(game.participation_usd)}. Positive total paid-period profits are converted at ${ozerNumber(game.experimental_dollars_per_usd)} experimental dollars per USD.`}</p></section>`;
     if (!session.preview) content += "<p>Payments are private. Please do not communicate with other participants during the experiment. Ask the experimenter if you need help.</p>";
     next = "Read task instructions";
   } else if (stage === "instructions") {
     title = "How the forecasting task works";
-    content = ozerRules(game) + `<p>You have ${game.decision_seconds} seconds to submit each decision after the decision screen opens.</p>`;
+    content = `<p class="study-intro">Each period follows the same three steps. You have ${game.decision_seconds} seconds to submit your choice once the decision screen opens.</p>` + ozerRules(game);
     next = "See my role";
   } else if (stage === "role") {
     title = `You are the ${state.participant_role}`;
-    content = retailer ? "<p>Your AI counterpart is the supplier. You will see the private demand signal and send a forecast to the supplier.</p>" :
-      "<p>Your AI counterpart is the retailer. You will see the retailer’s forecast and decide how much to produce.</p>";
+    content = `<p class="study-intro">${ozerRoleDescription(retailer)}</p>
+      ${ozerFacts([
+        ["What you see", retailer ? "Private demand signal (X)" : "Retailer’s forecast report (F)"],
+        ["What you submit", retailer ? "Forecast report (F)" : "Production quantity (Q)"]
+      ])}`;
     next = "Check my understanding";
   } else if (stage === "quiz") {
     title = "Check your understanding";
-    content = ozerQuiz(state) + `<details class="ozer-rules"><summary>Review task rules</summary>${ozerRules(game)}</details>`;
+    content = ozerQuiz(state, game, session.preview && !builderPreview);
   } else if (stage === "decision") {
     title = retailer ? "Send a demand forecast" : "Choose how much to produce";
     content = ozerDecision(state, pack);
@@ -108,31 +148,35 @@ function renderOzer() {
   }
   const panel = $("ozer-game");
   panel.innerHTML = `<header class="ozer-header"><span>Ozer Game · Forecast information sharing</span>
-    ${timedRound ? `<strong>${period}</strong>` : ""}</header>
-    <article class="ozer-card">
-      <div class="ozer-title"><h1 id="ozer-title" tabindex="-1">${esc(title)}</h1>
+    ${timedRound ? `<strong>${period}</strong>` : `<span>Step ${stepIndex + 1} of ${ozerSteps.length}</span>`}</header>
+    ${onboarding ? `<ol class="ozer-steps" aria-label="Study introduction progress">${ozerSteps.map(([, label], index) =>
+      `<li ${index === stepIndex ? 'aria-current="step"' : ""}><span aria-hidden="true">${index + 1}</span>${label}</li>`).join("")}</ol>` : ""}
+    <article class="ozer-card study-onboarding-card">
+      <div class="ozer-title study-onboarding-heading"><h1 id="ozer-title" tabindex="-1">${esc(title)}</h1>
         ${stage === "decision" ? '<span id="ozer-clock" class="ozer-clock" role="timer" aria-label="Seconds remaining"></span>' : ""}</div>
       ${timedRound ? `<p class="ozer-role">You: ${state.participant_role} · Counterpart: ${state.counterpart_role}</p>` : ""}
-      ${content}${next ? `<button class="primary" id="ozer-next">${esc(next)}</button>` : ""}
+      ${content}${next ? `<div class="study-onboarding-actions"><button class="primary" id="ozer-next">${esc(next)} <span aria-hidden="true">→</span></button></div>` : ""}
     </article>
     ${session.status === "active" ? '<footer class="ozer-footer"><button id="ozer-withdraw" class="text-button danger">Stop participating</button></footer>' : ""}`;
   panel.classList.remove("hidden");
-  $("return-workspace").classList.toggle("hidden", !session.preview);
-  $("participant-badge").textContent = session.preview ? "Preview · keyless" : "Participant session";
   if (builderPreview) {
     if ($("ozer-clock")) $("ozer-clock").textContent = game.decision_seconds + "s";
     return;
   }
-  $("ozer-title").focus();
+  ($("ozer-quiz-retry") || $("ozer-title")).focus();
   if (!tracking) trackStart();
 
   $("ozer-next")?.addEventListener("click", () => ozerSend({action: "continue"}));
+  $("ozer-skip-quiz")?.addEventListener("click", () => ozerSend({action: "skip_quiz"}));
   $("ozer-withdraw")?.addEventListener("click", () => $("withdraw").click());
   const form = $("ozer-form");
   if (form) form.onsubmit = e => {
     e.preventDefault();
     const fields = new FormData(form);
-    if (stage === "quiz") ozerSend({action: "quiz", answers: Object.fromEntries(fields)});
+    if (stage === "quiz") {
+      ozerAnswers = Object.fromEntries(fields);
+      ozerSend({action: "quiz", answers: ozerAnswers});
+    }
     else ozerSend({action: "submit", value: Number(fields.get("value"))});
   };
 

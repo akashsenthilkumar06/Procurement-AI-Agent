@@ -68,4 +68,14 @@ See [AGENT_LAYER.md](AGENT_LAYER.md#event-and-outcome-records). `dataset_version
 
 Messages add `decision_action_json`; pack decisions put structured actions, metric/scoring details and actor in `outcome_json`. `action=autonomous` means the server committed without participant approval after the output check. `accept`/`reject` mean explicit recommender decisions; `independent` covers analytical/chatbot/human-only. Existing v2 columns and semantics remain for non-pack studies. Human-only outcome scoring is a server evaluation, not agent usage. A scoring tool event has `purpose=outcome_scoring`. API-step budget rows use request_id suffixes, one reservation per step.
 
+For negotiation, outcomes also include `unit_price`, `quantity`, `currency`, `item`, `order_total`, `participant_role`, and the simulated `agreement` flag. Explicit offer messages retain the parsed participant price in `offer_price`. An unconditional chat acceptance is saved as a user message with `metadata.accepted_message_id` pointing to the approved assistant quote, plus a server-only `chat_acceptance` event containing the request and quote IDs. That completed request has no additional model call. Duplicate acceptance retries return the same decision.
+
+`output_repaired` records a negotiation reply repaired after output checks; its flags and `response_repaired` message metadata support audit review. A generic fallback remains marked by `output_replaced`. Researcher summaries format prices and metrics for reading; downloads retain the structured stored fields.
+
 Researcher-visible tool outputs may contain role-authorized restricted fields; treat these exports as private research data. Public benchmark scores are not causal performance claims, and forecast reference error is not future forecast accuracy.
+
+## Researcher workspace chat
+
+`researcher_chat_turns.kind` distinguishes live `lookup` queries from saved `answer` and `draft` results. The additive migration keeps existing turns as `lookup`, preserving their filters and refreshing their results against current records. New generated turns store `result_json`, `attachment_name`, and an `input_hash` for exact retry checking. Raw uploads and extracted protocol text are not saved separately.
+
+Analysis results include their query, creation time, source references, matched/included session counts, and a sampling flag. Agent drafts use the same validated configuration/review format as Setup chat. Saving a preset remains an explicit researcher action. Each conversation belongs to its researcher account; accounts share authorized study records, not private chat history. Generated answers are historical snapshots and can contain quoted excerpts; their retention follows the chat's lifecycle separately from source-session deletion.

@@ -32,6 +32,35 @@ def validate_query(query):
     return {field: value.strip() for field, value in query.items()}
 
 
+def session_sql(query):
+    """Build parameterized session filters shared by lookup and evidence retrieval."""
+    query = validate_query(query)
+    filters, args = [], []
+    if query["scope"] != "all":
+        filters.append("preview = ?")
+        args.append(int(query["scope"] == "preview"))
+    if query["status"] == "not_completed":
+        filters.append("status != 'completed'")
+    elif query["status"] != "all":
+        filters.append("status = ?")
+        args.append(query["status"])
+    for key, columns in (("participant", ("participant_id",)), ("study", ("study_name",)),
+                         ("condition", ("condition_id", "condition_label"))):
+        if query[key]:
+            filters.append("(" + " OR ".join(f"instr(lower({column}), lower(?)) > 0" for column in columns) + ")")
+            args.extend([query[key]] * len(columns))
+    where = " WHERE " + " AND ".join(filters) if filters else ""
+    base = """WITH session_rows AS (
+        SELECT s.id, s.participant_id, s.condition_id, s.status, s.preview, s.created_at,
+            COALESCE(json_extract(r.config_json, '$.name'), 'Unnamed study') AS study_name,
+            COALESCE((SELECT json_extract(c.value, '$.label')
+                FROM json_each(r.config_json, '$.conditions') AS c
+                WHERE json_extract(c.value, '$.id') = s.condition_id), s.condition_id) AS condition_label
+        FROM sessions AS s JOIN revisions AS r ON r.id = s.revision_id
+    ), matching AS (SELECT * FROM session_rows""" + where + ") "
+    return base, args
+
+
 def interpret_question(store, question, scope, previous):
     if not isinstance(question, str) or not question.strip() or len(question.encode("utf-8")) > 4000:
         raise ValueError("Enter a question of up to 1,000 characters or 4 KB.")
@@ -101,29 +130,7 @@ def answer_session_question(store, data):
     if view == "unsupported":
         return result
 
-    filters, args = [], []
-    if query["scope"] != "all":
-        filters.append("preview = ?")
-        args.append(int(query["scope"] == "preview"))
-    if query["status"] == "not_completed":
-        filters.append("status != 'completed'")
-    elif query["status"] != "all":
-        filters.append("status = ?")
-        args.append(query["status"])
-    for key, columns in (("participant", ("participant_id",)), ("study", ("study_name",)),
-                         ("condition", ("condition_id", "condition_label"))):
-        if query[key]:
-            filters.append("(" + " OR ".join(f"instr(lower({column}), lower(?)) > 0" for column in columns) + ")")
-            args.extend([query[key]] * len(columns))
-    where = " WHERE " + " AND ".join(filters) if filters else ""
-    base = """WITH session_rows AS (
-        SELECT s.id, s.participant_id, s.condition_id, s.status, s.preview, s.created_at,
-            COALESCE(json_extract(r.config_json, '$.name'), 'Unnamed study') AS study_name,
-            COALESCE((SELECT json_extract(c.value, '$.label')
-                FROM json_each(r.config_json, '$.conditions') AS c
-                WHERE json_extract(c.value, '$.id') = s.condition_id), s.condition_id) AS condition_label
-        FROM sessions AS s JOIN revisions AS r ON r.id = s.revision_id
-    ), matching AS (SELECT * FROM session_rows""" + where + ") "
+    base, args = session_sql(query)
     with store.db() as db:
         db.execute("BEGIN")
         result["total"] = db.execute(base + "SELECT COUNT(*) FROM matching", args).fetchone()[0]

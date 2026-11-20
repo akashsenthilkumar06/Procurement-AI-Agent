@@ -131,6 +131,11 @@ def migrate(db):
         question TEXT NOT NULL, scope TEXT NOT NULL, query_json TEXT NOT NULL,
         UNIQUE(chat_id,request_id))""")
     db.execute("CREATE UNIQUE INDEX IF NOT EXISTS researcher_chat_requests ON researcher_chat_turns(request_id)")
+    chat_fields = {row["name"] for row in db.execute("PRAGMA table_info(researcher_chat_turns)")}
+    for name, declaration in {"kind":"TEXT NOT NULL DEFAULT 'lookup'", "result_json":"TEXT",
+                              "attachment_name":"TEXT NOT NULL DEFAULT ''", "input_hash":"TEXT NOT NULL DEFAULT ''"}.items():
+        if name not in chat_fields:
+            db.execute(f"ALTER TABLE researcher_chat_turns ADD COLUMN {name} {declaration}")
     db.execute("""CREATE TABLE IF NOT EXISTS session_edits (
         id INTEGER PRIMARY KEY, session_id TEXT NOT NULL, actor_id INTEGER NOT NULL,
         actor_name TEXT NOT NULL, created_at REAL NOT NULL,
@@ -154,4 +159,4 @@ def migrate(db):
         id INTEGER PRIMARY KEY, session_id TEXT NOT NULL, actor_id INTEGER NOT NULL, actor_name TEXT NOT NULL,
         created_at REAL NOT NULL, verdict TEXT NOT NULL, note TEXT NOT NULL)""")
     db.execute("CREATE INDEX IF NOT EXISTS ai_evidence_reviews_session ON ai_evidence_reviews(session_id,id DESC)")
-    db.execute("PRAGMA user_version=13")
+    db.execute("PRAGMA user_version=14")

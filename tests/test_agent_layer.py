@@ -182,12 +182,100 @@ class AgentLayerTests(unittest.TestCase):
         cfg,cond=self.config('negotiation');cfg['architecture']['provider']='openai';captured=[]
         def model(items,*args):
             captured.append(copy.deepcopy(items))
-            if len(captured)==1:return {'calls':[{'name':'get_supplier_records','inputs':{'supplier_ids':['beacon']},'call_id':'n1'},{'name':'evaluate_offer','inputs':{'offer':None},'call_id':'n2'}],'items':[],'final':None},{}
+            self.assertEqual([tool['name'] for tool in args[0]], ['evaluate_offer'])
+            if len(captured)==1:return {'calls':[{'name':'evaluate_offer','inputs':{'offer':None},'call_id':'n2'}],'items':[],'final':None},{}
             return {'calls':[],'items':[],'final':{'answer':'The current policy offer is available.','action':{'price':110}}},{}
         response=run_agent(cfg,cond,[],'Negotiate',model_call=model)
         self.assertNotIn('reservation_price',json.dumps(captured));self.assertNotIn('95',json.dumps(captured))
         self.assertEqual(response['decision_action'],{'price':120})
 
+    def test_negotiation_shares_one_order_between_participant_model_and_result(self):
+        cfg, cond = self.config('negotiation')
+        cfg['negotiation'].update(item='Valve assemblies', quantity=40, price_min=60, price_max=140)
+        public = public_config(cfg, cond)
+        self.assertEqual(public['case_study']['tables'], {})
+        self.assertEqual(public['negotiation']['participant_role'], 'buyer')
+        self.assertEqual(public['negotiation']['quantity'], 40)
+        self.assertEqual(public['negotiation']['price_min'], 50)
+        self.assertEqual(public['negotiation']['price_max'], 150)
+        self.assertIn('40 units of Valve assemblies', public['scenario']['instructions'])
+        self.assertEqual(cond['agent']['allowed_tools'], ['evaluate_offer'])
+        self.assertEqual(cond['agent']['data_access'], {})
+
+        captured = []
+        def model(items, definitions, schema, remaining, step):
+            captured.append(copy.deepcopy(items))
+            if step == 0:
+                return {'calls':[{'name':'evaluate_offer','inputs':{'offer':None},'call_id':'offer'}],
+                        'items':[], 'final':None}, {}
+            return {'calls':[], 'items':[], 'final':{'answer':'My offer is $120 per unit.', 'action':None}}, {}
+        model_config = copy.deepcopy(cfg)
+        model_config['architecture']['provider'] = 'openai'
+        run_agent(model_config, cond, [], 'What are we negotiating?', model_call=model)
+        instruction = json.loads(captured[0][0]['content'])
+        self.assertEqual(instruction['negotiation'], public['negotiation'])
+        self.assertEqual(instruction['scenario']['instructions'], public['case_study']['scenario']['instructions'])
+
+        auth = self.start(cfg, cond)
+        message = self.respond(auth)
+        self.see(auth, message)
+        result = self.store.decide(auth[0], cfg, {'action':'accept', 'decision_action':{'price':120},
+            'message_id':message['id'], 'client_ms':100, 'page_id':'page'})
+        outcome = json.loads(result['outcome_json'])
+        self.assertEqual(outcome['item'], 'Valve assemblies')
+        self.assertEqual(outcome['quantity'], 40)
+        self.assertEqual(outcome['unit_price'], 120)
+        self.assertEqual(outcome['order_total'], 4800)
+        self.assertTrue(outcome['agreement'])
+
+    def test_negotiation_tool_uses_the_recorded_offer_when_the_model_disagrees(self):
+        cfg, cond = self.config('negotiation')
+        cfg['architecture']['provider'] = 'openai'
+        cases = [
+            ([], 60, 105, 120),
+            ([], 105, 60, 105),
+            ([], None, 105, 120),
+            ([{'role':'user', 'content':'I offer $105.', 'offer_price':105}], None, 60, 105),
+        ]
+        for history, current, requested, expected in cases:
+            with self.subTest(current=current, requested=requested, history=history):
+                tool_log = []
+                def model(items, definitions, schema, remaining, step):
+                    self.assertEqual(definitions[0]['parameters']['properties']['offer'], {'type':'null'})
+                    if step == 0:
+                        return {'calls':[{'name':'evaluate_offer','inputs':{'offer':requested},'call_id':'quote'}],
+                                'items':[], 'final':None}, {}
+                    return {'calls':[], 'items':[], 'final':{'answer':'The current offer is ready for review.', 'action':None}}, {}
+                reply = run_agent(cfg, cond, history, 'Discuss the current offer.', model_call=model,
+                                  offer_price=current, tool_log=tool_log.append)
+                self.assertEqual(reply['decision_action'], {'price':expected})
+                evaluated = current if current is not None else history[-1]['offer_price'] if history else None
+                self.assertEqual(tool_log[0]['inputs'], {'offer':evaluated})
+                self.assertEqual(tool_log[0]['status'], 'completed')
+                self.assertTrue(tool_log[0]['model_offer_overridden'])
+        self.assertEqual(REGISTRY['evaluate_offer'].input_schema['properties']['offer']['type'], ['number','null'])
+
+
+
+    def test_skipped_negotiation_tool_is_evaluated_by_the_server_before_reply(self):
+        cfg,cond=self.config('negotiation')
+        cfg['architecture'].update(provider='openai',model=PINNED_MODEL,temperature=0)
+        cond['agent']['max_tool_calls']=1
+        calls=[];logs=[]
+        def model(items,definitions,schema,remaining,step):
+            calls.append(copy.deepcopy(items))
+            answer='I can offer $70.' if step==0 else 'My current offer is $120 per unit.'
+            return {'calls':[], 'items':[], 'final':{'answer':answer,'action':None}},{}
+        reply=run_agent(cfg,cond,[],'Can we discuss demand?',model_call=model,tool_log=logs.append)
+        self.assertEqual(reply['decision_action'],{'price':120})
+        self.assertEqual(reply['content'],'My current offer is $120 per unit.')
+        self.assertFalse(reply['metadata'].get('safe_fallback',False))
+        self.assertEqual(len(calls),2)
+        self.assertEqual(json.loads(calls[1][-1]['content'])['server_offer_evaluation'],{'decision':'counter','amount':120})
+        self.assertEqual(logs[0]['tool_name'],'evaluate_offer')
+        self.assertEqual(logs[0]['status'],'completed')
+        self.assertEqual(reply['metadata']['tool_calls'],1)
+        self.assertIn('server_offer_evaluation',reply['metadata']['execution_path'])
 
 
 class AgentHTTPTests(unittest.TestCase):
@@ -206,6 +294,180 @@ class AgentHTTPTests(unittest.TestCase):
     def launch(self,cfg,mode):
         self.store.save(cfg,self.store.current()['revision']);launch=self.store.issue_launch(uid(),mode,True)
         return self.request('/api/participant/start',{'launch_token':launch['launch_token'],'consent':True})[1]
+    def test_negotiation_prices_in_chat_update_the_recorded_offer(self):
+        cfg = study_config('negotiation', 'v2')
+        cfg['negotiation'].update(title='Crestline Semiconductors', item='Power-management chips',
+            knowledge='Crestline is a fictional semiconductor supplier. The participant buys for Meridian Devices.')
+        credentials = self.launch(cfg, 'recommender')
+        token = credentials['session_token']
+        code, view = self.request('/api/participant/session', token=token)
+        self.assertEqual(view['public']['scenario']['title'], 'Crestline Semiconductors')
+        self.assertIn('semiconductor supplier', view['public']['negotiation']['knowledge'])
+
+        code, opening = self.request('/api/participant/message',
+            {'request_id':uid(), 'content':'Semiconductor stocks fell 20%. Can we discuss demand?'}, token)
+        self.assertEqual(code, 200, opening)
+        self.assertIsNone(opening['participant_offer_price'])
+        self.assertEqual(opening['decision_action'], {'price':120})
+
+        proposal = {'request_id':uid(), 'content':'Orders are uncertain. I can offer $105 per chip.'}
+        code, reply = self.request('/api/participant/message', proposal, token)
+        self.assertEqual(code, 200, reply)
+        self.assertEqual(reply['participant_offer_price'], 105)
+        self.assertEqual(reply['decision_action'], {'price':105})
+        self.assertFalse(reply['safe_fallback'])
+        code, replay = self.request('/api/participant/message', proposal, token)
+        self.assertEqual(replay['id'], reply['id'])
+        self.assertEqual(replay['participant_offer_price'], 105)
+        session = self.request('/api/participant/session', token=token)[1]
+        self.assertEqual(session['messages'][-2]['offer_price'], 105)
+        self.assertEqual(len(session['messages']), 4)
+
+        event = {'id':uid(), 'type':'recommendation_visible', 'client_ms':10, 'client_wall_ms':100,
+                 'page_id':'chat-offer', 'payload':{'message_id':reply['id']}}
+        self.request('/api/participant/events', {'events':[event]}, token)
+        code, outcome = self.request('/api/participant/decision', {'action':'accept',
+            'decision_action':{'price':105}, 'message_id':reply['id'], 'client_ms':100,
+            'page_id':'chat-offer'}, token)
+        self.assertEqual(code, 200, outcome)
+        self.assertEqual(json.loads(outcome['outcome_json'])['order_total'], 10500)
+
+    def test_chat_acceptance_finishes_the_current_quote_once_without_an_ai_call(self):
+        credentials=self.launch(study_config('negotiation','v2'),'recommender')
+        token=credentials['session_token']
+        code,quote=self.request('/api/participant/message',{'request_id':uid(),'content':'I can offer $60 a unit.'},token)
+        self.assertEqual(code,200,quote)
+        self.assertEqual(quote['decision_action'],{'price':120})
+        acceptance={'request_id':uid(),'content':'Ok I accept','message_id':quote['id'],
+                    'round_id':1,'client_ms':100,'page_id':'acceptance'}
+        code,result=self.request('/api/participant/message',acceptance,token)
+        self.assertEqual(code,400,result)  # Unseen quotes cannot be accepted.
+        self.assertEqual(len(self.store.transcript(credentials['session_id'])),2)
+        event={'id':uid(),'type':'recommendation_visible','client_ms':10,'client_wall_ms':100,
+               'page_id':'acceptance','payload':{'message_id':quote['id']}}
+        self.request('/api/participant/events',{'events':[event]},token)
+        code,result=self.request('/api/participant/message',{**acceptance,'content':'I accept $110'},token)
+        self.assertEqual(code,400,result)
+        self.assertEqual(len(self.store.transcript(credentials['session_id'])),2)
+        code,result=self.request('/api/participant/message',{**acceptance,'message_id':'stale-quote'},token)
+        self.assertEqual(code,409,result)
+        with patch('research_agent.agent.run_agent',side_effect=AssertionError('Acceptance must not call the AI')):
+            code,result=self.request('/api/participant/message',acceptance,token)
+            self.assertEqual(code,200,result)
+            self.assertEqual(result['status'],'completed')
+            outcome=json.loads(result['outcome_json'])
+            self.assertTrue(outcome['agreement'])
+            self.assertEqual(outcome['unit_price'],120)
+            self.assertEqual(outcome['order_total'],12000)
+            code,replay=self.request('/api/participant/message',acceptance,token)
+            self.assertEqual(code,200,replay)
+            self.assertEqual(replay,result)
+        self.assertEqual(len(self.store.export('decisions')),1)
+        transcript=self.store.transcript(credentials['session_id'])
+        self.assertEqual(len(transcript),3)
+        self.assertEqual(transcript[-1]['content'],'Ok I accept')
+        self.assertEqual(transcript[-1]['role'],'user')
+        self.assertEqual(json.loads(transcript[-1]['metadata_json'])['accepted_message_id'],quote['id'])
+        code,changed=self.request('/api/participant/message',{**acceptance,'content':'Deal'},token)
+        self.assertEqual(code,409,changed)
+        self.assertEqual(self.request('/api/participant/session',token=token)[1]['status'],'completed')
+
+    def test_conditional_acceptance_remains_chat_and_a_skipped_tool_is_recovered(self):
+        cfg=study_config('negotiation','v2')
+        cfg['architecture'].update(provider='openai',model=PINNED_MODEL,temperature=0)
+        calls=[]
+        def model(config,condition,items,definitions,schema,remaining):
+            calls.append(copy.deepcopy(items))
+            return {'calls':[],'items':[],'final':{'answer':'My offer is $120 per unit.','action':None}}, {'usage':{'input_tokens':60,'output_tokens':20}}
+        with patch.dict(os.environ,{'OPENAI_API_KEY':'fixture-only'}),patch('research_agent.providers.agent_step',side_effect=model):
+            credentials=self.launch(cfg,'recommender');token=credentials['session_token']
+            for content,offer in (("I'd much rather come to about $80 a unit.",80),('I accept if delivery is free.',None)):
+                code,reply=self.request('/api/participant/message',{'request_id':uid(),'content':content},token)
+                self.assertEqual(code,200,reply)
+                self.assertEqual(reply['participant_offer_price'],offer)
+                self.assertEqual(reply['decision_action'],{'price':120})
+            self.assertEqual(len(calls),4)
+            view=self.request('/api/participant/session',token=token)[1]
+            self.assertEqual(view['status'],'active')
+            self.assertEqual(len(view['messages']),4)
+            self.assertFalse(self.store.export('decisions'))
+            detail=self.request('/api/admin/session?session_id='+credentials['session_id'])[1]
+            self.assertEqual(detail['metrics']['failed_requests'],0)
+
+    def test_willing_to_go_chat_offer_recovers_from_a_model_amount_mismatch(self):
+        cfg = study_config('negotiation', 'v2')
+        cfg['architecture'].update(provider='openai', model=PINNED_MODEL, temperature=0)
+        def model(config, condition, items, definitions, schema, remaining):
+            outputs = [item for item in items if item.get('type') == 'function_call_output']
+            meta = {'usage':{'input_tokens':60, 'output_tokens':20}}
+            if not outputs:
+                self.assertEqual(definitions[0]['parameters']['properties']['offer'], {'type':'null'})
+                return {'calls':[{'name':'evaluate_offer','inputs':{'offer':105},'call_id':'price'}],
+                        'items':[], 'final':None}, meta
+            return {'calls':[], 'items':[], 'final':{'answer':'My current offer is $120 per unit.', 'action':None}}, meta
+        with patch.dict(os.environ, {'OPENAI_API_KEY':'fixture-only'}), patch('research_agent.providers.agent_step', side_effect=model):
+            credentials = self.launch(cfg, 'recommender')
+            token = credentials['session_token']
+            proposal = {'request_id':uid(), 'content':'I am willing to go for $60 per unit'}
+            code, reply = self.request('/api/participant/message', proposal, token)
+            self.assertEqual(code, 200, reply)
+            self.assertEqual(reply['participant_offer_price'], 60)
+            self.assertEqual(reply['decision_action'], {'price':120})
+            code, replay = self.request('/api/participant/message', proposal, token)
+            self.assertEqual(replay['id'], reply['id'])
+            code, followup = self.request('/api/participant/message',
+                {'request_id':uid(), 'content':'What would make this work for both of us?'}, token)
+            self.assertEqual(code, 200, followup)
+            self.assertIsNone(followup['participant_offer_price'])
+            self.assertEqual(followup['decision_action'], {'price':120})
+            view = self.request('/api/participant/session', token=token)[1]
+            self.assertEqual(view['messages'][0]['offer_price'], 60)
+            self.assertEqual(len(view['messages']), 4)
+            detail = self.request('/api/admin/session?session_id=' + credentials['session_id'])[1]
+            self.assertEqual(detail['metrics']['failed_requests'], 0)
+
+    def test_blocked_negotiation_replies_keep_a_usable_offer_and_audit(self):
+        cfg = study_config('negotiation', 'v2')
+        cfg['architecture'].update(provider='openai', model=PINNED_MODEL, temperature=0)
+        turn = []
+        fail_rewrite = False
+        def model(config, condition, items, definitions, schema, remaining):
+            turn.append(copy.deepcopy(items))
+            meta = {'usage':{'input_tokens':60, 'output_tokens':20}}
+            outputs = [item for item in items if item.get('type') == 'function_call_output']
+            if not outputs:
+                return {'calls':[{'name':'evaluate_offer','inputs':{'offer':None},'call_id':'price'}],
+                        'items':[], 'final':None}, meta
+            if not definitions:
+                if fail_rewrite:
+                    raise ProviderError('Rewrite unavailable')
+                return {'calls':[], 'items':[], 'final':{'answer':'My current offer is $120 per unit.', 'action':None}}, meta
+            return {'calls':[], 'items':[], 'final':{
+                'answer':'Your $60 offer is below my minimum. My counteroffer is $120.', 'action':None}}, meta
+        with patch.dict(os.environ, {'OPENAI_API_KEY':'fixture-only'}), patch('research_agent.providers.agent_step', side_effect=model):
+            credentials = self.launch(cfg, 'recommender')
+            token = credentials['session_token']
+            code, repaired = self.request('/api/participant/message',
+                {'request_id':uid(), 'content':'I am willing to go for $60 per unit'}, token)
+            self.assertEqual(code, 200, repaired)
+            self.assertEqual(repaired['content'], 'My current offer is $120 per unit.')
+            self.assertFalse(repaired['safe_fallback'])
+            detail = self.request('/api/admin/session?session_id=' + credentials['session_id'])[1]
+            self.assertIn('output_repaired', detail['activity']['event_counts'])
+            self.assertEqual(len(turn), 3)
+
+            fail_rewrite = True
+            code, fallback = self.request('/api/participant/message',
+                {'request_id':uid(), 'content':'Can we discuss the offer again?'}, token)
+            self.assertEqual(code, 200, fallback)
+            self.assertIn('USD 120.00 per unit', fallback['content'])
+            self.assertNotIn('withheld', fallback['content'])
+            self.assertEqual(fallback['decision_action'], {'price':120})
+            detail = self.request('/api/admin/session?session_id=' + credentials['session_id'])[1]
+            self.assertIn('output_replaced', detail['activity']['event_counts'])
+            self.assertEqual(detail['session']['status'], 'active')
+            self.assertEqual(detail['metrics']['failed_requests'], 0)
+
     def test_autonomous_http_commit_is_atomic_and_reloads_with_result(self):
         cfg=study_config('disruption_response','v1');creds=self.launch(cfg,'autonomous');token=creds['session_token']
         code,message=self.request('/api/participant/message',{'request_id':uid(),'content':'Analyze','round_id':1},token)
@@ -259,6 +521,7 @@ class AgentHTTPTests(unittest.TestCase):
         code, launch = self.request("/api/admin/launch", {**preview_request, "preview": True})
         self.assertEqual(code, 200, launch)
         self.assertEqual(launch["config_version"], slot["revision"])
+        expected_group = next(group["label"] for group in config["conditions"] if group["id"] == "human_retailer")
 
         next_config = copy.deepcopy(config)
         next_config["conditions"][0]["prompt"] = "An edited counterpart prompt."
@@ -267,10 +530,16 @@ class AgentHTTPTests(unittest.TestCase):
         })
         self.assertEqual(code, 200, edited)
         self.assertEqual(self.request("/api/admin/launch", {**preview_request, "preview": True})[0], 409)
+        self.assertEqual(self.store.preview(launch["launch_token"])["public"]["test_group"], expected_group)
         credentials = self.store.start(launch["launch_token"], True)
         session, pinned_config, _ = self.store.authenticate(credentials["session_token"])
         self.assertEqual(session["config_version"], slot["revision"])
         self.assertEqual(pinned_config, config)
+        code, view = self.request("/api/participant/session", token=credentials["session_token"])
+        self.assertEqual(code, 200, view)
+        self.assertEqual(view["public"]["test_group"], expected_group)
+        self.assertEqual(view["ozer"]["participant_role"], "retailer")
+        self.assertNotIn("test_group", self.store.preview(old_link["launch_token"])["public"])
         old_session = self.store.start(old_link["launch_token"], True)
         self.assertEqual(self.store.authenticate(old_session["session_token"])[1], active_config)
 
@@ -306,6 +575,19 @@ class AgentHTTPTests(unittest.TestCase):
         code, replacement = self.request("/api/admin/setup-slots", {"label": "Delete me", "config": current["config"]})
         self.assertEqual(code, 200, replacement)
         self.assertNotEqual(replacement["id"], saved["id"])
+
+    def test_current_study_preview_rejects_a_stale_group_picker(self):
+        current = self.store.current()
+        config = copy.deepcopy(current["config"])
+        config["conditions"][0]["label"] = "Updated group"
+        updated = self.store.save(config, current["revision"])
+        request = {"preview": True, "participant_id": "preview-study",
+                   "condition_id": config["conditions"][0]["id"], "expected_study_revision": current["revision"]}
+        self.assertEqual(self.request("/api/admin/launch", request)[0], 409)
+        self.assertEqual(self.store.pending_launches(), [])
+        code, launch = self.request("/api/admin/launch", {**request, "expected_study_revision": updated["revision"]})
+        self.assertEqual(code, 200, launch)
+        self.assertEqual(self.store.preview(launch["launch_token"])["public"]["test_group"], "Updated group")
 
     def test_overview_demos_are_pinned_previews_and_use_the_server_provider(self):
         current = self.store.current()

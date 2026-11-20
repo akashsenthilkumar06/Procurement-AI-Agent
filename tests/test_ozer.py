@@ -100,13 +100,37 @@ class OzerTests(unittest.TestCase):
         self.assertEqual(code, expected, result)
         return result
 
-    def begin(self, state, role):
+    def reach_quiz(self, state):
         for stage in ("general", "instructions", "role"):
             self.assertEqual(state["ozer"]["stage"], stage)
             state = self.act(state, "continue")
         self.assertEqual(state["ozer"]["stage"], "quiz")
+        return state
+
+    def begin(self, state, role):
+        state = self.reach_quiz(state)
         self.assertTrue(self.act(state, "quiz", answers={})["ozer"]["quiz_retry"])
         return self.act(state, "quiz", answers={"signal": "retailer", "paid": "paid_only", "decision": role})
+
+    def test_only_test_sessions_can_skip_comprehension(self):
+        self.save(provider="openai", model=PINNED_MODEL, temperature=0)
+        quiz = self.reach_quiz(self.start("supplier"))
+        decision = self.act(quiz, "skip_quiz")
+        self.assertEqual(decision["round_id"], 1)
+        self.assertEqual(decision["ozer"]["stage"], "decision")
+        self.assertIn("retailer_report", decision["ozer"])
+        self.assertEqual(self.act(quiz, "skip_quiz")["ozer"]["stage"], "decision")
+        events = [e["type"] for e in self.store.export("events") if e["session_id"] == self.session_id]
+        self.assertEqual(events.count("ozer_comprehension_skipped"), 1)
+        self.assertNotIn("ozer_comprehension", events)
+
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "mock-only"}):
+            enrolled = self.reach_quiz(self.start("retailer", preview=False))
+            self.act(enrolled, "skip_quiz", expected=403, preview=True)
+            self.assertTrue(self.act(enrolled, "quiz", answers={})["ozer"]["quiz_retry"])
+            self.assertEqual(self.view()["ozer"]["stage"], "quiz")
+            answers = {"signal": "retailer", "paid": "paid_only", "decision": "retailer"}
+            self.assertEqual(self.act(enrolled, "quiz", answers=answers)["ozer"]["stage"], "decision")
 
     def test_both_roles_complete_all_rounds_and_export_payoffs(self):
         # Previews stay keyless even when the saved config is set to the enrolled provider.

@@ -11,6 +11,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
+from dotenv import load_dotenv
 
 from . import VERSION
 from .config import canonical, private_mode, normalize, validate, public_config, fingerprint
@@ -19,6 +20,7 @@ from .agent import SystemLimit
 from .store import Conflict, Store
 from . import accounts, chat_history, setup_chat, usage_evidence
 from .ozer import OzerGame, expire_waiting_rounds, is_ozer
+from .offer_policy import chat_offer, chat_acceptance
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -297,6 +299,7 @@ class Handler(BaseHTTPRequestHandler):
                     data.get("assignment_method"), slot_id=data.get("slot_id"),
                     expected_slot_revision=data.get("expected_slot_revision"), allow_relay=self.server.local_mode,
                     demo_agent=data.get("demo_agent"), live_preview=data.get("live_preview", False),
+                    expected_study_revision=data.get("expected_study_revision"),
                 ))
             if method == "GET" and path == "/api/admin/export":
                 params = parse_qs(parsed.query)
@@ -371,19 +374,30 @@ class Handler(BaseHTTPRequestHandler):
                     raise ValueError("A request ID is required")
                 if data.get("round_id",session["round_id"]) != session["round_id"]:
                     raise ValueError("Round does not match the session")
+                if ((config.get("case_study") or {}).get("id") == "negotiation"
+                        and condition.get("agent_enabled") and condition["agent"]["mode"] == "recommender"):
+                    acceptance = chat_acceptance(content, config["negotiation"]["currency"])
+                    if acceptance is not None:
+                        return self.send(store.decide_pack(session, config, data, chat_acceptance=acceptance))
+                offer_price = data.get("offer_price")
+                if config["task"] == "negotiation" and offer_price is None:
+                    offer_price = chat_offer(content, config["negotiation"]["currency"])
                 relay = config["architecture"]["provider"] == "relay" and not private_mode(condition) and not config['case_study']
                 if relay and (not self.server.local_mode or not session["preview"]):
                     raise PermissionError("This-chat relay is for local previews only")
-                if not store.begin_request(session["id"], rid, content, allow_pending=relay, offer_price=data.get("offer_price")):
+                if not store.begin_request(session["id"], rid, content, allow_pending=relay, offer_price=offer_price):
                     if relay:
                         result = store.request_view(session["id"],rid)
                         if result["status"] == "pending":
-                            return self.send(result,202)
+                            return self.send({**result, "participant_offer_price":offer_price},202)
+                        result["message"]["participant_offer_price"] = offer_price
                         return self.send(result["message"])
                     old = next(m for m in store.transcript(session["id"]) if m["request_id"] == rid and m["role"] == "assistant")
-                    return self.send({**{k: old[k] for k in ("id", "role", "content", "option_id", "offer_price", "created_at")},'decision_action':json.loads(old['decision_action_json']) if old['decision_action_json'] else None,'committed_decision':dict(store.session_view(*store.authenticate(self.headers['Authorization'][7:]))['decision'] or {}) if config['case_study'] and condition['agent']['mode']=='autonomous' else None})
+                    return self.send({**{k: old[k] for k in ("id", "role", "content", "option_id", "offer_price", "created_at")},'decision_action':json.loads(old['decision_action_json']) if old['decision_action_json'] else None,
+                        'participant_offer_price':offer_price, 'safe_fallback':bool(json.loads(old['metadata_json']).get('safe_fallback')),
+                        'committed_decision':dict(store.session_view(*store.authenticate(self.headers['Authorization'][7:]))['decision'] or {}) if config['case_study'] and condition['agent']['mode']=='autonomous' else None})
                 if relay:
-                    return self.send({"status":"pending","request_id":rid},202)
+                    return self.send({"status":"pending","request_id":rid,"participant_offer_price":offer_price},202)
                 try:
                     history = [m for m in store.transcript(session["id"]) if m["request_id"] != rid]
                     if config['case_study']:
@@ -392,11 +406,13 @@ class Handler(BaseHTTPRequestHandler):
                         def model_call(items,definitions,schema,remaining,step):
                             return store.provider_call(session,rid+':'+str(step),config,condition,items+[{'tool_definitions':definitions,'schema':schema}],
                                 invoke=lambda:agent_step(config,condition,items,definitions,schema,remaining))
-                        result=run_agent(config,condition,history,content,tool_log=lambda payload:store.server_event(session,'tool_call',{'request_id':rid,'purpose':'agent',**payload}),model_call=model_call,offer_price=data.get('offer_price'))
+                        result=run_agent(config,condition,history,content,tool_log=lambda payload:store.server_event(session,'tool_call',{'request_id':rid,'purpose':'agent',**payload}),model_call=model_call,offer_price=offer_price)
                     else:
-                        result = respond(config,condition,history,content,offer_price=data.get("offer_price"),
+                        result = respond(config,condition,history,content,offer_price=offer_price,
                                          provider_call=lambda c,cond,items:store.provider_call(session,rid,c,cond,items))
-                    return self.send(store.finish_request(session["id"], rid, result))
+                    reply = store.finish_request(session["id"], rid, result)
+                    reply["participant_offer_price"] = offer_price
+                    return self.send(reply)
                 except SystemLimit as exc:
                     return self.send(store.end_system_limit(session,exc.reason,str(exc)))
                 except Exception:
@@ -480,7 +496,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.send(chat_history.export_chats(store, account["id"]),
                              extra_headers={"Content-Disposition": 'attachment; filename="session-chat-history.json"'})
         if method == "POST" and path.startswith("/api/admin/chats/"):
-            data = self.read_json(12000)
+            data = self.read_json(6_000_000 if path == "/api/admin/chats/ask" else 12000)
             chat_id = data.get("chat_id")
             if path == "/api/admin/chats/ask":
                 return self.send(chat_history.ask(store, account["id"], data))
@@ -496,6 +512,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
+    load_dotenv(ROOT / ".env", override=False)
     parser = argparse.ArgumentParser(description="Research Agent pilot server")
     parser.add_argument("--host", default=os.environ.get("HOST", "127.0.0.1"))
     parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", "8765")))

@@ -5,7 +5,7 @@ let snapshot, draft, selected = 0, health, overview, noticeTimer;
 let detailLoad = 0, currentDetailId = null, pendingLinks = [], sessionAction;
 let caseStudies=[];
 let setupSlots = [], selectedSlot, slotDirty = false, slotBusy = false;
-let previewSlot = null, previewBusy = false, copyDraft = null;
+let previewSlot = null, previewStudy = null, previewBusy = false, copyDraft = null;
 let assistantAttachment = null, setupChatId = null, setupChatBusy = false, setupChatLoading = false;
 let setupChatLoad = 0, setupChatHistoryLoad = 0, setupChatTurns = [], setupPendingTurn = null;
 let newSetup = false;
@@ -141,7 +141,9 @@ function renderTaskFields(){
   $("case-study-status").innerHTML = packed ? setupIcon("scenario") + " Case template: " + esc(slotCaseTitle(draft)) : "";
   $("case-study-status").classList.toggle("hidden", !packed);
   $('selection-settings').classList.toggle('hidden',packed||$('config-task').value!=='supplier_selection');
-  $('negotiation-settings').classList.toggle('hidden',packed||$('config-task').value!=='negotiation');
+  const policyNegotiation = draft.case_study?.id === "negotiation";
+  $('negotiation-settings').classList.toggle('hidden',(packed && !policyNegotiation)||$('config-task').value!=='negotiation');
+  for (const key of ["price_min", "price_max", "opening_price", "concession_step"]) $("neg-" + key).disabled = policyNegotiation;
   $('private-price-settings').classList.toggle('hidden',$('config-task').value!=='negotiation'&&!$('cond-price-min').value&&!$('cond-price-max').value);
   renderScenarioExample();
 }
@@ -344,12 +346,20 @@ function sessionMenu(session) {
 const actionNames = {ozer_round:"Round result recorded",autonomous:"Agent committed automatically",accept:"Accepted the agent’s choice",override:"Overrode the agent’s choice",reject:"Finished without a choice",independent:"Chose independently"};
 function dateTime(value) { return value == null ? "Not recorded" : new Date(value*1000).toLocaleString(undefined,{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"}); }
 function duration(ms) { if(ms==null)return "Unavailable"; if(ms<1000)return Math.round(ms)+" ms";if(ms<60000)return (ms/1000).toFixed(1)+" sec";const secs=Math.round(ms/1000);return Math.floor(secs/60)+" min "+secs%60+" sec"; }
+const readableLabel=value=>String(value).replaceAll('_',' ').replace(/^\w/,letter=>letter.toUpperCase());
+const readableValue=value=>value==null ? '—' : typeof value==='number' ? value.toLocaleString() :
+  Array.isArray(value) ? value.map(readableValue).join(', ') : typeof value==='object' ?
+  Object.entries(value).map(([key,item])=>readableLabel(key)+': '+readableValue(item)).join(' · ') : readableLabel(value);
 function sessionRows(rows, compact = false) {
   if (!rows.length) return '<div class="empty-state"><div class="empty-symbol">○</div><h3>No sessions yet.</h3><p>Run a preview to see the conversation, decisions, and activity here.</p></div>';
   return '<div class="session-list'+(compact ? ' compact-session-list' : '')+'">'+rows.map(s=>{
     const status = sessionStatusLabels[s.status] || s.status;
+    let savedAction;
+    try { savedAction = JSON.parse(s.outcome_json || '{}').decision_action; } catch { /* Older sessions retain their saved label. */ }
+    const price = s.final_price ?? savedAction?.price;
     const outcome = s.task === "ozer_game" ? (s.status === "active" ? "Round " + s.round_id + " of 23" : "") :
-      s.final_price != null ? s.currency + " " + s.final_price.toFixed(2) + " / unit" :
+      s.task === "negotiation" && Number.isFinite(price) ? new Intl.NumberFormat('en-US',{style:'currency',currency:s.currency || 'USD'}).format(price) + " per unit" :
+      savedAction ? readableValue(savedAction) :
       s.final_option_label || (s.action === "reject" ? "No choice recorded" : "");
     return `<div class="session-list-item"><a class="session-row" data-status="${esc(s.status)}" href="#sessions/${encodeURIComponent(s.id)}"><span class="session-avatar glyph-${sessionCaseTones[s.task] || "blue"}" aria-hidden="true">${setupIcon(caseIcons[s.task] || "study")}</span><span class="session-identity"><strong>${esc(s.label || s.participant_id)}</strong><span>${s.label ? esc(s.participant_id) + " · " : ""}${esc(s.condition_label || s.condition_id)}${s.preview ? '<em>Preview</em>' : ''}${s.edit_id ? '<em class="session-edited">Edited</em>' : ''}</span></span><span class="session-result"><span class="session-row-status">${esc(status)}</span>${outcome ? `<span class="session-row-outcome">${esc(outcome)}</span>` : ""}</span><span class="session-date">${esc(dateTime(s.created_at))}</span><span class="session-open" aria-hidden="true">↗</span></a>${sessionMenu(s)}</div>`;
   }).join("")+'</div>';
@@ -357,6 +367,7 @@ function sessionRows(rows, compact = false) {
 
 let sessionChatBusy = false, chatLoading = false, currentChat = null, chatLoadVersion = 0;
 let chatHistoryVersion = 0, savedChats = [], pendingTurn = null, chatAction = null;
+let sessionAttachment = null;
 const chatScopes = {study:"Study sessions", preview:"Preview sessions", all:"All recorded sessions"};
 const chatStatuses = {...sessionStatusLabels, not_completed:"Not completed"};
 
@@ -366,10 +377,12 @@ function updateSessionChatControls() {
   const hasMessages = Boolean($("session-chat-log").childElementCount);
   const unavailable = activeTab.startsWith("session-chat/") && !currentChat;
   field.disabled = sessionChatBusy || chatLoading || unavailable || !configured;
-  $("send-session-question").disabled = field.disabled || !field.value.trim();
+  $("send-session-question").disabled = field.disabled || (!field.value.trim() && !sessionAttachment);
+  $("choose-session-document").disabled = field.disabled;
+  $("remove-session-document").disabled = sessionChatBusy || chatLoading;
   $("session-chat-scope").disabled = sessionChatBusy || chatLoading;
   $("clear-session-chat").disabled = sessionChatBusy ||
-    (!chatLoading && activeTab === "session-chat" && !hasMessages && !field.value && $("session-chat-error").classList.contains("hidden"));
+    (!chatLoading && activeTab === "session-chat" && !hasMessages && !field.value && !sessionAttachment && $("session-chat-error").classList.contains("hidden"));
   $("session-chat-empty").classList.toggle("hidden", hasMessages || chatLoading);
   $("session-chat-actions").classList.toggle("hidden", !currentChat || !isSessionChat(activeTab) || sessionChatBusy);
   const menu = $("session-chat-quick-menu");
@@ -383,15 +396,32 @@ function updateSessionChatControls() {
   }
   suggestions.classList.toggle("hidden", chatLoading);
   document.querySelectorAll("[data-chat-query]").forEach(button => button.disabled = sessionChatBusy || chatLoading || unavailable);
+  document.querySelectorAll("[data-chat-prompt]").forEach(button => button.disabled = sessionChatBusy || chatLoading || unavailable || !configured);
   $("session-chat-help").textContent = configured ?
-    "OpenAI interprets typed questions. Session records are queried locally." :
+    "OpenAI uses relevant saved agents and scoped session excerpts. Answers link to their sources." :
     "Use the suggested queries now, or configure OpenAI on the server to type your own questions.";
 }
 
 function renderSessionAnswer(answer, result, chatId, requestId) {
+  if (result.kind === "draft") {
+    const card = setupAnswer(result.draft, 0);
+    const save = card.querySelector("[data-save-setup-turn]");
+    if (save) save.onclick = () => saveGeneratedSetup(result.draft.config, save, "session-chat-error");
+    answer.replaceChildren(card);
+    appendChatSources(answer, result);
+    return;
+  }
+  if (result.kind === "answer") {
+    const text = document.createElement("div");
+    text.className = "workspace-chat-text";
+    renderChatText(text, result.answer);
+    answer.replaceChildren(text);
+    appendChatSources(answer, result);
+    return;
+  }
   const {query, total, rows, groups, next_offset:nextOffset} = result;
   if (query.view === "unsupported") {
-    answer.textContent = "I can look up session status, completion counts, study groups, and participant codes. Open a session to review its conversation or decisions.";
+    answer.textContent = "That earlier request could not be answered by the status lookup. Ask again to analyze saved conversations or draft an agent.";
     return;
   }
   const filters = [chatScopes[query.scope], chatStatuses[query.status], query.study && "Study: " + query.study,
@@ -433,6 +463,45 @@ function renderSessionAnswer(answer, result, chatId, requestId) {
   answer.append(more);
 }
 
+function appendChatSources(answer, result) {
+  if (result.sources?.length) {
+    const links = document.createElement("nav"); links.className = "workspace-chat-sources";
+    links.setAttribute("aria-label", "Reviewed sources");
+    for (const source of result.sources) {
+      if (source.kind === "draft") {
+        const button = document.createElement("button"); button.type = "button";
+        button.textContent = source.label;
+        button.onclick = () => {
+          const target = $("chat-turn-" + source.id);
+          if (!target) return;
+          target.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block:"start"});
+          target.focus({preventScroll:true});
+        };
+        links.append(button);
+        continue;
+      }
+      const link = document.createElement("a");
+      link.href = source.kind === "setup" ? "/?setup="+encodeURIComponent(source.id)+"#conditions" : source.kind === "workspace" ? "#overview" : "#sessions/"+encodeURIComponent(source.id);
+      link.textContent = source.label;
+      links.append(link);
+    }
+    answer.append(links);
+  }
+  const notes = [];
+  if (result.sample_limited) notes.push("Based on a limited set of saved excerpts. Narrow your question for more detail.");
+  if (result.kind === "answer" && result.created_at) notes.push("Answered "+dateTime(result.created_at)+".");
+  if (notes.length) {const note=document.createElement("p");note.className="help";note.textContent=notes.join(" ");answer.append(note);}
+}
+
+function sessionChatPrompt(turn) {
+  return setupPrompt(turn.question, turn.attachment_name);
+}
+
+function renderSessionAttachment() {
+  $("session-chat-attachment").classList.toggle("hidden", !sessionAttachment);
+  $("session-chat-attachment-name").textContent = sessionAttachment?.name || "";
+}
+
 function chatPrompt(question) {
   const prompt = document.createElement("p");
   prompt.className = "session-chat-prompt";
@@ -440,9 +509,89 @@ function chatPrompt(question) {
   return prompt;
 }
 
+function renderChatText(container, value) {
+  // Only create our own text/formatting nodes; model output never becomes raw HTML.
+  const inline = (parent, text) => {
+    for (const part of text.split(/(\*\*[^*\n]+\*\*|`[^`\n]+`)/g)) {
+      const tag = part.startsWith("**") && part.endsWith("**") ? "strong" :
+        part.startsWith("`") && part.endsWith("`") ? "code" : null;
+      const node = tag ? document.createElement(tag) : document.createTextNode(part);
+      if (tag) node.textContent = part.slice(tag === "strong" ? 2 : 1, tag === "strong" ? -2 : -1);
+      parent.append(node);
+    }
+  };
+  let paragraph, list;
+  for (const line of String(value).split("\n")) {
+    if (!line.trim()) { paragraph = list = null; continue; }
+    const item = line.match(/^\s*(?:[-*•]|\d+[.)])\s+(.+)$/);
+    if (item) {
+      if (!list) { list = document.createElement("ul"); container.append(list); }
+      const li = document.createElement("li"); inline(li, item[1]); list.append(li); paragraph = null;
+    } else {
+      list = null;
+      if (!paragraph) { paragraph = document.createElement("p"); container.append(paragraph); }
+      else paragraph.append(document.createTextNode("\n"));
+      inline(paragraph, line.replace(/^#{1,6}\s+/, ""));
+    }
+  }
+}
+
+function showChatThinking(status, label = "Thinking") {
+  const dots = document.createElement("span");
+  dots.className = "thinking-dots";
+  dots.setAttribute("aria-hidden", "true");
+  dots.innerHTML = "<i></i><i></i><i></i>";
+  const text = document.createElement("span"); text.textContent = label + "…";
+  status.replaceChildren(dots, text);
+  status.classList.add("workspace-thinking");
+  status.classList.remove("hidden");
+}
+
+function revealChatResponse(answer) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  answer.classList.add("chat-response-entering");
+  const text = answer.querySelector(".workspace-chat-text");
+  if (!text) return;
+  const walker = document.createTreeWalker(text, NodeFilter.SHOW_TEXT);
+  const fragments = [];
+  let node, length = 0;
+  while ((node = walker.nextNode())) {
+    const value = node.textContent;
+    fragments.push({node, value, start:length});
+    length += value.length;
+    node.textContent = "";
+  }
+  if (!length) return;
+  const thread = answer.closest("#session-chat-thread, #setup-chat-thread");
+  let followEnd = false, lastScroll;
+  answer.setAttribute("aria-busy", "true");
+  const duration = Math.min(1200, Math.max(300, length * 1.6));
+  let started;
+  const frame = now => {
+    if (started === undefined) {
+      started = now;
+      followEnd = thread && thread.scrollHeight - thread.clientHeight - thread.scrollTop < 80;
+    } else if (thread && thread.scrollTop < lastScroll - 2) followEnd = false;
+    const done = !answer.isConnected || now - started >= duration;
+    const visible = done ? length : Math.floor(length * (now - started) / duration);
+    for (const fragment of fragments) {
+      let end = Math.max(0, visible - fragment.start);
+      // Reveal complete words, retaining the original formatting and text.
+      if (end < fragment.value.length) end = fragment.value.lastIndexOf(" ", end) + 1;
+      fragment.node.textContent = fragment.value.slice(0, end);
+    }
+    if (followEnd) thread.scrollTop = thread.scrollHeight;
+    lastScroll = thread?.scrollTop;
+    if (done) answer.removeAttribute("aria-busy");
+    else requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+}
+
 function chatAnswer(turn, chatId) {
   const answer = document.createElement("div");
   answer.className = "session-chat-answer";
+  answer.id = "chat-turn-" + turn.request_id;
   answer.tabIndex = -1;
   renderSessionAnswer(answer, turn.result, chatId, turn.request_id);
   return answer;
@@ -486,6 +635,9 @@ async function loadChat(chatId) {
   log.replaceChildren();
   thread.scrollTop = 0;
   $("session-chat-question").value = "";
+  sessionAttachment = null;
+  $("session-chat-document").value = "";
+  renderSessionAttachment();
   $("session-chat-scope").value = researcher.chat_scope;
   error.classList.add("hidden");
   status.textContent = "Opening chat…";
@@ -497,7 +649,7 @@ async function loadChat(chatId) {
     const {chat, turns} = await api("/api/admin/chats?id=" + encodeURIComponent(chatId));
     if (request !== chatLoadVersion || activeTab !== "session-chat/" + chatId) return;
     currentChat = chat;
-    log.replaceChildren(...turns.flatMap(turn => [chatPrompt(turn.question), chatAnswer(turn, chat.id)]));
+    log.replaceChildren(...turns.flatMap(turn => [sessionChatPrompt(turn), chatAnswer(turn, chat.id)]));
     if (turns.length) $("session-chat-scope").value = turns.at(-1).scope;
     renderChatHistory();
   } catch (err) {
@@ -515,14 +667,17 @@ async function loadChat(chatId) {
 }
 
 async function askAboutSessions(question, query) {
-  if (sessionChatBusy || chatLoading || !question || (activeTab.startsWith("session-chat/") && !currentChat)) return;
+  if (sessionChatBusy || chatLoading || (!question && !sessionAttachment) || (activeTab.startsWith("session-chat/") && !currentChat)) return;
   const error = $("session-chat-error");
   const log = $("session-chat-log");
   const thread = $("session-chat-thread");
   const field = $("session-chat-question");
   const scope = $("session-chat-scope").value;
+  const file = query ? null : sessionAttachment;
+  question ||= "Create an agent setup from this document.";
   $("session-chat-quick-menu").open = false;
-  const prompt = chatPrompt(question);
+  const prompt = sessionChatPrompt({question, attachment_name:file?.name});
+  prompt.classList.add("chat-message-entering");
   log.append(prompt);
   const draftQuestion = field.value;
   if (!query) field.value = "";
@@ -530,11 +685,12 @@ async function askAboutSessions(question, query) {
   sessionChatBusy = true;
   updateSessionChatControls();
   const status = $("session-chat-status");
-  status.textContent = "Looking up sessions…";
-  status.classList.remove("hidden");
+  showChatThinking(status);
   if (isSessionChat(activeTab)) thread.scrollTop = thread.scrollHeight;
   try {
+    const document = file ? await attachmentPayload(file) : null;
     const body = {chat_id: currentChat?.id ?? null, question, scope,
+      ...(document ? {document} : {}),
       ...(query ? {query: {...query, scope, condition:"", study:"", participant:""}} : {})};
     const signature = JSON.stringify(body);
     if (pendingTurn?.signature !== signature) pendingTurn = {signature, id: crypto.randomUUID()};
@@ -545,7 +701,10 @@ async function askAboutSessions(question, query) {
       activeTab = "session-chat/" + chat.id;
       history.replaceState(null, "", "#" + activeTab);
     }
-    log.append(chatAnswer(turn, chat.id));
+    const answer = chatAnswer(turn, chat.id);
+    log.append(answer);
+    revealChatResponse(answer);
+    if (!query) { sessionAttachment = null; $("session-chat-document").value = ""; renderSessionAttachment(); }
     refreshChatHistory();
     status.classList.add("hidden");
     if (isSessionChat(activeTab)) {
@@ -569,6 +728,19 @@ $("session-chat-form").onsubmit = event => {
   askAboutSessions($("session-chat-question").value.trim());
 };
 $("session-chat-question").oninput = updateSessionChatControls;
+$("choose-session-document").onclick = () => { $("session-chat-document").value=""; $("session-chat-document").click(); };
+$("session-chat-document").onchange = () => {
+  const file=$("session-chat-document").files[0];
+  if(!file)return;
+  if(!/\.(pdf|docx|txt|md)$/i.test(file.name)||!file.size||file.size>4_000_000){
+    $("session-chat-error").textContent="Choose a PDF, DOCX, TXT, or Markdown file up to 4 MB.";
+    $("session-chat-error").classList.remove("hidden");return;
+  }
+  sessionAttachment=file;renderSessionAttachment();$("session-chat-error").classList.add("hidden");updateSessionChatControls();
+};
+$("remove-session-document").onclick = () => {
+  sessionAttachment=null;$("session-chat-document").value="";renderSessionAttachment();updateSessionChatControls();$("choose-session-document").focus();
+};
 $("session-chat-question").onkeydown = event => {
   if (event.key !== "Enter" || event.shiftKey || event.isComposing) return;
   event.preventDefault();
@@ -576,6 +748,9 @@ $("session-chat-question").onkeydown = event => {
 };
 document.querySelectorAll("[data-chat-query]").forEach(button => {
   button.onclick = () => askAboutSessions(button.textContent, {view: button.dataset.chatQuery, status: button.dataset.chatStatus});
+});
+document.querySelectorAll("[data-chat-prompt]").forEach(button => {
+  button.onclick = () => askAboutSessions(button.dataset.chatPrompt);
 });
 $("clear-session-chat").onclick = async () => {
   if (activeTab === "session-chat") loadChat(null);
@@ -693,7 +868,7 @@ function conditionDescription(cond, config) {
 }
 
 function updatePreviewMode() {
-  const config = previewSlot?.config || snapshot.config;
+  const config = previewSlot?.config || previewStudy.config;
   const conditionId = $("preview-form").elements["preview-condition"].value;
   const group = config.conditions.find(item => item.id === conditionId);
   const usesPrivatePolicy = !config.case_study && group && (
@@ -709,7 +884,7 @@ function updatePreviewMode() {
     (provider !== "openai" || group.selection !== "model");
   const supportsLive = health.openai_configured && Boolean(group) &&
     (supportsSupplierLive || (ozer && provider === "openai"));
-  live.disabled = !supportsLive;
+  live.disabled = !supportsLive || previewBusy;
   $("preview-live-setting").classList.toggle("hidden", !supportsLive);
   const useLive = supportsLive && live.checked;
   $("start-preview").disabled = previewBusy || !group || (!useLive && (provider === "relay" ||
@@ -724,16 +899,16 @@ function updatePreviewMode() {
 }
 
 function showPreview(slot = null, preferredCondition = null) {
-  const c = slot?.config || snapshot.config;
+  if (previewBusy) return;
   previewSlot = slot;
+  previewStudy = snapshot;
+  const c = slot?.config || previewStudy.config;
   const conditionId = preferredCondition ?? (slot ? c.conditions[selected]?.id : null) ?? c.conditions[0].id;
-  $("preview-conditions").innerHTML = c.conditions.map((cond,i) => `<label class="condition-choice"><input type="radio" name="preview-condition" value="${esc(cond.id)}" ${cond.id===conditionId ? "checked" : ""}><span><strong>${esc(cond.label)}</strong><small>${esc(conditionDescription(cond, c))}</small></span><span class="condition-choice-check" aria-hidden="true">✓</span></label>`).join("");
-  // Setup tests start with the saved provider; live preview remains an explicit override.
-  $("preview-live").checked = !slot && c.architecture.provider !== "openai";
+  $("preview-conditions").innerHTML = c.conditions.map(cond => `<label class="condition-choice"><input type="radio" name="preview-condition" value="${esc(cond.id)}" ${cond.id===conditionId ? "checked" : ""}><span><strong>${esc(cond.label)}</strong><small>${esc(conditionDescription(cond, c))}</small></span><span class="condition-choice-check" aria-hidden="true">✓</span></label>`).join("");
+  $("preview-live").checked = false;
   $("preview-error").classList.add("hidden");
   updatePreviewMode();
-  $("preview-setup-description").textContent = slot ? "Preview “" + slot.label + "”." :
-    "Preview the setup currently used for the study.";
+  $("preview-setup-description").textContent = slot?.label || "Current study setup";
   $("preview-dialog").showModal();
 }
 $("preview-form").onchange = () => {
@@ -1138,15 +1313,27 @@ function collect(target = draft, preview = false) {
   }
   cond.private_information = privateInformation; cond.private_rules = rules; cond.examples = examples;
 }
-async function launch(preview, participant, condition, method = "external", slot = null, demoAgent = null, livePreview = false) {
+async function launch(preview, participant, condition, method = "external", slot = null, demoAgent = null, livePreview = false, studyRevision = null) {
   const result = await api("/api/admin/launch", {
     preview, participant_id: participant, assignment_method: method,
     ...(method === "external" ? {condition_id: condition} : {}),
     ...(slot ? {slot_id: slot.id, expected_slot_revision: slot.revision} : {}),
     ...(demoAgent ? {demo_agent: demoAgent} : {}),
     ...(livePreview ? {live_preview: true} : {}),
+    ...(studyRevision != null ? {expected_study_revision: studyRevision} : {}),
   });
   return {...result,url:location.origin+'/participate#launch='+encodeURIComponent(result.launch_token)};
+}
+function testSessionUrl(url, returnTo = "/#" + activeTab) {
+  const test = new URL(url);
+  test.searchParams.set("test-theme", document.documentElement.dataset.theme);
+  test.searchParams.set("from", returnTo);
+  return test.href;
+}
+function setupTestReturnPath(slot, condition) {
+  const section = document.querySelector('[data-settings][aria-current="page"]')?.dataset.settings || "study";
+  const params = new URLSearchParams({setup: slot.id, group: condition, section});
+  return "/?" + params + "#conditions";
 }
 function updateAssignment(){ $('launch-condition-label').classList.toggle('hidden',$('launch-assignment').value!=='external'); }
 $('launch-assignment').onchange=updateAssignment;
@@ -1178,13 +1365,21 @@ async function initialize() {
   const caseOptions = caseStudies.map((p,i) => `<option value="${i}">${esc(p.title)}</option>`).join("");
   $("case-study-select").innerHTML = '<option value="">Choose a case…</option>' + caseOptions;
   enhanceSetupChoice($("case-study-select"));
+  const resume = new URLSearchParams(location.search);
+  const editor = location.hash === "#conditions" && setupSlots.find(slot => String(slot.id) === resume.get("setup"));
   const remembered = sessionStorage.getItem(slotStorageKey);
-  const initial = setupSlots.find(slot => String(slot.id) === remembered) ||
+  const initial = editor || setupSlots.find(slot => String(slot.id) === remembered) ||
     setupSlots.find(slot => slot.id === snapshot.source_slot_id) || setupSlots[0];
-  selectSlot(await fetchSlot(initial.id));
+  selectSlot(await fetchSlot(initial.id), editor ? resume.get("group") : null);
   renderSummary();
   await refresh();
   renderTab(location.hash.slice(1) || researcher.start_page, false);
+  if (editor) {
+    setBuilderOpen(true);
+    showSetupStep(resume.get("section") || "study");
+    $("slot-heading").focus();
+  }
+  if (location.hash === "#conditions" && resume.has("setup")) history.replaceState(history.state, "", "/#conditions");
 }
 
 function fetchSlot(id) {
@@ -1213,18 +1408,19 @@ function renderSetupLibrary() {
   $("setup-count").textContent = query ? `${matches.length} of ${setupSlots.length}` : String(setupSlots.length);
   $("setup-slots").innerHTML = matches.length ? matches.map(slot => {
     const status = slotStudyState(slot);
-    const badge = status || ({draft:"Draft", active:"Active", closed:"Closed"})[slot.status];
+    const badge = status === "Used for study" ? "In use" : status ? "Update available" : slot.status === "closed" ? "Closed" : "";
     const tone = status === "Used for study" ? "blue" : status ? "amber" : slot.status === "active" ? "mint" : "neutral";
     const task = slot.case_study?.id || slot.task;
     const title = slotCaseTitle(slot);
     const type = title.toLowerCase() === slot.label.toLowerCase() ? (slot.case_study ? "Case template" : "Custom scenario") : title;
     const groupCount = slot.condition_count == null ? "" : `${slot.condition_count} ${slot.condition_count === 1 ? "group" : "groups"}`;
-    const provider = ({demo:"Demo responses", openai:"OpenAI", relay:"Manual relay"})[slot.provider];
+    const provider = ({demo:"Demo", openai:"OpenAI", relay:"Relay"})[slot.provider];
     const updated = slot.updated_at == null ? "" :
       new Date(slot.updated_at * 1000).toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"});
     const deleteHint = status ? "Choose another setup for the study before deleting this one" :
       setupSlots.length === 1 ? "Save another setup before deleting this one" : `Delete ${slot.label}`;
-    return `<li class="setup-entry-row"><button type="button" class="setup-entry" data-slot-id="${esc(slot.id)}" ${slot.id === selectedSlot?.id ? 'aria-current="true"' : ""}>
+    const description = [type, groupCount, provider, updated ? `Updated ${updated}` : ""].filter(Boolean).join(" · ");
+    return `<li class="setup-entry-row"><button type="button" class="setup-entry" title="${esc(description)}" data-slot-id="${esc(slot.id)}" ${slot.id === selectedSlot?.id ? 'aria-current="true"' : ""}>
       <span class="setup-entry-icon glyph-${sessionCaseTones[task] || "blue"}" aria-hidden="true">${setupIcon(caseIcons[task] || "study")}</span>
       <span class="setup-entry-copy">
         <span class="setup-entry-title"><strong title="${esc(slot.label)}">${esc(slot.label)}</strong></span>
@@ -1269,12 +1465,12 @@ function renderStudyAction() {
   action.textContent = status === "Study update available" ? "Update study setup" : "Use for study";
 }
 
-function selectSlot(slot) {
+function selectSlot(slot, conditionId = null) {
   newSetup = false;
   updateSlotList(slot);
   selectedSlot = slot;
   $("slot-menu").open = false;
-  selected = 0;
+  selected = Math.max(0, slot.config.conditions.findIndex(condition => condition.id === conditionId));
   draft = structuredClone(slot.config);
   $("slot-label").value = slot.label;
   sessionStorage.setItem(slotStorageKey, String(slot.id));
@@ -1513,7 +1709,8 @@ const setupBrief = $("setup-brief");
 function renderSetupAttachment() {
   $("setup-attachment").classList.toggle("hidden", !assistantAttachment);
   $("setup-attachment-name").textContent = assistantAttachment?.name || "";
-  $("choose-setup-document").textContent = assistantAttachment ? "Replace file" : "Attach a file";
+  $("choose-setup-document").title = assistantAttachment ? "Replace document" : "Add a document";
+  $("choose-setup-document").setAttribute("aria-label", $("choose-setup-document").title);
 }
 
 function setupChatControls() {
@@ -1539,21 +1736,32 @@ function setupAnswer(result, index) {
   const config = result.config;
   const answer = document.createElement("div");
   answer.className = "session-chat-answer setup-chat-answer";
-  const review = result.review.length ? `<ul class="setup-chat-review">${result.review.map(note => `<li>${esc(note)}</li>`).join("")}</ul>` : "";
+  const review = result.review.length ? `<h4>Assumptions to review</h4><ul class="setup-chat-review">${result.review.map(note => `<li>${esc(note)}</li>`).join("")}</ul>` : "";
   const assignment = config && {balanced: "Balanced random", random: "Random", external: "External"}[config.assignment.method];
   const ozer = config?.case_study?.id === "ozer_game";
-  answer.innerHTML = (config ? `<p><strong>Here’s a draft for your study.</strong></p>
-    <div class="setup-draft-card">
-      <strong>${esc(config.name)}</strong><p>${esc(config.description)}</p>
-      <p class="help">${esc(slotCaseTitle(config))} · ${esc(assignment)} assignment · Demo responses</p>
-      <p class="help">${config.architecture.memory === "none" ? "No memory" : "Session memory"} · Detailed interaction counts ${config.telemetry.enabled ? "on" : "off"}</p>
-      ${ozer ? '<p class="help">Uses the installed Ozer rules for rounds, roles and payoffs. Choose OpenAI in Study controls to test the saved role instructions.</p>' : ''}
-      <details><summary>Conditions and prompts (${config.conditions.length})</summary><ul>
-        ${config.conditions.map(condition => `<li><strong>${esc(condition.label)}</strong><p>${esc(condition.objective)}</p>
-          ${condition.agent_enabled ? `<p>${esc(condition.prompt)}</p>` : ""}</li>`).join("")}</ul></details>
-      ${review}
-      <button type="button" class="secondary" data-save-setup-turn="${index}">Save draft &amp; edit</button>
-    </div>` : `<p><strong>This study needs a different case.</strong></p>${review}`);
+  const roles = config?.task === "negotiation" && !ozer ?
+    [`Human ${config.negotiation.participant_role}`, ...new Set(config.conditions.filter(c => c.agent_enabled).map(c => "AI " + c.role))] :
+    config ? [slotCaseTitle(config), config.conditions.length + (config.conditions.length === 1 ? " condition" : " conditions")] : [];
+  const modes = config ? [...new Set(config.conditions.filter(c => c.agent_enabled).map(c =>
+    config.task === "negotiation" && !ozer && c.agent?.mode === "recommender" ? "Price negotiation" : conditionModeLabels[c.agent?.mode] || c.agent?.mode).filter(Boolean))] : [];
+  const engine = config && {demo:"Demo responses", openai:"OpenAI API", relay:"Chat relay"}[config.architecture.provider];
+  answer.innerHTML = (config ? `<article class="setup-draft-card">
+      <header class="setup-draft-heading chat-reveal-part">
+        <span class="setup-draft-symbol" aria-hidden="true">${setupIcon(caseIcons[config.case_study?.id] || "spark")}</span>
+        <div><span class="setup-draft-eyebrow">Agent draft</span><h3>${esc(config.name)}</h3></div>
+      </header>
+      <p class="setup-draft-description chat-reveal-part">${esc(config.description)}</p>
+      <div class="setup-draft-tags chat-reveal-part">${[...roles, ...modes].map(label => `<span>${esc(label)}</span>`).join("")}<span class="setup-draft-engine" title="Participant response engine">${esc(engine)}</span></div>
+      <details class="setup-draft-details chat-reveal-part"><summary>Instructions &amp; settings</summary><div class="setup-draft-details-body">
+        ${config.conditions.map(condition => `<section><h4>${esc(condition.label)}</h4><p>${esc(condition.objective)}</p>
+          ${condition.agent_enabled ? `<p class="setup-draft-instructions">${esc(condition.prompt)}</p>` : ""}</section>`).join("")}
+        <h4>Study settings</h4><p class="help">${esc(assignment)} assignment · ${config.architecture.memory === "none" ? "No memory" : "Session memory"} · Detailed interaction counts ${config.telemetry.enabled ? "on" : "off"}</p>
+        <p class="help">${esc(providerLabel(config))}. ${config.architecture.provider === "demo" ? "Select OpenAI in Study controls to test these instructions with the model." : "Review the setup before testing."}</p>
+        ${ozer ? '<p class="help">Uses the installed Ozer rules for rounds, roles and payoffs.</p>' : ''}
+        ${review}
+      </div></details>
+      <footer class="chat-reveal-part"><button type="button" class="secondary" data-save-setup-turn="${index}">Save draft &amp; edit <span aria-hidden="true">↗</span></button></footer>
+    </article>` : `<p><strong>This study needs a different case.</strong></p>${review}`);
   return answer;
 }
 
@@ -1655,6 +1863,7 @@ $("setup-assistant-form").onsubmit = async event => {
   const description = setupBrief.value.trim();
   const file = assistantAttachment;
   const prompt = setupPrompt(description, file?.name);
+  prompt.classList.add("chat-message-entering");
   const log = $("setup-chat-log");
   const thread = $("setup-chat-thread");
   const status = $("setup-ai-status");
@@ -1662,8 +1871,7 @@ $("setup-assistant-form").onsubmit = async event => {
   setupChatError("");
   setupChatBusy = true;
   setupChatControls();
-  status.textContent = previousId ? "Updating your draft…" : "Drafting your setup…";
-  status.classList.remove("hidden");
+  showChatThinking(status, previousId ? "Updating your draft" : "Drafting your setup");
   log.append(prompt);
   thread.scrollTop = thread.scrollHeight;
   try {
@@ -1678,7 +1886,9 @@ $("setup-assistant-form").onsubmit = async event => {
     setupPendingTurn = null;
     activeTab = "setup-chat/" + id;
     history.replaceState(null, "", "#" + activeTab);
-    log.append(setupAnswer(turn.result, setupChatTurns.length));
+    const answer = setupAnswer(turn.result, setupChatTurns.length);
+    log.append(answer);
+    revealChatResponse(answer);
     setupChatTurns.push(turn);
     $("setup-assistant-form").reset();
     assistantAttachment = null;
@@ -1732,8 +1942,13 @@ $("setup-chat-log").onclick = async event => {
   if (!button || slotBusy || setupChatBusy) return;
   const config = setupChatTurns[Number(button.dataset.saveSetupTurn)]?.result.config;
   if (!config) return;
+  await saveGeneratedSetup(config, button, "setup-ai-error");
+};
+
+async function saveGeneratedSetup(config, button, errorId) {
+  if (slotBusy || setupChatBusy || sessionChatBusy) return;
   button.disabled = true;
-  setupChatError("");
+  $(errorId).classList.add("hidden");
   try {
     const slot = await withSlotOperation(async () => {
       const saved = await api("/api/admin/setup-slots", {label: nextDraftName(config.name), config});
@@ -1745,9 +1960,9 @@ $("setup-chat-log").onclick = async event => {
       showSetupStep("study", true);
       notice("Saved “" + slot.label + "”.");
     }
-  } catch (err) { setupChatError(err.message); }
+  } catch (err) { $(errorId).textContent=err.message;$(errorId).classList.remove("hidden"); }
   finally { button.disabled = false; }
-};
+}
 
 function updateSlotList(slot) {
   const config = slot.config;
@@ -1994,25 +2209,49 @@ function previewFromPage() {
 }
 $("preview-slot").onclick = guarded(previewSelectedSlot);
 document.querySelectorAll(".preview-button").forEach(button => button.onclick = guarded(previewFromPage));
+$("preview-dialog").addEventListener("cancel", event => {
+  if (previewBusy) event.preventDefault();
+});
 $("preview-form").onsubmit = guarded(async e => {
   e.preventDefault();
   const button = $("start-preview");
   if (button.disabled) return;
+  const condition = e.currentTarget.elements["preview-condition"].value;
+  const live = $("preview-live");
+  const useLive = live.checked && !live.disabled;
+  const slot = previewSlot;
+  const dialog = $("preview-dialog");
+  const close = dialog.querySelector("[data-close-dialog]");
+  const picker = $("preview-conditions").closest("fieldset");
   previewBusy = true;
-  button.disabled = true;
+  dialog.dataset.busy = "true";
+  picker.disabled = close.disabled = live.disabled = button.disabled = true;
+  $("start-preview-label").textContent = "Opening test…";
   const errorMessage = $("preview-error");
   errorMessage.classList.add("hidden");
   try {
     if (!await leaveEditor()) return;
-    const condition = document.querySelector('input[name="preview-condition"]:checked').value;
-    const live = $("preview-live");
-    const result = await launch(true, "preview-" + crypto.randomUUID().slice(0,8), condition, "external", previewSlot, null, live.checked && !live.disabled);
-    location.assign(result.url);
+    const result = await launch(true, "preview-" + crypto.randomUUID().slice(0,8),
+      condition, "external", slot, null, useLive, slot ? null : previewStudy.revision);
+    const returnTo = slot ? setupTestReturnPath(slot, result.condition_id) : "/#" + activeTab;
+    if (slot) {
+      history.replaceState(history.state, "", returnTo);
+      const groupIndex = draft.conditions.findIndex(group => group.id === result.condition_id);
+      if (groupIndex >= 0 && selected !== groupIndex) {
+        selected = groupIndex;
+        renderEditor();
+      }
+    }
+    dialog.close();
+    location.assign(testSessionUrl(result.url, returnTo));
   } catch (error) {
     errorMessage.textContent = error.message;
     errorMessage.classList.remove("hidden");
   } finally {
     previewBusy = false;
+    delete dialog.dataset.busy;
+    picker.disabled = close.disabled = false;
+    $("start-preview-label").textContent = "Start test";
     updatePreviewMode();
   }
 });
@@ -2022,7 +2261,7 @@ for (const button of document.querySelectorAll("[data-demo-agent]")) {
     buttons.forEach(control => { control.disabled = true; });
     try {
       const result = await launch(true, "demo-" + crypto.randomUUID().slice(0, 8), null, "external", null, button.dataset.demoAgent);
-      location.assign(result.url);
+      location.assign(testSessionUrl(result.url));
     } finally {
       buttons.forEach(control => { control.disabled = false; });
     }
@@ -2035,10 +2274,11 @@ window.addEventListener("beforeunload", event => {
 });
 $("launch-form").onsubmit = guarded(async e => {
   e.preventDefault();
-  const result = await launch($("launch-preview").checked,$("launch-participant").value,$("launch-condition").value,$("launch-assignment").value);
+  const preview = $("launch-preview").checked;
+  const result = await launch(preview,$("launch-participant").value,$("launch-condition").value,$("launch-assignment").value);
   const url=result.url;
   $("launch-assigned").textContent="Assigned "+(snapshot.config.conditions.find(c=>c.id===result.condition_id)?.label || result.condition_id)+" · config v"+result.config_version+" · "+result.assignment_method;
-  $("launch-url").value = url; $("open-link").href = url;
+  $("launch-url").value = $("open-link").href = preview ? testSessionUrl(url) : url;
   $("launch-empty").classList.add("hidden");
   $("launch-result").classList.remove("hidden");
   $("launch-result").scrollIntoView({behavior:"instant",block:"nearest"});
@@ -2726,15 +2966,22 @@ function renderSessionDetail(data) {
   const s=data.session, d=data.decision, setup=data.setup, condition=setup.condition;
   displayedSession = s;
   renderAiEvidence(s, data.usage_evidence);
-  const isNegotiation=!setup.case_study&&setup.task==='negotiation';
+  const isNegotiation=setup.task==='negotiation' || setup.case_study?.id==='negotiation';
   const packOutcome=setup.case_study&&d ? JSON.parse(d.outcome_json) : null;
-  const priceLabel=value=>value==null ? 'No price' : setup.negotiation.currency+' '+value.toFixed(2)+' / unit';
+  const currency=setup.negotiation?.currency || 'USD';
+  const money=value=>new Intl.NumberFormat('en-US',{style:'currency',currency}).format(value);
+  const priceLabel=value=>typeof value!=='number' || !Number.isFinite(value) ? 'No price' : money(value)+' per unit';
   const option=id=>setup.scenario.options.find(o=>o.id===id)?.label || (id ? 'Unknown option' : 'No choice');
   const assistant=data.messages.filter(m=>m.role==='assistant').at(-1);
   const recommended=setup.case_study ? (assistant?.decision_action_json ? JSON.parse(assistant.decision_action_json) : null) : d ? (isNegotiation ? d.recommended_price : d.recommended_option) : isNegotiation ? assistant?.offer_price : assistant?.option_id;
-  const choiceLabel=value=>setup.case_study ? (value ? JSON.stringify(value) : 'No recorded action') : isNegotiation ? priceLabel(value) : option(value);
+  const choiceLabel=value=>isNegotiation ? priceLabel(typeof value==='object' ? value?.price : value) :
+    setup.case_study ? (value ? readableValue(value) : 'No recorded action') : option(value);
   const finalChoice=setup.case_study ? packOutcome?.decision_action : d ? (isNegotiation ? d.final_price : d.final_option) : null;
-  const decisionSummary=d ? (isNegotiation ? (d.agreement ? 'Simulated agreement reached' : d.action==='accept' ? 'Accepted the agent’s price advice' : d.action==='override' ? 'Recorded a different price · no agreement' : d.action==='reject' ? 'Finished without agreement' : 'Recorded an independent price') : actionNames[d.action]) : '';
+  const decisionSummary=d ? (isNegotiation ? ((packOutcome?.agreement ?? d.agreement) ? 'Simulated agreement reached' : d.action==='accept' ? 'Accepted the agent’s price advice' : d.action==='override' ? 'Recorded a different price · no agreement' : d.action==='reject' ? 'Finished without agreement' : 'Recorded an independent price') : actionNames[d.action]) : '';
+  const agreedPrice=typeof finalChoice==='object' ? finalChoice?.price : finalChoice;
+  const quantity=packOutcome?.quantity ?? setup.negotiation?.quantity;
+  const orderTerms=isNegotiation && d && Number.isFinite(agreedPrice) && Number.isFinite(quantity) ?
+    `<dl class="decision-terms"><div><dt>Quantity</dt><dd>${esc(quantity.toLocaleString())} units</dd></div><div><dt>Order total</dt><dd>${esc(money(agreedPrice*quantity))}</dd></div></dl>` : '';
 
   const status = sessionStatusLabels[s.status] || s.status;
   const manage = $("manage-session");
@@ -2747,7 +2994,7 @@ function renderSessionDetail(data) {
   $('download-session').href='/api/admin/session?session_id='+encodeURIComponent(s.id)+'&download=1';$('download-session').classList.remove('hidden');
   $('detail-message-count').textContent=data.messages.length;
   $('session-metrics').innerHTML=metric('Final choice',d ? choiceLabel(finalChoice) : 'Not submitted',d ? decisionSummary : status)+metric('Session duration',s.duration_ms==null ? 'Not ended' : duration(s.duration_ms),'Elapsed time · includes pauses')+metric('Conversation',data.metrics.prompt_count+(data.metrics.prompt_count===1 ? ' prompt' : ' prompts'),data.metrics.reply_count+(data.metrics.reply_count===1 ? ' assistant reply' : ' assistant replies'))+metric('After advice',d?.client_deliberation_ms!=null ? duration(d.client_deliberation_ms) : 'Unavailable','Browser time from exposure to decision');
-  const outcome=d ? `<div class="choice-comparison"><div><span>${setup.case_study ? 'Agent action' : isNegotiation ? 'Agent price' : 'Agent recommended'}</span><strong>${esc(choiceLabel(recommended))}</strong></div><span class="choice-connector" aria-hidden="true">→</span><div><span>${d.action==='autonomous' ? 'Agent committed' : setup.case_study ? 'Participant recorded' : isNegotiation ? 'Participant recorded' : 'Participant selected'}</span><strong>${esc(choiceLabel(finalChoice))}</strong></div></div><div class="decision-outcome"><span class="outcome-tag">${esc(decisionSummary)}</span><span>${esc(dateTime(d.created_at))}</span></div><h3>Participant’s reason</h3><p class="participant-reason">${esc(d.reason || 'No reason supplied.')}</p>` : `<div class="review-empty"><h3>${s.status==='withdrawn' ? 'The participant stopped this session.' : s.status==='revoked' ? 'The researcher revoked access.' : 'No final choice has been submitted.'}</h3><p>${recommended ? 'The latest agent proposal is '+esc(choiceLabel(recommended))+'.' : 'The agent has not issued a current recommendation.'}</p><p>${data.metrics.pending_requests ? 'A response is still pending.' : 'Recorded conversation and activity are available in the sections above.'}</p></div>`;
+  const outcome=d ? `<div class="choice-comparison"><div><span>${isNegotiation ? 'Supplier quote' : setup.case_study ? 'Agent action' : 'Agent recommended'}</span><strong>${esc(choiceLabel(recommended))}</strong></div><span class="choice-connector" aria-hidden="true">→</span><div><span>${d.action==='autonomous' ? 'Agent committed' : setup.case_study ? 'Participant recorded' : isNegotiation ? 'Participant recorded' : 'Participant selected'}</span><strong>${esc(choiceLabel(finalChoice))}</strong></div></div>${orderTerms}<div class="decision-outcome"><span class="outcome-tag">${esc(decisionSummary)}</span><span>${esc(dateTime(d.created_at))}</span></div><h3>Participant’s reason</h3><p class="participant-reason">${esc(d.reason || 'No reason supplied.')}</p>` : `<div class="review-empty"><h3>${s.status==='withdrawn' ? 'The participant stopped this session.' : s.status==='revoked' ? 'The researcher revoked access.' : 'No final choice has been submitted.'}</h3><p>${recommended ? 'The latest agent proposal is '+esc(choiceLabel(recommended))+'.' : 'The agent has not issued a current recommendation.'}</p><p>${data.metrics.pending_requests ? 'A response is still pending.' : 'Recorded conversation and activity are available in the sections above.'}</p></div>`;
   $('detail-overview').innerHTML=`<div class="review-grid"><article class="card decision-review"><div class="card-title"><h2>Decision summary</h2><span class="review-kicker">${esc(status)}</span></div>${outcome}${d?.outcome_score!=null ? `<details class="disclosure"><summary>Task benchmark <span class="summary-note">${esc(percent(d.outcome_score))}</span></summary><div class="disclosure-content">${facts([[isNegotiation ? 'Public price position' : 'Public weighted score',percent(d.outcome_score)],[isNegotiation ? 'Gap from favourable public endpoint' : 'Gap from highest public score',(d.score_regret*100).toFixed(1)+' points']])}<p class="help">${isNegotiation ? 'Computed from the public price range and participant role; a lower price favours a buyer and a higher price favours a supplier.' : 'Computed from the saved public criteria and weights.'} This is a public task benchmark, not an observed payoff. Private limits are excluded.</p></div></details>` : ''}</article><article class="card timing-review"><h2>Timing & collection</h2>${facts([['Consent recorded',dateTime(s.consent_at)],['Last recorded activity',dateTime(s.last_activity_at)],['Session ended',s.ended_at==null ? 'Not ended' : dateTime(s.ended_at)],['Browser time after advice',duration(d?.client_deliberation_ms)],['Server time after exposure',duration(d?.server_since_seen_ms)]])}<p class="help">Advice timing includes pauses. Browser timing can be unavailable after a reload. Neither measure proves attention or comprehension.</p></article></div>`;
   $('detail-conversation').innerHTML=`<article class="card transcript-card"><div class="card-title"><h2>Full conversation</h2><span class="review-kicker">${data.metrics.prompt_characters.toLocaleString()} prompt characters</span></div>${data.messages.length ? `<ol class="session-transcript">${data.messages.map(m=>{
     const meta=m.metadata;
@@ -2771,7 +3018,7 @@ function renderSessionDetail(data) {
         '<p>No rounds have settled.</p>'}</article>`;
     $('detail-conversation').innerHTML = '<article class="card"><h2>Counterpart decisions</h2><p>Forecasts and production quantities are recorded in Round results. Per-round decision events are available in the session download.</p></article>';
   }
-  if(packOutcome?.metric)$('detail-overview').insertAdjacentHTML('beforeend',`<article class="card"><h2>Recorded outcome metric</h2><pre class="snapshot-text">${esc(JSON.stringify(packOutcome.metric,null,2))}</pre><p class="help">This is a synthetic task benchmark. Forecast reference error is not measured against future actual demand.</p></article>`);
+  if(packOutcome?.metric && Object.keys(packOutcome.metric).length)$('detail-overview').insertAdjacentHTML('beforeend',`<article class="card"><h2>Recorded outcome metric</h2>${facts(Object.entries(packOutcome.metric).map(([key,value])=>[readableLabel(key),isNegotiation&&key==='value'&&typeof value==='number' ? priceLabel(value) : readableValue(value)]))}<p class="help">This is a synthetic task benchmark. Forecast reference error is not measured against future actual demand.</p></article>`);
   if(s.status==='ended_system_limit')$('detail-overview').insertAdjacentHTML('afterbegin',`<article class="card"><h2>System-limit flag</h2><p>${esc(s.system_message)}</p>${facts([['Terminal state',s.status],['Reason',s.end_reason]])}</article>`);
   $('detail-overview').insertAdjacentHTML('beforeend', sessionAnnotations(s, data.edit_history));
   const a=data.activity, totals=a.totals;

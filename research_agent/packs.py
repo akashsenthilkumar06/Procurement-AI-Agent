@@ -69,6 +69,8 @@ def study_config(pack_id,version):
         if mode=='analytical':cond['output']='number'
         cond['agent']={'mode':'analytical' if mode=='human_only' else mode,'allowed_tools':pack['allowed_tools'],
             'data_access':pack['data_access'],'max_tool_calls':8,'tool_timeout_seconds':3,'turn_timeout_seconds':30}
+        if pack.get('offer_policy'):
+            cond['agent'].update(allowed_tools=['evaluate_offer'], data_access={})
         conditions.append(cond)
     config['conditions']=conditions
     if pack.get('negotiation'):config['negotiation'].update(pack['negotiation'])
@@ -104,10 +106,37 @@ def demo_config(demo_id, use_openai):
 
 def public_pack(config,condition):
     pack,repo=resolve(config['case_study'])
-    return {'id':pack['id'],'version':pack['version'],'title':pack['title'],'dataset_version':repo.version,
+    result = {'id':pack['id'],'version':pack['version'],'title':pack['title'],'dataset_version':repo.version,
         **({'game':pack['game']} if pack['id']=='ozer_game' else {}),
         'scenario':pack['scenario'],'decision':pack['decision'], 'mode':condition['agent']['mode'],
         'tables':{name:repo.records(name,'participant',pack.get('participant_access',{})) for name in pack.get('participant_access',{})}}
+    if pack.get('offer_policy'):
+        from .config import public_negotiation
+        terms = public_negotiation(config, condition)
+        counterpart = "AI " + condition['role'] if condition['role'] in ('buyer', 'supplier') else "AI assistant"
+        result['tables'] = {}
+        result['title'] = terms['title']
+        result['scenario'] = {
+            'instructions': (
+                f"You are the {terms['participant_role']} negotiating with one {counterpart} over "
+                f"{terms['quantity']} units of {terms['item']}. Exchange unit-price offers in the conversation. "
+                "When you are ready, record the current agreed price or finish without agreement."
+            ),
+            'knowledge': (
+                terms['knowledge'] + "\n\n" +
+                f"The order is for {terms['quantity']} units of {terms['item']}. "
+                f"Each offer is in {terms['currency']} per unit. "
+                f"The allowed price range is {terms['price_min']}–{terms['price_max']} per unit. "
+                "The item and quantity are fixed. The order total is the unit price multiplied by the quantity. "
+                "All outcomes are simulated study decisions."
+            ),
+        }
+        if not condition['agent_enabled']:
+            result['scenario']['instructions'] = (
+                f"You are the {terms['participant_role']} reviewing an order for {terms['quantity']} units of "
+                f"{terms['item']}. Review the order terms and record your preferred unit price."
+            )
+    return result
 
 
 def score_action(config,condition,action,execute=None):

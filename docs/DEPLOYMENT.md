@@ -24,6 +24,8 @@ From the project folder on your deployment server:
 docker compose up -d --build
 ```
 
+The image installs the project from `pyproject.toml`, the same dependency source used by `python3 scripts/setup.py --run` for local development. The local setup command starts a loopback service; the Docker/Caddy path supplies the remote HTTPS configuration. [Local setup instructions](../README.md#1-set-up-the-project).
+
 Only Caddy publishes ports 80 and 443; the agent port remains on the internal Docker network. Visit your domain and enter `ADMIN_TOKEN`. Researcher cookies are Secure and HttpOnly for remote operation. Participant capabilities are bearer tokens, so HTTPS is required outside local development.
 
 The health endpoint confirms process availability. API calls to a configured LLM still require valid provider credentials and a compatible model. The researcher workspace tells you whether a provider key is configured without displaying it. Set enrollment status to active after running hosted previews; do not simply treat a successful health check as study validation.
@@ -32,12 +34,12 @@ The health endpoint confirms process availability. API calls to a configured LLM
 
 - Run one application process against this SQLite database. Back it up with SQLite's online backup API or stop the service and copy the database together with its WAL state. Do not copy a live main database alone and assume it is complete.
 - The standard-library threaded HTTP service is a pilot backend, not a hardened high-volume server. Caddy provides TLS and a request-size boundary. For broad recruitment, migrate to a production application server with explicit concurrency limits, shared storage, monitoring, and load tests. Do not expose the Python port directly to the internet.
-- Configure host access, storage encryption, backups, retention, and researcher access according to your approved protocol. The application does not encrypt the SQLite database, provide per-researcher accounts, automated deletion, or a participant data-erasure workflow.
+- Configure host access, storage encryption, backups, retention, and researcher access according to your approved protocol. The application provides researcher accounts, owner-managed access, and session deletion controls. SQLite encryption, automated retention, and a participant data-erasure workflow require separate operational handling.
 - On the first v2 startup, an online SQLite backup named `study.pre-v2-*.sqlite3` is created before migration. Preserve it with the same access controls as the study database. Migrations retain immutable configuration JSON and hashes. Test the upgrade on a copy before a hosted collection window.
 - API budget reservations survive restart; uncertain or interrupted charges are not automatically released. Do not delete the ledger to restore budget. Check provider usage and configure an appropriate cap, with provider billing controls as an additional boundary.
 - Unfinished model requests are marked failed when the application restarts so a session can retry. Full user prompts remain logged. A retry is a new request with its own timing; do not merge it with the original latency.
 - Freeze source/runtime versions for data collection. Save archived source, configurations, engine version, provider model identifiers, and analysis rules. Hosted model drift and retirement need an explicit study contingency.
-- Restarting invalidates in-memory researcher cookies; researchers can sign in again. Participant sessions and launch consumption persist in SQLite. Participant access expires 24 hours after session creation.
+- Researcher logins, participant sessions, and launch consumption persist in SQLite. Account sessions can expire or be revoked through the account controls. Participant access expires 24 hours after session creation.
 
 ## Changes during a study
 

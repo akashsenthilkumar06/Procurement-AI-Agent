@@ -116,7 +116,7 @@
 <section id="tab-conditions" class="tab-panel hidden">
 <div id="setup-home" class="setup-home">
   <header class="page-heading workspace-masthead">
-    <div><p class="eyebrow">Workspace</p><h1>Agent setup</h1><p class="subtitle">Create and manage the setups you use in your studies.</p></div>
+    <div><h1>Agent setup</h1></div>
     <div class="setup-home-actions">
       <button id="open-setup-assistant" class="secondary" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3 1.9 5.1L17 10l-5.1 1.9L10 17l-1.9-5.1L3 10l5.1-1.9L10 3Zm8 11v6m-3-3h6"/></svg>
@@ -216,7 +216,7 @@
 <div id="designer-errors" class="notice error hidden" role="alert"></div>
 <section id="designer-public" class="hidden" aria-label="Validated participant brief"><h3>Participant view</h3><strong id="designer-public-title"></strong><p id="designer-public-instructions"></p><p id="designer-public-mode" class="help"></p><details><summary>Public information</summary><p id="designer-public-knowledge"></p></details><button id="designer-edit-task" class="text-button" type="button">Edit participant task</button></section>
 <button id="preview-slot" class="primary" type="button">Save &amp; test</button>
-<p class="help designer-test-note">Choose a group and response mode before starting. Test sessions are marked as previews.</p>
+<p class="help designer-test-note">Open the participant view for any group in this setup.</p>
 </aside></div>
     </div>
   </div>
@@ -232,8 +232,8 @@
   <div id="session-chat-thread" role="region" aria-label="Conversation" tabindex="0">
     <div class="session-chat-stream">
       <div id="session-chat-empty">
-        <h2>What would you like to know?</h2>
-        <p>Ask about study progress, groups, or a participant.</p>
+        <h2>What would you like to work on?</h2>
+        <p>Create an agent or explore your study sessions.</p>
       </div>
       <div id="session-chat-log" role="log" aria-label="Session chat conversation"></div>
       <p id="session-chat-status" class="help hidden" role="status">Looking up sessions…</p>
@@ -242,6 +242,7 @@
   <div class="session-chat-dock">
     <div id="session-chat-starters">
       <div id="session-chat-suggestions" aria-label="Suggested queries" role="group">
+        <button type="button" class="secondary" data-chat-prompt="Create an agent setup for a procurement decision study.">Draft an agent</button>
         <button type="button" class="secondary" data-chat-query="list" data-chat-status="not_completed">Who hasn’t completed?</button>
         <button type="button" class="secondary" data-chat-query="by_status" data-chat-status="all">Completion breakdown</button>
         <button type="button" class="secondary" data-chat-query="by_condition" data-chat-status="all">Compare study groups</button>
@@ -249,16 +250,19 @@
     </div>
     <p id="session-chat-error" class="notice error hidden" role="alert"></p>
     <form id="session-chat-form">
-      <label for="session-chat-question" class="visually-hidden">Ask about your study sessions</label>
-      <textarea id="session-chat-question" rows="1" maxlength="1000" placeholder="Ask about your sessions" aria-describedby="session-chat-help"></textarea>
+      <label for="session-chat-question" class="visually-hidden">Ask about sessions or agent setups</label>
+      <textarea id="session-chat-question" rows="1" maxlength="16000" placeholder="Ask about sessions or create an agent…" aria-describedby="session-chat-help"></textarea>
+      <input id="session-chat-document" type="file" accept=".pdf,.docx,.txt,.md" hidden aria-label="Choose a document">
+      <div id="session-chat-attachment" class="setup-attachment hidden"><span id="session-chat-attachment-name"></span><button id="remove-session-document" class="text-button" type="button" aria-label="Remove document">×</button></div>
       <div class="session-chat-tools">
+        <button id="choose-session-document" class="attachment-button" type="button" aria-label="Add a document" title="Add a document"><span aria-hidden="true">+</span></button>
         <label for="session-chat-scope" class="visually-hidden">Search in</label>
         <select id="session-chat-scope"><option value="study">Study sessions</option><option value="preview">Preview sessions</option><option value="all">All sessions</option></select>
         <details id="session-chat-quick-menu" class="hidden"><summary>Suggestions</summary></details>
         <button id="send-session-question" class="primary" type="submit" aria-label="Send" title="Send"><span aria-hidden="true">↑</span></button>
       </div>
     </form>
-    <p id="session-chat-help" class="help">OpenAI interprets typed questions. Session records are queried locally.</p>
+    <p id="session-chat-help" class="help">Ask about saved agents, conversations, and decisions in the selected scope.</p>
   </div>
 </section>
 <section id="tab-setup-chat" class="tab-panel hidden" aria-labelledby="setup-chat-title">
@@ -282,7 +286,7 @@
       <input id="setup-document" type="file" accept=".pdf,.docx,.txt,.md" hidden aria-label="Attach a study document">
       <div id="setup-attachment" class="setup-attachment hidden"><span id="setup-attachment-name"></span><button id="remove-setup-document" class="text-button" type="button">Remove</button></div>
       <div class="session-chat-tools">
-        <button id="choose-setup-document" class="secondary" type="button">Attach a file</button>
+        <button id="choose-setup-document" class="attachment-button" type="button" aria-label="Add a document" title="Add a document"><span aria-hidden="true">+</span></button>
         <button id="generate-setup" class="primary" type="submit" aria-label="Send to setup assistant" title="Send"><span aria-hidden="true">↑</span></button>
       </div>
     </form>
@@ -488,6 +492,20 @@
   <p id="use-slot-error" class="notice error hidden" role="alert"></p>
   <form id="use-slot-form"><div class="button-row"><button type="submit" class="primary">Use this slot</button><button type="button" class="secondary" data-close-dialog="use-slot-dialog">Cancel</button></div></form>
 </dialog>
-<dialog id="preview-dialog" class="glass-dialog" aria-labelledby="preview-title"><div class="dialog-heading"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg></span><button class="icon-button" data-close-dialog="preview-dialog" aria-label="Close preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div><p class="eyebrow">Participant preview</p><h2 id="preview-title">Preview session</h2><p id="preview-setup-description">Open a new session with the saved configuration.</p><form id="preview-form"><fieldset class="condition-picker"><legend>Choose a condition</legend><div id="preview-conditions"></div></fieldset><label id="preview-live-setting" class="checkbox-label hidden"><input id="preview-live" type="checkbox"> Use live OpenAI for this preview</label><div class="preview-provider"><span class="connection-dot"></span><span id="preview-provider" role="status"></span></div><p id="preview-error" class="notice error hidden" role="alert"></p><button id="start-preview" class="primary" type="submit">Open preview <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button><p class="help">Preview sessions are labeled separately in your study data.</p></form></dialog>
+<dialog id="preview-dialog" class="glass-dialog" aria-labelledby="preview-title">
+  <div class="dialog-heading">
+    <h2 id="preview-title">Test a study group</h2>
+    <button class="icon-button" data-close-dialog="preview-dialog" aria-label="Close test dialog">×</button>
+  </div>
+  <p id="preview-setup-description"></p>
+  <form id="preview-form">
+    <fieldset class="condition-picker"><legend>Participant group</legend><div id="preview-conditions"></div></fieldset>
+    <label id="preview-live-setting" class="checkbox-label hidden"><input id="preview-live" type="checkbox"> Use live OpenAI for this test</label>
+    <div class="preview-provider"><span class="connection-dot"></span><span id="preview-provider" role="status"></span></div>
+    <p id="preview-error" class="notice error hidden" role="alert"></p>
+    <button id="start-preview" class="primary" type="submit"><span id="start-preview-label">Start test</span><span aria-hidden="true">→</span></button>
+    <p class="help">Test sessions are labeled as previews in your study data.</p>
+  </form>
+</dialog>
 <dialog id="export-dialog" class="glass-dialog export-dialog" aria-labelledby="export-title"><div class="dialog-heading"><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4"/></svg></span><button class="icon-button" data-close-dialog="export-dialog" aria-label="Close exports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div><h2 id="export-title">Export study data</h2><p>Choose a dataset and format.</p><div id="exports" class="export-grid"></div><details class="disclosure"><summary>About these exports</summary><div class="disclosure-content"><p class="help">CSV opens in Excel, R or Python. JSON preserves the original text. Previews are labeled in every dataset. Configuration exports contain private researcher information.</p></div></details></dialog>
 <dialog id="command-dialog" class="glass-dialog command-dialog" aria-labelledby="command-title"><div class="command-search"><span aria-hidden="true">⌕</span><label class="visually-hidden" id="command-title" for="command-search">Find a page or action</label><input id="command-search" type="search" placeholder="Where would you like to go?" autocomplete="off"><button class="icon-button" data-close-dialog="command-dialog" aria-label="Close navigation">×</button></div><div id="command-results" class="command-results"></div><div class="command-footer">↑ ↓ to move <span>Enter to open · Esc to close</span></div></dialog><dialog id="condition-inspector" class="glass-dialog condition-inspector" aria-labelledby="inspector-title"><div class="dialog-heading"><span class="eyebrow">Form preview · no API charge</span><button class="icon-button" data-close-dialog="condition-inspector" aria-label="Close condition preview">×</button></div><h2 id="inspector-title">Condition preview</h2><div id="inspector-content"></div><p class="help">This example uses the deterministic test adapter, not a live model. Save a configuration version before launching an interactive participant preview.</p></dialog></body></html>

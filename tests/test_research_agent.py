@@ -708,6 +708,7 @@ class HTTPTests(unittest.TestCase):
         self.assertEqual(status,200); self.assertIn("frame-ancestors 'self'", headers["Content-Security-Policy"])
         self.assertEqual(headers["Referrer-Policy"], "no-referrer")
         self.assertEqual(self.request("/../data/admin.key")[0],404)
+        self.assertEqual(self.request("/.env")[0],404)
         self.assertEqual(self.request("/research_agent/server.py")[0],404)
 
     def test_empty_csv_has_headers_and_no_credentials(self):

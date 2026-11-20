@@ -1,9 +1,9 @@
 # Research Agent acceptance harness
 
-From the project folder:
+Run `python3 scripts/setup.py` from the project folder to install the project dependencies. Then run the keyless harness with that environment:
 
 ```sh
-python3 tests/acceptance/run.py keyless
+.venv/bin/python tests/acceptance/run.py keyless
 ```
 
 This executes synthetic HTTP sessions, deterministic tools, exact-wire recording mock responses, a files-only pack/data probe, state-isolation checks, and the full regression suite. It writes docs/ACCEPTANCE_REPORT.md and timestamped evidence under tests/acceptance/artifacts/keyless/. Exit 1 is expected while acceptance findings remain FAIL. No study data/config at data/ is read or changed.
@@ -11,7 +11,7 @@ This executes synthetic HTTP sessions, deterministic tools, exact-wire recording
 Live tests are a separate explicit action. First export OPENAI_API_KEY in your environment, then:
 
 ```sh
-RESEARCH_AGENT_LIVE_TESTS=1 python3 tests/acceptance/run.py live --max-spend 2
+RESEARCH_AGENT_LIVE_TESTS=1 .venv/bin/python tests/acceptance/run.py live --max-spend 2
 ```
 
 Both the environment opt-in and cap flag are required. `--max-spend` alone selects the default USD 2. The ledger is persistent at artifacts/live/budget.sqlite3 and covers cumulative harness spending across live reruns. Do not delete/reset it as a retry strategy. A would-exceed cap stops provider dispatch, exits 3 and marks uncompleted tests NOT RUN. Known usage settles reservations; uncertain/failing calls retain full allowances. The application ceiling depends on the configured pinned-model token rates and does not set an account-wide provider billing limit.

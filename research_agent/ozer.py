@@ -195,7 +195,8 @@ class OzerGame:
             result = {
                 "session_id": self.session_id, "status": session["status"],
                 "round_id": session["round_id"], "preview": bool(session["preview"]),
-                "public": public_config(self.config, self.condition), "messages": [], "decision": None,
+                "public": public_config(self.config, self.condition, preview=bool(session["preview"])),
+                "messages": [], "decision": None,
                 "usage_evidence": usage_evidence.participant_state(db, self.session_id),
                 "end_reason": session["end_reason"], "system_message": session["system_message"],
             }
@@ -309,6 +310,11 @@ class OzerGame:
             if passed:
                 return self._start_round(db, session), False
             return None, True
+        elif action == "skip_quiz" and stage == "quiz":
+            if not session["preview"]:
+                raise PermissionError("Skipping the understanding check is only available in test sessions.")
+            self._log(db, session, "comprehension_skipped")
+            return self._start_round(db, session), False
         elif action == "submit" and stage == "decision":
             field = "forecast" if self.participant == "retailer" else "production"
             value = validate_quantity(self.pack, field, data.get("value"))

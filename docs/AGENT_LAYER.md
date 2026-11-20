@@ -6,9 +6,11 @@ Existing configs have `case_study: null` and condition `agent: null`. They keep 
 
 ## Run and select a pack
 
-Run `python3 -m research_agent.server`, then open Agent setup → Task → Case-study pack → Load as draft. Review the five generated conditions (analytical, chatbot, recommender, autonomous, human-only), preview a condition, then save. Launching pins that config version. Loading a pack does not change any saved study until Save is pressed. Changing a pack's authority dropdown changes only `condition.agent.mode`; role, data and enabled tools stay as configured.
+From the project folder, run `python3 scripts/setup.py --run`. This creates/reuses `.venv`, installs the editable project and its dependencies from `pyproject.toml`, checks imports, and starts the server. Later starts can use `.venv/bin/python -m research_agent.server`. See [setup and troubleshooting](SETUP.md).
 
-The included packs are supplier_selection, negotiation, demand_forecasting, supplier_risk, and disruption_response, at v1 except negotiation at v2. Negotiation v1 remains immutable for historical references and fails closed during agent execution; explicitly load v2 before a new launch. Task assumptions, default tool inputs, decision schema/moment and scoring are in the pack. The decision editor and participant page are generated from its schema. No visual builder is included.
+Open Agent setup → New setup → Design → Participant task → Replace with a case template. Review the generated conditions (analytical, chatbot, recommender, autonomous, human-only; Ozer has two role conditions), preview, and save. Launching pins that configuration version. Loading a template changes the draft; use the saved setup for the study to apply it to new links. Changing a pack's authority dropdown changes only `condition.agent.mode`; role, data and enabled tools stay as configured.
+
+The standard agent packs are supplier_selection, negotiation, demand_forecasting, supplier_risk, and disruption_response, at v1 except negotiation at v2. The separate [Ozer Game](OZER_GAME.md) template supplies a fixed round protocol. Negotiation v1 remains immutable for historical references and fails closed during agent execution; explicitly load v2 before a new launch. Task assumptions, default tool inputs, decision schema/moment and scoring are in the pack. The setup editor and participant decision fields use the pack's schema.
 
 ## Authority contract
 
@@ -20,7 +22,7 @@ The included packs are supplier_selection, negotiation, demand_forecasting, supp
 | autonomous | Read/analysis/simulation plus decision:commit | LLM's valid action is committed to the study decision table after the output check, atomically with its response. No approval button; participant sees the committed result. |
 | human-only | Agent disabled | No chat, tool-loop or model request. Public case data, behavior tracking, independent decision recording and server outcome scoring remain. |
 
-All tools are nonmutating. Execution permission is enforced separately at the decision boundary. Autonomous execution means a simulated study commitment, never an ERP write, order, contract, or external transaction. A negotiation pack's committed price is an agent decision; do not reinterpret it as mutual contractual agreement. Legacy negotiation retains its separate simulated-agreement flag.
+All tools are nonmutating. Execution permission is enforced separately at the decision boundary. Autonomous execution means a simulated study commitment, never an ERP write, order, contract, or external transaction. A negotiation pack's autonomous price is an agent decision. Explicit participant acceptance in recommender negotiation records a simulated agreement when the opposing role is buyer or supplier. Neither outcome represents a real contract.
 
 ## Registry and repository
 
@@ -34,6 +36,10 @@ All tools are nonmutating. Execution permission is enforced separately at the de
 - simulate_scenario: deterministic disruption or order-policy cost comparison for wait/expedite/alternate policies; no external action.
 - evaluate_offer: negotiation v2 server policy returns accept, counter(amount), or reject. Thresholds never enter model context; only the server chooses and attaches counter amounts.
 
+Negotiation offers are extracted from explicit participant chat, including wording such as “I can offer $105 per unit.” Market percentages, quantities, and hypothetical statements are not automatically treated as prices. The model tool schema requires `offer=null`; the controller supplies the current recorded participant price, including the latest saved offer when a follow-up contains none. Model arguments cannot replace that price. If a negotiation final reply arrives without `evaluate_offer`, the controller runs the permitted evaluation and asks for a grounded reply within the existing tool, time, and spend limits.
+
+For a recommender negotiation, `/api/participant/message` routes an unconditional acceptance such as “Ok I accept” through the same atomic decision path as `/api/participant/decision`. The latest assistant message ID and its recorded exposure must match. An explicit acceptance amount must match the approved price. The transaction saves the acceptance message, completed request, decision, outcome, and audit event together. Retrying the same acceptance request returns the recorded outcome. Conditional agreement remains ordinary conversation.
+
 `DataRepository` in repository.py is the swappable interface. FileRepository implements it with JSON/CSV and a manifest defining field types and role visibility. Tools use repository records, not database-specific queries. `open_repository` is the implementation factory to replace for a future authorized database/export adapter. No real integrations were built.
 
 The effective data access is the intersection of a condition's data_access and the manifest's field roles. Public means visible to any role. Restricted fields require a named matching role AND an explicit condition field grant. Participant visibility is a separate pack participant_access evaluated as role participant; it is not inherited from the agent. The included packs grant only relevant tables. Selection/risk/forecast/disruption grants are public-only. Negotiation v2 grants no private fields to any model role; its tools enforce public-only columns even if a condition accidentally grants more. The reservation policy stays server-side. Other packs require both a matching role and an explicit restricted-field grant.
@@ -44,6 +50,8 @@ Datasets use `datasets/<id>/<version>/manifest.json`. Version and SHA-256 conten
 
 Raw condition private_information/private_rules never enter the model system prompt. Private policy bounds are enforced at action validation. Tools may include role-visible restricted fields only when explicitly granted for a task. Every model/demo reply is checked before persistence/delivery; checks cover action schema, authority, numeric format, private policy limits, restricted field names and protected literals. Free text receives no exemption. Only an exact server-approved structured action field/value is exempt. The checker covers literals, number words, ranges, rounded/percentage-offset forms and boundary paraphrases; flagged replies are replaced with a safe fallback and an output_replaced event. Numeric conditions receive a flagged numeric placeholder.
 
+Text negotiation has a bounded repair path: one fresh rewrite uses the completed evaluation and avoids private explanations. If that still fails, a server-written reply can retain the approved current price without exposing the threshold. `output_repaired` records the repair and flags; `output_replaced` marks any remaining generic fallback. This preserves the approved action and original safety checks. Public company/industry context and qualitative participant market arguments remain available to the conversation.
+
 This is defense in depth, not a proof against every paraphrase or inference. Authorized actions can reveal information about constraints. Do not grant secret fields to a model unless the experimental task requires them; evaluate the intended prompts before enrollment. Study authors must keep public prompts, examples, scenario text and participant_access free of private data. Actual filtered tool outputs (which can contain authorized secrets) are retained in researcher-only audit events, so exports require appropriate access/retention controls.
 
 ## Safety, model provider and memory
@@ -52,7 +60,7 @@ One turn is bounded by max_tool_calls (1–12), a per-tool timeout, and a turn d
 
 Each model step has its own request-ID suffix and atomic budget reservation in the SAME persistent spend ledger. Actual known usage settles each step; failed/timed-out/unknown-usage calls retain the full reservation. At admission, API sessions reserve architecture.session_spend_usd (default USD 0.25, bounded by the global ceiling). Steps draw from that session allocation; new sessions cannot take funds already reserved for others. At 80% spent-or-reserved capacity, researchers see a warning and a budget_warning event. Tool-call, tool/model/turn timeout or session-spend limits set ended_system_limit, clear pending work, release unused funds, flag the session for researchers and give participants a completion code plus a return-to-survey path. Rates must match the pinned model. This is an application cap, not a provider account-wide billing guarantee. No live paid API call was made during development; the hosted API path was exercised using mocked Responses and worker contracts.
 
-Only the authenticated participant's last 20 messages are passed when session memory is enabled; tool context exists only within the current turn. Full transcripts/tool events remain in the backend for research. No conversation or learning carries to another participant. No multi-round play or training is added.
+Only the authenticated participant's last 20 messages are passed when session memory is enabled; tool context exists only within the current turn. Full transcripts/tool events remain in the backend for research. No conversation or learning carries to another participant. Ozer round state follows its separate case protocol; it does not train a model across participants.
 
 ## Event and outcome records
 
@@ -70,8 +78,8 @@ Scoring templates are `lookup` (normalize a tool metric across candidate rows), 
 2. Reuse a versioned dataset or create `datasets/<dataset-id>/<version>/manifest.json` plus local JSON/CSV table files. Declare every field's roles; CSV numeric columns need types: number. Set dataset id/version in the pack. Existing tools expect the documented supplier/demand/inventory field names.
 3. Set allowed_tools, default_role, private_information, agent data_access, and independent participant_access. Grant only the fields required for that case. Tool names and algorithms come from the existing registry.
 4. Define decision.schema as a closed object with 1–12 required flat string/number/integer fields; enums produce dropdowns and numeric ranges/precision produce inputs. Set the decision moment, a scoring template/metric, deterministic demo_plan, and action_map paths or a demo_action.
-5. Run `python3 -m research_agent.packs --id YOUR_ID --version v1`. It validates the config, runs tools, builds a demo action, and checks scoring. No API key is used.
-6. Reload the app. Select the new pack in Agent setup → Task → Load as draft, review the generated conditions, preview each intended mode, then save a new configuration version. Existing sessions retain their old pack/data references. API mode still needs the server-side key and acceptance testing.
+5. Run `.venv/bin/python -m research_agent.packs --id YOUR_ID --version v1`. It validates the config, runs tools, builds a demo action, and checks scoring. No API key is used.
+6. Reload the app. Select the new template in Agent setup → Design → Participant task → Replace with a case template, review the generated conditions, preview each intended mode, then save a new configuration version. Existing sessions retain their old pack/data references. API mode still needs the server-side key and acceptance testing.
 
 New case combinations, text, data, decisions and metrics require no Python/JavaScript changes. A fundamentally new algorithm/tool or scoring primitive requires implementation; a pack does not execute arbitrary Python, SQL, shell commands, or formulas. Multi-field actions are recorded, and the scoring template identifies its primary action field.
 
@@ -80,7 +88,7 @@ New case combinations, text, data, decisions and metrics require no Python/JavaS
 New code: research_agent/agent.py, contracts.py, packs.py, repository.py, tools.py.
 Updated code: config.py, engine.py, providers.py, schema.py, server.py, store.py, __init__.py.
 UI: static/index.html, admin.js, participant.html, participant.js, style.css.
-Packs: case_studies/{supplier_selection,negotiation,demand_forecasting,supplier_risk,disruption_response}/v1/pack.json.
+Packs: case_studies/{supplier_selection,demand_forecasting,supplier_risk,disruption_response}/v1/pack.json and case_studies/negotiation/v2/pack.json; prior negotiation v1 files remain for historical references. Ozer has its own case directory and protocol.
 Data: datasets/synthetic_supply/v1/{manifest.json,suppliers.json,demand.csv,inventory.json}.
 Validation: tests/test_agent_layer.py (legacy test files retained).
 Packaging/docs: Dockerfile, pyproject.toml, README.md, docs/AGENT_LAYER.md, REQUIREMENTS.md, DATA_DICTIONARY.md, DEPLOYMENT.md; browser proof in docs/agent-layer-preview.png.
